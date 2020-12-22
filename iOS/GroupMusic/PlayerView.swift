@@ -10,6 +10,7 @@ import AVFoundation
 
 struct PlayerView: View {
     @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer()
+    var gmSockets: GMSockets?
     
     var body: some View {
         VStack {
@@ -44,6 +45,10 @@ struct PlayerView: View {
             }
             .foregroundColor(.black)
         }
+    }
+    
+    init() {
+        self.gmSockets = GMSockets(queuePlayer: queuePlayer)
     }
     
     private func togglePlayback() {

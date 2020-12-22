@@ -21,6 +21,7 @@
 		BF3468C8258FFC94000D609B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF3468C7258FFC94000D609B /* Assets.xcassets */; };
 		BF3468CB258FFC94000D609B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF3468CA258FFC94000D609B /* Preview Assets.xcassets */; };
 		BF3468CE258FFC94000D609B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF3468CC258FFC94000D609B /* LaunchScreen.storyboard */; };
+		BF5D5DDE25915B1F00EF6C37 /* GMSockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5D5DDD25915B1F00EF6C37 /* GMSockets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		BF3468CA258FFC94000D609B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BF3468CD258FFC94000D609B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF3468CF258FFC94000D609B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF5D5DDD25915B1F00EF6C37 /* GMSockets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMSockets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				BF266BFB259026B300029A2D /* GMQueuePlayer.swift */,
+				BF5D5DDD25915B1F00EF6C37 /* GMSockets.swift */,
 				BF266C1025904B2200029A2D /* CMTime+Extension.swift */,
 			);
 			path = Models;
@@ -195,6 +198,7 @@
 				BF3468C6258FFC92000D609B /* ContentView.swift in Sources */,
 				BF266C0D25902A2000029A2D /* PlayerView.swift in Sources */,
 				BF266C1125904B2200029A2D /* CMTime+Extension.swift in Sources */,
+				BF5D5DDE25915B1F00EF6C37 /* GMSockets.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
