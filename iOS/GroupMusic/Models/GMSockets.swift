@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets {
     let queuePlayer: GMQueuePlayer
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4400")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4401")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     
     init(queuePlayer: GMQueuePlayer) {
