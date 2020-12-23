@@ -8,6 +8,7 @@
 import AVFoundation
 
 class GMQueuePlayer: NSObject, ObservableObject {
+    private let socketManager: GMSockets
     private let player: AVPlayer
     private var urls: [URL]
     private var avPlayerItems: [AVPlayerItem]
@@ -19,16 +20,17 @@ class GMQueuePlayer: NSObject, ObservableObject {
     @Published var currentTimeString: String = "0:00"
     @Published var durationString: String = "0:00"
     
-    override init() {
-        urls = [
+    init(socketManager: GMSockets) {
+        self.socketManager = socketManager
+        self.urls = [
             Bundle.main.url(forResource: "sample1", withExtension: "mp3")!,
             Bundle.main.url(forResource: "sample2", withExtension: "mp3")!,
             Bundle.main.url(forResource: "sample3", withExtension: "mp3")!,
             Bundle.main.url(forResource: "sample4", withExtension: "mp3")!,
             Bundle.main.url(forResource: "sample5", withExtension: "mp3")!
         ]
-        avPlayerItems = urls.map { (url) -> AVPlayerItem in AVPlayerItem.init(url: url) }
-        player = AVPlayer(playerItem: avPlayerItems[0])
+        self.avPlayerItems = urls.map { (url) -> AVPlayerItem in AVPlayerItem.init(url: url) }
+        self.player = AVPlayer(playerItem: avPlayerItems[0])
         
         super.init()
         updateDuration()

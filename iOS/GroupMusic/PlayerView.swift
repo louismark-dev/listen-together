@@ -9,7 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct PlayerView: View {
-    @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer()
+    @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer(socketManager: GMSockets.sharedInstance)
     var gmSockets: GMSockets?
     
     var body: some View {
@@ -46,11 +46,7 @@ struct PlayerView: View {
             .foregroundColor(.black)
         }
     }
-    
-    init() {
-        self.gmSockets = GMSockets(queuePlayer: queuePlayer)
-    }
-    
+
     private func togglePlayback() {
         if queuePlayer.status != .playing {
             queuePlayer.play()
