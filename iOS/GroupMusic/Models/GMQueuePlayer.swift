@@ -75,10 +75,12 @@ class GMQueuePlayer: NSObject, ObservableObject {
     
     func play() {
         player.play()
+        socketManager.emitPlayEvent()
     }
     
     func pause() {
         player.pause()
+        socketManager.emitPauseEvent()
     }
     
     func next() {

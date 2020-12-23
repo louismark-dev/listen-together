@@ -9,7 +9,7 @@ import Foundation
 import SocketIO
 
 class GMSockets {
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4401")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4000")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     
     static let sharedInstance = GMSockets()
@@ -21,6 +21,18 @@ class GMSockets {
             self.socket.emit("testEvent", "Hello")
         }
         self.socket.connect()
+    }
+    
+    public func emitPlayEvent() {
+        self.socket.emit(Event.playEvent.rawValue, "")
+    }
+    
+    public func emitPauseEvent() {
+        self.socket.emit(Event.pauseEvent.rawValue, "")
+    }
+    
+    enum Event: String {
+        case playEvent, pauseEvent
     }
     
 }

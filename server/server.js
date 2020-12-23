@@ -1,4 +1,4 @@
-let port = 4401;
+let port = parseInt(process.argv.slice(2));
 
 var express = require('express');
 var app = express();
@@ -17,5 +17,9 @@ io.sockets.on("connection", function(socket) {
 
     socket.on("playEvent", function(data) { 
         console.log("Play event recieved")
+    })
+
+    socket.on("pauseEvent", function(data) { 
+        console.log("Pause event recieved")
     })
 })
