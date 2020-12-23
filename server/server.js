@@ -17,9 +17,21 @@ io.sockets.on("connection", function(socket) {
 
     socket.on("playEvent", function(data) { 
         console.log("Play event recieved")
+        socket.broadcast.emit("playEvent", data)
     })
 
     socket.on("pauseEvent", function(data) { 
         console.log("Pause event recieved")
+        socket.broadcast.emit("pauseEvent", data)
+    })
+
+    socket.on("forwardEvent", function(data) { 
+        console.log("forwardEvent recieved")
+        socket.broadcast.emit("forwardEvent", data)
+    })
+
+    socket.on("previousEvent", function(data) { 
+        console.log("previousEvent recieved")
+        socket.broadcast.emit("previousEvent", data)
     })
 })

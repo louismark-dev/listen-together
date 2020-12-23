@@ -9,6 +9,7 @@ import AVFoundation
 
 class GMQueuePlayer: NSObject, ObservableObject {
     private let socketManager: GMSockets
+    private let notificationCenter: NotificationCenter
     private let player: AVPlayer
     private var urls: [URL]
     private var avPlayerItems: [AVPlayerItem]
@@ -20,8 +21,9 @@ class GMQueuePlayer: NSObject, ObservableObject {
     @Published var currentTimeString: String = "0:00"
     @Published var durationString: String = "0:00"
     
-    init(socketManager: GMSockets) {
+    init(socketManager: GMSockets = GMSockets.sharedInstance, notificationCenter: NotificationCenter = .default) {
         self.socketManager = socketManager
+        self.notificationCenter = notificationCenter
         self.urls = [
             Bundle.main.url(forResource: "sample1", withExtension: "mp3")!,
             Bundle.main.url(forResource: "sample2", withExtension: "mp3")!,
@@ -33,18 +35,19 @@ class GMQueuePlayer: NSObject, ObservableObject {
         self.player = AVPlayer(playerItem: avPlayerItems[0])
         
         super.init()
-        updateDuration()
-        setupObservation()
+        self.updateDuration()
+        self.setupAVPlayerObservers()
+        self.setupNotificationCenterObservers()
     }
     
     // MARK: Observers
-    /// Setup required observations
-    private func setupObservation() {
+    /// Setup observations emitted from AVPlayer
+    private func setupAVPlayerObservers() {
         // Observer for playback status
-        player.addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: [.new], context: nil)
+        self.player.addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: [.new], context: nil)
 
         // Observer for current time
-        player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0, preferredTimescale: 1), queue: nil) { (newTime) in
+        self.player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0, preferredTimescale: 1), queue: nil) { (newTime) in
             self.currentTime = newTime.toSeconds()
             guard let duration = self.player.currentItem?.asset.duration.toSeconds() else { return }
             self.fractionPlayed = self.currentTime / duration
@@ -52,7 +55,7 @@ class GMQueuePlayer: NSObject, ObservableObject {
         }
         
         // currentItem Observer
-        player.addObserver(self, forKeyPath: #keyPath(AVPlayer.currentItem), options: [.new], context: nil)
+        self.player.addObserver(self, forKeyPath: #keyPath(AVPlayer.currentItem), options: [.new], context: nil)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -73,32 +76,46 @@ class GMQueuePlayer: NSObject, ObservableObject {
     
     // MARK: Playback controls
     
-    func play() {
-        player.play()
-        socketManager.emitPlayEvent()
+    /// Starts playback
+    /// - Parameters:
+    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
+    func play(shouldEmitEvent: Bool = true) {
+        self.player.play()
+        if (shouldEmitEvent) { self.socketManager.emitPlayEvent() }
     }
     
-    func pause() {
-        player.pause()
-        socketManager.emitPauseEvent()
+    /// Pauses playback
+    /// - Parameters:
+    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
+    func pause(shouldEmitEvent: Bool = true) {
+        self.player.pause()
+        if (shouldEmitEvent) { self.socketManager.emitPauseEvent() }
     }
     
-    func next() {
+    /// Sets curent song to next song in queue
+    /// - Parameters:
+    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
+    func forward(shouldEmitEvent: Bool = true) {
         guard let currentItem: AVPlayerItem = player.currentItem else { return }
         guard let currentIndex: Int = avPlayerItems.firstIndex(of: currentItem) else { return }
         let nextIndex = currentIndex + 1
         if (!avPlayerItems.indices.contains(nextIndex)) { return }
-        player.replaceCurrentItem(with: avPlayerItems[nextIndex])
-        player.seek(to: .zero)
+        self.player.replaceCurrentItem(with: avPlayerItems[nextIndex])
+        self.player.seek(to: .zero)
+        if (shouldEmitEvent) { self.socketManager.emitForwardEvent() }
     }
     
-    func previous() {
+    /// Sets curent song to previous song in queue
+    /// - Parameters:
+    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
+    func previous(shouldEmitEvent: Bool = true) {
         guard let currentItem: AVPlayerItem = player.currentItem else { return }
         guard let currentIndex: Int = avPlayerItems.firstIndex(of: currentItem) else { return }
         let previousIndex = currentIndex - 1
         if (!avPlayerItems.indices.contains(previousIndex)) { return }
         player.replaceCurrentItem(with: avPlayerItems[previousIndex])
         player.seek(to: .zero)
+        if (shouldEmitEvent) { self.socketManager.emitPreviousEvent() }
     }
     
     /// Seeks to the given time
@@ -107,7 +124,7 @@ class GMQueuePlayer: NSObject, ObservableObject {
     func seek(to fraction: TimeInterval) {
         guard let duration = self.player.currentItem?.asset.duration.toSeconds() else { return }
         let cmTime = CMTime(seconds: fraction * duration, preferredTimescale: 1)
-        player.seek(to: cmTime)
+        self.player.seek(to: cmTime)
     }
     
     // MARK: Helpers
@@ -134,6 +151,43 @@ class GMQueuePlayer: NSObject, ObservableObject {
             self.duration = 0.0
         }
         self.durationString = secondsToMinutesAndSecondsString(self.duration)
+    }
+    
+    // MARK: Notification Center
+    /// Setup observers for Notification Center events emitted by GMSockets
+    private func setupNotificationCenterObservers() {
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePlayEvent),
+                                            name: .playEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePauseEvent),
+                                            name: .pauseEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveForwardEvent),
+                                            name: .forwardEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePreviousEvent),
+                                            name: .previousEvent,
+                                            object: nil)
+    }
+    
+    @objc private func didRecievePlayEvent() {
+        self.play(shouldEmitEvent: false)
+    }
+    
+    @objc private func didRecievePauseEvent() {
+        self.pause(shouldEmitEvent: false)
+    }
+    
+    @objc private func didRecieveForwardEvent() {
+        self.forward(shouldEmitEvent: false)
+    }
+    
+    @objc private func didRecievePreviousEvent() {
+        self.previous(shouldEmitEvent: false)
     }
 
 }

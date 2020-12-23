@@ -9,7 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct PlayerView: View {
-    @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer(socketManager: GMSockets.sharedInstance)
+    @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer()
     var gmSockets: GMSockets?
     
     var body: some View {
@@ -38,7 +38,7 @@ struct PlayerView: View {
                 }
                 Spacer()
                 Button(action: {
-                    queuePlayer.next()
+                    queuePlayer.forward()
                 }) {
                     Image(systemName: "forward.fill")
                 }
