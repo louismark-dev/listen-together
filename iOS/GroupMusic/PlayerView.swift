@@ -10,6 +10,7 @@ import AVFoundation
 
 struct PlayerView: View {
     @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer()
+    var gmSockets: GMSockets?
     
     var body: some View {
         VStack {
@@ -37,7 +38,7 @@ struct PlayerView: View {
                 }
                 Spacer()
                 Button(action: {
-                    queuePlayer.next()
+                    queuePlayer.forward()
                 }) {
                     Image(systemName: "forward.fill")
                 }
@@ -45,7 +46,7 @@ struct PlayerView: View {
             .foregroundColor(.black)
         }
     }
-    
+
     private func togglePlayback() {
         if queuePlayer.status != .playing {
             queuePlayer.play()
