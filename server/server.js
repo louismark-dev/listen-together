@@ -21,7 +21,7 @@ io.sockets.on("connection", function(socket) {
         addSession(id)
         console.log(`Starting session with id ${id}`)
         console.log(`Session data is: ${current_sessions[id]}`)
-        socket.emit(MESSAGES.SESSION_STARTED, current_sessions[id])
+        socket.emit(MESSAGES.SESSION_STARTED, { session_id: id })
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) { 

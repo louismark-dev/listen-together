@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4403")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4404")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     
     static let sharedInstance = GMSockets()
@@ -32,6 +32,9 @@ class GMSockets {
         
         self.socket.on(Event.sessionStarted.rawValue) { (data, ack) in
             print("sessionStarted event recieved")
+            let data = data[0] as! [String: Any]
+            let sessionID = data["session_id"] as! String
+            print("Session ID is \(sessionID)")
         }
         
         self.socket.on(Event.playEvent.rawValue) { (data, ack) in
