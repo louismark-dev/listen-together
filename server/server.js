@@ -35,3 +35,26 @@ io.sockets.on("connection", function(socket) {
         socket.broadcast.emit("previousEvent", data)
     })
 })
+
+// HELPER FUNCTIONS
+
+let current_sessions = { }
+const ID_LENGTH = 6
+
+/**
+ * Creates a unique ID comprised of six randomly generated alphanumeric characters.
+ * The ID is not case sensitive. The ID is guaranteed not to exist in current_sessions
+ */
+function generateUniqueID() {
+    let length = ID_LENGTH
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+    var id = '';
+    for (var i = length; i > 0; --i) {
+        id += chars[Math.floor(Math.random() * chars.length)]
+    }
+    if (id in current_sessions) {
+        return generateUniqueID()
+    } else { 
+        return id
+    }
+}
