@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4003")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4403")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     
     static let sharedInstance = GMSockets()
@@ -24,8 +24,14 @@ class GMSockets {
     // MARK: Handlers - Incoming Events
     private func addHandlers() {
         self.socket.on(clientEvent: .connect) { (data, ack) in
+            // Wait for successful connection to emit events
             print("Socket status: \(self.socket.status)")
             self.socket.emit("testEvent", "Hello")
+            self.emitSessionStartRequest()
+        }
+        
+        self.socket.on(Event.sessionStarted.rawValue) { (data, ack) in
+            print("sessionStarted event recieved")
         }
         
         self.socket.on(Event.playEvent.rawValue) { (data, ack) in
@@ -50,6 +56,10 @@ class GMSockets {
     }
     
     // MARK: Emitters - Outgoing Events
+    public func emitSessionStartRequest() {
+        self.socket.emit(Event.startSession.rawValue, "")
+    }
+    
     public func emitPlayEvent() {
         self.socket.emit(Event.playEvent.rawValue, "")
     }
@@ -66,12 +76,14 @@ class GMSockets {
         self.socket.emit(Event.previousEvent.rawValue, "")
     }
     
+    /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent
+        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted
     }
     
 }
 
+/// Notification Center events
 extension Notification.Name {
     static var playEvent: Notification.Name {
         return .init(rawValue: "GMSockets.playEvent")

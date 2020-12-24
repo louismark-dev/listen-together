@@ -1,4 +1,4 @@
-let port = parseInt(process.argv.slice(2));
+let port = parseInt(process.argv.slice(2)) || 4402;
 
 var express = require('express');
 var app = express();
@@ -11,28 +11,37 @@ console.log(`Server is running on port ${port}...`)
 io.sockets.on("connection", function(socket) {
     console.log("NEW CONNECTION")
 
-    socket.on("testEvent", function(data) { 
+    socket.on(MESSAGES.TEST_EVENT, function(data) { 
         console.log("Test event recieved")
     })
 
-    socket.on("playEvent", function(data) { 
+    // Host calls this to start a new session
+    socket.on(MESSAGES.START_SESSION, function(data) { 
+        const id = generateUniqueID()
+        addSession(id)
+        console.log(`Starting session with id ${id}`)
+        console.log(`Session data is: ${current_sessions[id]}`)
+        socket.emit(MESSAGES.SESSION_STARTED, current_sessions[id])
+    })
+
+    socket.on(MESSAGES.PLAY_EVENT, function(data) { 
         console.log("Play event recieved")
-        socket.broadcast.emit("playEvent", data)
+        socket.broadcast.emit(MESSAGES.PLAY_EVENT, data)
     })
 
-    socket.on("pauseEvent", function(data) { 
+    socket.on(MESSAGES.PAUSE_EVENT, function(data) { 
         console.log("Pause event recieved")
-        socket.broadcast.emit("pauseEvent", data)
+        socket.broadcast.emit(MESSAGES.PAUSE_EVENT, data)
     })
 
-    socket.on("forwardEvent", function(data) { 
+    socket.on(MESSAGES.FORWARD_EVENT, function(data) { 
         console.log("forwardEvent recieved")
-        socket.broadcast.emit("forwardEvent", data)
+        socket.broadcast.emit(MESSAGES.FORWARD_EVENT, data)
     })
 
-    socket.on("previousEvent", function(data) { 
+    socket.on(MESSAGES.PREVIOUS_EVENT, function(data) { 
         console.log("previousEvent recieved")
-        socket.broadcast.emit("previousEvent", data)
+        socket.broadcast.emit(MESSAGES.PREVIOUS_EVENT, data)
     })
 })
 
@@ -57,4 +66,21 @@ function generateUniqueID() {
     } else { 
         return id
     }
+}
+
+function addSession(id) { 
+    current_sessions[id] = { 
+        start_time: new Date(),
+        disconnect_time: null
+    }
+}
+
+const MESSAGES = {
+    START_SESSION: "startSession",
+    SESSION_STARTED: "sessionStarted",
+    FORWARD_EVENT: "forwardEvent",
+    PREVIOUS_EVENT: "previousEvent",
+    PLAY_EVENT: "playEvent",
+    PAUSE_EVENT: "pauseEvent",
+    TEST_EVENT: "testEvent"
 }
