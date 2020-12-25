@@ -14,13 +14,13 @@ struct PlayerView: View {
     
     var body: some View {
         VStack {
-            Slider(value: $queuePlayer.fractionPlayed) {_ in
-                queuePlayer.seek(to: queuePlayer.fractionPlayed)
+            Slider(value: $queuePlayer.state.fractionPlayed) {_ in
+                queuePlayer.seek(to: queuePlayer.state.fractionPlayed)
             }
             HStack {
-                Text(queuePlayer.currentTimeString)
+                Text(queuePlayer.state.currentTimeString)
                 Spacer()
-                Text(queuePlayer.durationString)
+                Text(queuePlayer.state.durationString)
             }
             .font(.caption)
             .padding(EdgeInsets(top: 0, leading: 0, bottom:4, trailing: 0))
@@ -34,7 +34,7 @@ struct PlayerView: View {
                 Button(action: {
                     togglePlayback()
                 }) {
-                    Image(systemName: (queuePlayer.status != .playing) ? "play.fill" : "pause.fill")
+                    Image(systemName: (queuePlayer.state.timeControlStatus != .playing) ? "play.fill" : "pause.fill")
                 }
                 Spacer()
                 Button(action: {
@@ -48,7 +48,7 @@ struct PlayerView: View {
     }
 
     private func togglePlayback() {
-        if queuePlayer.status != .playing {
+        if queuePlayer.state.timeControlStatus != .playing {
             queuePlayer.play()
         } else {
             queuePlayer.pause()

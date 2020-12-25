@@ -10,8 +10,9 @@ import SocketIO
 
 class GMSockets {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4409")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4411")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
+    private var state: State = State()
     
     static let sharedInstance = GMSockets()
     
@@ -39,6 +40,11 @@ class GMSockets {
         self.socket.on(Event.joinFailed.rawValue) { (data, ack) in
             // TODO Send notification when join fails
             print("Join Failed")
+        }
+        
+        self.socket.on(Event.requestStateUpdate.rawValue) { (data, ack) in
+            print("State update requested.")
+            self.notificationCenter.post(name: .stateUpdateRequested, object: nil)
         }
         
         self.socket.on(Event.playEvent.rawValue) { (data, ack) in
@@ -71,6 +77,18 @@ class GMSockets {
         self.socket.emit(Event.joinSession.rawValue, sessionID)
     }
     
+    public func emitStateUpdate(withState state: State) {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(state)
+            let encodedString = String(data: data, encoding: .utf8)!
+            self.socket.emit(Event.stateUpdate.rawValue, encodedString)
+        } catch {
+            fatalError("Could not contruct state update")
+        }
+    }
+    
     public func emitPlayEvent() {
         self.socket.emit(Event.playEvent.rawValue, "")
     }
@@ -89,11 +107,16 @@ class GMSockets {
     
     /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed
+        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate
+    }
+    
+    public func updateQueuePlayerState(with queuePlayerState: GMQueuePlayer.State) {
+        self.state.queuePlayerState = queuePlayerState
+        self.emitStateUpdate(withState: self.state)
     }
     
 }
-
+// MARK: Notification Center Events
 /// Notification Center events
 extension Notification.Name {
     static var playEvent: Notification.Name {
@@ -110,5 +133,15 @@ extension Notification.Name {
     
     static var previousEvent: Notification.Name {
         return .init(rawValue: "GMSockets.previousEvent")
+    }
+    
+    static var stateUpdateRequested: Notification.Name {
+        return .init(rawValue: "GMSockets.stateUpdateRequested")
+    }
+}
+
+extension GMSockets {
+    struct State: Codable {
+        var queuePlayerState: GMQueuePlayer.State?
     }
 }

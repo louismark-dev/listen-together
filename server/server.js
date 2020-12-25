@@ -1,4 +1,4 @@
-let port = parseInt(process.argv.slice(2)) || 4402;
+let port = parseInt(process.argv.slice(2)) || 4410;
 
 var express = require('express');
 var app = express();
@@ -38,7 +38,15 @@ io.sockets.on("connection", function(socket) {
             coordinatorID = current_sessions[sessionID]["coordinatorID"]
             console.log(`The coordinator ID is ${coordinatorID}`)
             // Need to request current state from coordinator
+            console.log("Requesting state update from coordinator")
+            socket.to(coordinatorID).emit(MESSAGES.REQUEST_STATE_UPDATE)
         }
+    })
+
+    socket.on(MESSAGES.STATE_UPDATE, function(data) { 
+        console.log("State update recieved.")
+        console.log(data)
+        // Need to forward this to all clients in room
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) { 
@@ -96,6 +104,8 @@ const MESSAGES = {
     START_SESSION: "startSession",
     JOIN_SESSION: "joinSession",
     JOIN_FAILED: "joinFailed",
+    STATE_UPDATE: "stateUpdate",
+    REQUEST_STATE_UPDATE: "requestStateUpdate",
     SESSION_STARTED: "sessionStarted",
     FORWARD_EVENT: "forwardEvent",
     PREVIOUS_EVENT: "previousEvent",
