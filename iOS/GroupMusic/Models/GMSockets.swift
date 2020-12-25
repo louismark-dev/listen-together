@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4404")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4409")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     
     static let sharedInstance = GMSockets()
@@ -27,7 +27,6 @@ class GMSockets {
             // Wait for successful connection to emit events
             print("Socket status: \(self.socket.status)")
             self.socket.emit("testEvent", "Hello")
-            self.emitSessionStartRequest()
         }
         
         self.socket.on(Event.sessionStarted.rawValue) { (data, ack) in
@@ -35,6 +34,11 @@ class GMSockets {
             let data = data[0] as! [String: Any]
             let sessionID = data["session_id"] as! String
             print("Session ID is \(sessionID)")
+        }
+        
+        self.socket.on(Event.joinFailed.rawValue) { (data, ack) in
+            // TODO Send notification when join fails
+            print("Join Failed")
         }
         
         self.socket.on(Event.playEvent.rawValue) { (data, ack) in
@@ -63,6 +67,10 @@ class GMSockets {
         self.socket.emit(Event.startSession.rawValue, "")
     }
     
+    public func emitSessionJoinRequest(withSessionID sessionID: String) {
+        self.socket.emit(Event.joinSession.rawValue, sessionID)
+    }
+    
     public func emitPlayEvent() {
         self.socket.emit(Event.playEvent.rawValue, "")
     }
@@ -81,7 +89,7 @@ class GMSockets {
     
     /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted
+        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed
     }
     
 }

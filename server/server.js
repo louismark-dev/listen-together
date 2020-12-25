@@ -17,11 +17,28 @@ io.sockets.on("connection", function(socket) {
 
     // Host calls this to start a new session
     socket.on(MESSAGES.START_SESSION, function(data) { 
-        const id = generateUniqueID()
-        addSession(id)
-        console.log(`Starting session with id ${id}`)
-        console.log(`Session data is: ${current_sessions[id]}`)
-        socket.emit(MESSAGES.SESSION_STARTED, { session_id: id })
+        const sessionId = generateUniqueID()
+        const coordinatorID = socket.id
+        addSession(sessionId, coordinatorID)
+        console.log(`Starting session with sessionID ${sessionId} and coordinator ID ${coordinatorID}`)
+        console.log(`Session data is: ${current_sessions[sessionId]}`)
+        socket.join(sessionId) // Create room with session id
+        socket.emit(MESSAGES.SESSION_STARTED, { session_id: sessionId })
+    })
+
+    socket.on(MESSAGES.JOIN_SESSION, function(data) { 
+        // Find ID in current_sessions
+        // If the ID is not found, send JOIN_FAILED.
+        // If the ID is found, request state update from coordinator
+        const sessionID = data
+        let coordinatorID = null 
+        if (!(sessionID in current_sessions)) {
+            socket.emit(MESSAGES.JOIN_FAILED, data)
+        } else { 
+            coordinatorID = current_sessions[sessionID]["coordinatorID"]
+            console.log(`The coordinator ID is ${coordinatorID}`)
+            // Need to request current state from coordinator
+        }
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) { 
@@ -68,15 +85,17 @@ function generateUniqueID() {
     }
 }
 
-function addSession(id) { 
-    current_sessions[id] = { 
-        start_time: new Date(),
-        disconnect_time: null
+function addSession(sessionID, coordinatorID) { 
+    current_sessions[sessionID] = { 
+        sessionID: sessionID,
+        coordinatorID: coordinatorID
     }
 }
 
 const MESSAGES = {
     START_SESSION: "startSession",
+    JOIN_SESSION: "joinSession",
+    JOIN_FAILED: "joinFailed",
     SESSION_STARTED: "sessionStarted",
     FORWARD_EVENT: "forwardEvent",
     PREVIOUS_EVENT: "previousEvent",

@@ -9,8 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        PlayerView()
-            .padding()
+        VStack {
+            SessionView()
+            Spacer()
+            PlayerView()
+        }
+        .padding()
     }
 }
 
