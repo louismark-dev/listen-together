@@ -1,4 +1,4 @@
-let port = parseInt(process.argv.slice(2)) || 4410;
+let port = parseInt(process.argv.slice(2)) || 4440;
 
 var express = require('express');
 var app = express();
@@ -36,11 +36,13 @@ io.sockets.on("connection", function(socket) {
         let coordinatorID = null 
         if (!(sessionID in current_sessions)) {
             socket.emit(MESSAGES.JOIN_FAILED, data)
-        } else { 
+        } else {
+            socket.join(sessionID) // Join the room, so this client can get future state updates.
             coordinatorID = current_sessions[sessionID]["coordinatorID"]
             console.log(`The coordinator ID is ${coordinatorID}`)
             // Need to request current state from coordinator
             console.log("Requesting state update from coordinator")
+            socket.emit(MESSAGES.ASSIGNING_ID, socket.id)
             socket.to(coordinatorID).emit(MESSAGES.REQUEST_STATE_UPDATE)
         }
     })
@@ -48,7 +50,16 @@ io.sockets.on("connection", function(socket) {
     socket.on(MESSAGES.STATE_UPDATE, function(data) { 
         console.log("State update recieved.")
         console.log(data)
+        data = JSON.parse(data)
         // Need to forward this to all clients in room
+        const sessionID = data["sessionID"]
+        const coordinatorID = data["coordinatorID"]
+
+        // console.log(`Clients in room: ${sessionID}`)
+        // console.log(io.sockets.clients(sessionID))
+
+        io.to(sessionID).emit(MESSAGES.STATE_UPDATE, {  session_id: sessionID,
+                                                            coordinator_id: coordinatorID })
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) { 
@@ -113,5 +124,6 @@ const MESSAGES = {
     PREVIOUS_EVENT: "previousEvent",
     PLAY_EVENT: "playEvent",
     PAUSE_EVENT: "pauseEvent",
-    TEST_EVENT: "testEvent"
+    TEST_EVENT: "testEvent",
+    ASSIGNING_ID: "assigningID"
 }

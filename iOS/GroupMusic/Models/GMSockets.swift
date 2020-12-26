@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4411")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4419")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     @Published var state: State = State()
     private var queuePlayerState: GMQueuePlayer.State?
@@ -45,6 +45,11 @@ class GMSockets: ObservableObject {
             }
         }
         
+        self.socket.on(Event.assigningID.rawValue) { (data, ack) in
+            let id: String = data[0] as! String
+            self.state.assignClientID(id)
+        }
+        
         self.socket.on(Event.joinFailed.rawValue) { (data, ack) in
             // TODO Send notification when join fails
             print("Join Failed")
@@ -53,6 +58,20 @@ class GMSockets: ObservableObject {
         self.socket.on(Event.requestStateUpdate.rawValue) { (data, ack) in
             print("State update requested.")
             self.notificationCenter.post(name: .stateUpdateRequested, object: nil)
+        }
+        
+        self.socket.on(Event.stateUpdate.rawValue) { (data, ack) in
+            print("State update recieved")
+            guard let data = data[0] as? [String:Any] else {
+                print("Could not unwrap dictionary")
+                // TODO: Handle this
+                return
+            }
+            do {
+                try self.state.update(with: data)
+            } catch {
+                print("Error: \(error)")
+            }
         }
         
         self.socket.on(Event.playEvent.rawValue) { (data, ack) in
@@ -115,7 +134,7 @@ class GMSockets: ObservableObject {
     
     /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate
+        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID
     }
     
     public func updateQueuePlayerState(with queuePlayerState: GMQueuePlayer.State) {
@@ -170,13 +189,19 @@ extension GMSockets {
         
         mutating func update(with dictionary: [String: Any]) throws {
             guard let sessionID = dictionary["session_id"] as? String,
-                  let coordinatorID = dictionary["coordinator_id"] as? String,
-                  let clientID = dictionary["client_id"] as? String else {
+                  let coordinatorID = dictionary["coordinator_id"] as? String else {
                 throw StateError.decoding
             }
             self.sessionID = sessionID
             self.coordinatorID = coordinatorID
-            self.clientID = clientID
+            
+            if let clientID = dictionary["client_id"] as? String {
+                self.clientID = clientID
+            }
+        }
+        
+        mutating func assignClientID(_ id: String) {
+            self.clientID = id
         }
         
         enum StateError: Error {
