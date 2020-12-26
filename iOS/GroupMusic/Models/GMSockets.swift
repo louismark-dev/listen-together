@@ -8,11 +8,12 @@
 import Foundation
 import SocketIO
 
-class GMSockets {
+class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
     private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4411")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
-    private var state: State = State()
+    @Published var state: State = State()
+    private var queuePlayerState: GMQueuePlayer.State?
     
     static let sharedInstance = GMSockets()
     
@@ -31,10 +32,17 @@ class GMSockets {
         }
         
         self.socket.on(Event.sessionStarted.rawValue) { (data, ack) in
-            print("sessionStarted event recieved")
-            let data = data[0] as! [String: Any]
-            let sessionID = data["session_id"] as! String
-            print("Session ID is \(sessionID)")
+            print(data)
+            guard let data = data[0] as? [String:Any] else {
+                print("Could not unwrap dictionary")
+                // TODO: Handle this
+                return
+            }
+            do {
+                try self.state.update(with: data)
+            } catch {
+                print("Error: \(error)")
+            }
         }
         
         self.socket.on(Event.joinFailed.rawValue) { (data, ack) in
@@ -82,7 +90,7 @@ class GMSockets {
         encoder.outputFormatting = .prettyPrinted
         do {
             let data = try encoder.encode(state)
-            let encodedString = String(data: data, encoding: .utf8)!
+            let encodedString = String(data: data, encoding: .utf8)! //
             self.socket.emit(Event.stateUpdate.rawValue, encodedString)
         } catch {
             fatalError("Could not contruct state update")
@@ -111,7 +119,7 @@ class GMSockets {
     }
     
     public func updateQueuePlayerState(with queuePlayerState: GMQueuePlayer.State) {
-        self.state.queuePlayerState = queuePlayerState
+        self.queuePlayerState = queuePlayerState
         self.emitStateUpdate(withState: self.state)
     }
     
@@ -141,7 +149,38 @@ extension Notification.Name {
 }
 
 extension GMSockets {
+    /// Represents the current state of the session
+    /// - Parameters:
+    ///     - sessionID: ID of current listening sesssion. This corresponds to the room ID on ths erver
+    ///     - coordinatorID: ID of the coordinator
+    ///     - clientID: ID given to this device
     struct State: Codable {
-        var queuePlayerState: GMQueuePlayer.State?
+        var sessionID: String?
+        var coordinatorID: String?
+        var clientID: String?
+        var isCoordinator: Bool  {
+            guard let coordinatorID = self.coordinatorID,
+                  let clientID = self.clientID else {
+                return false
+            }
+            return coordinatorID == clientID
+        }
+        
+        init() { }
+        
+        mutating func update(with dictionary: [String: Any]) throws {
+            guard let sessionID = dictionary["session_id"] as? String,
+                  let coordinatorID = dictionary["coordinator_id"] as? String,
+                  let clientID = dictionary["client_id"] as? String else {
+                throw StateError.decoding
+            }
+            self.sessionID = sessionID
+            self.coordinatorID = coordinatorID
+            self.clientID = clientID
+        }
+        
+        enum StateError: Error {
+            case decoding
+        }
     }
 }

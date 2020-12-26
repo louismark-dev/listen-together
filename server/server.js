@@ -23,7 +23,9 @@ io.sockets.on("connection", function(socket) {
         console.log(`Starting session with sessionID ${sessionId} and coordinator ID ${coordinatorID}`)
         console.log(`Session data is: ${current_sessions[sessionId]}`)
         socket.join(sessionId) // Create room with session id
-        socket.emit(MESSAGES.SESSION_STARTED, { session_id: sessionId })
+        socket.emit(MESSAGES.SESSION_STARTED, { session_id: sessionId,
+                                                coordinator_id: coordinatorID,
+                                                client_id: coordinatorID })
     })
 
     socket.on(MESSAGES.JOIN_SESSION, function(data) { 
