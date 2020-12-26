@@ -13,6 +13,7 @@ struct MonitorView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(self.socketManager.state.isCoordinator ? "Coordinator" : "Not Coordinator")
+            Text("Session ID: \(self.socketManager.state.sessionID ?? "Unavailable")")
             Text("Client ID: \(self.socketManager.state.clientID ?? "Unavailable")")
             Text("Coordinator ID: \(self.socketManager.state.coordinatorID ?? "Unavailable")")
         }
