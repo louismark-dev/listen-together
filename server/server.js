@@ -62,24 +62,32 @@ io.sockets.on("connection", function(socket) {
                                                             coordinator_id: coordinatorID })
     })
 
-    socket.on(MESSAGES.PLAY_EVENT, function(data) { 
-        console.log("Play event recieved")
-        socket.broadcast.emit(MESSAGES.PLAY_EVENT, data)
+    socket.on(MESSAGES.PLAY_EVENT, function(data) {
+        data = JSON.parse(data)
+        const roomID = data.roomID
+        console.log(`Emitting play event to room: ${roomID}`)
+        socket.broadcast.to(roomID).emit(MESSAGES.PLAY_EVENT, data)
     })
 
-    socket.on(MESSAGES.PAUSE_EVENT, function(data) { 
-        console.log("Pause event recieved")
-        socket.broadcast.emit(MESSAGES.PAUSE_EVENT, data)
+    socket.on(MESSAGES.PAUSE_EVENT, function(data) {
+        data = JSON.parse(data)
+        const roomID = data.roomID
+        console.log(`Emitting pause event to room: ${roomID}`)
+        socket.broadcast.to(roomID).emit(MESSAGES.PAUSE_EVENT, data)
     })
 
-    socket.on(MESSAGES.FORWARD_EVENT, function(data) { 
-        console.log("forwardEvent recieved")
-        socket.broadcast.emit(MESSAGES.FORWARD_EVENT, data)
+    socket.on(MESSAGES.FORWARD_EVENT, function(data) {
+        data = JSON.parse(data)
+        const roomID = data.roomID
+        console.log(`Emitting forwardEvent to room: ${roomID}`)
+        socket.broadcast.to(roomID).emit(MESSAGES.FORWARD_EVENT, data)
     })
 
-    socket.on(MESSAGES.PREVIOUS_EVENT, function(data) { 
-        console.log("previousEvent recieved")
-        socket.broadcast.emit(MESSAGES.PREVIOUS_EVENT, data)
+    socket.on(MESSAGES.PREVIOUS_EVENT, function(data) {
+        data = JSON.parse(data)
+        const roomID = data.roomID
+        console.log(`Emitting previousEvent to room: ${roomID}`)
+        socket.broadcast.to(roomID).emit(MESSAGES.PREVIOUS_EVENT, data)
     })
 })
 

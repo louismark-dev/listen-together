@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4421")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4430")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     @Published var state: State = State()
     private var queuePlayerState: GMQueuePlayer.State?
@@ -136,20 +136,34 @@ class GMSockets: ObservableObject {
         }
     }
     
-    public func emitPlayEvent() {
-        self.socket.emit(Event.playEvent.rawValue, "")
+    public func emitPlayEvent() throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        self.socket.emit(Event.playEvent.rawValue,  "{ \"roomID\": \"\(sessionID)\" }")
     }
     
-    public func emitPauseEvent() {
-        self.socket.emit(Event.pauseEvent.rawValue, "")
+    public func emitPauseEvent() throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        self.socket.emit(Event.pauseEvent.rawValue, "{ \"roomID\": \"\(sessionID)\" }")
     }
     
-    public func emitForwardEvent() {
-        self.socket.emit(Event.forwardEvent.rawValue, "")
+    public func emitForwardEvent() throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        self.socket.emit(Event.forwardEvent.rawValue,  "{ \"roomID\": \"\(sessionID)\" }")
     }
     
-    public func emitPreviousEvent() {
-        self.socket.emit(Event.previousEvent.rawValue, "")
+    public func emitPreviousEvent() throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        self.socket.emit(Event.previousEvent.rawValue,  "{ \"roomID\": \"\(sessionID)\" }")
+    }
+    
+    enum EventEmitterErrors: Error, LocalizedError {
+        case noSessionId
+        
+        public var errorDescription: String? {
+            switch self {
+            case .noSessionId: return String("No sessionID set when emitting this event")
+            }
+        }
     }
     
     /// SocketIO Events

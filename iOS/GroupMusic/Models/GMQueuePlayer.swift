@@ -76,7 +76,12 @@ class GMQueuePlayer: NSObject, ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     func play(shouldEmitEvent: Bool = true) {
         self.player.play()
-        if (shouldEmitEvent) { self.socketManager.emitPlayEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitPlayEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+            // TODO: Should revert to previous state in case of error (do this for all the events)
+        }
     }
     
     /// Pauses playback
@@ -84,7 +89,12 @@ class GMQueuePlayer: NSObject, ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     func pause(shouldEmitEvent: Bool = true) {
         self.player.pause()
-        if (shouldEmitEvent) { self.socketManager.emitPauseEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitPauseEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        
     }
     
     /// Sets curent song to next song in queue
@@ -97,7 +107,11 @@ class GMQueuePlayer: NSObject, ObservableObject {
         if (!avPlayerItems.indices.contains(nextIndex)) { return }
         self.player.replaceCurrentItem(with: avPlayerItems[nextIndex])
         self.player.seek(to: .zero)
-        if (shouldEmitEvent) { self.socketManager.emitForwardEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     /// Sets curent song to previous song in queue
@@ -110,7 +124,11 @@ class GMQueuePlayer: NSObject, ObservableObject {
         if (!avPlayerItems.indices.contains(previousIndex)) { return }
         player.replaceCurrentItem(with: avPlayerItems[previousIndex])
         player.seek(to: .zero)
-        if (shouldEmitEvent) { self.socketManager.emitPreviousEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     /// Seeks to the given time
