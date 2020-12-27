@@ -10,7 +10,7 @@ import SocketIO
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4419")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4421")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     @Published var state: State = State()
     private var queuePlayerState: GMQueuePlayer.State?
@@ -25,74 +25,94 @@ class GMSockets: ObservableObject {
     }
     // MARK: Handlers - Incoming Events
     private func addHandlers() {
-        self.socket.on(clientEvent: .connect) { (data, ack) in
-            // Wait for successful connection to emit events
-            print("Socket status: \(self.socket.status)")
-            self.socket.emit("testEvent", "Hello")
-        }
+        self.socket.on(clientEvent: .connect, callback: self.connectEventHandler)
         
-        self.socket.on(Event.sessionStarted.rawValue) { (data, ack) in
-            print(data)
-            guard let data = data[0] as? [String:Any] else {
-                print("Could not unwrap dictionary")
-                // TODO: Handle this
-                return
-            }
-            do {
-                try self.state.update(with: data)
-            } catch {
-                print("Error: \(error)")
-            }
-        }
+        self.socket.on(Event.sessionStarted.rawValue, callback: self.sessionStartedEventHandler)
         
-        self.socket.on(Event.assigningID.rawValue) { (data, ack) in
-            let id: String = data[0] as! String
-            self.state.assignClientID(id)
-        }
+        self.socket.on(Event.assigningID.rawValue, callback: self.assigningIdEventHandler)
         
-        self.socket.on(Event.joinFailed.rawValue) { (data, ack) in
-            // TODO Send notification when join fails
-            print("Join Failed")
-        }
+        self.socket.on(Event.joinFailed.rawValue, callback: self.joinFailedEventHandler)
         
-        self.socket.on(Event.requestStateUpdate.rawValue) { (data, ack) in
-            print("State update requested.")
-            self.notificationCenter.post(name: .stateUpdateRequested, object: nil)
-        }
+        self.socket.on(Event.requestStateUpdate.rawValue, callback: self.requestStateUpdateEventHandler)
         
-        self.socket.on(Event.stateUpdate.rawValue) { (data, ack) in
-            print("State update recieved")
-            guard let data = data[0] as? [String:Any] else {
-                print("Could not unwrap dictionary")
-                // TODO: Handle this
-                return
-            }
-            do {
-                try self.state.update(with: data)
-            } catch {
-                print("Error: \(error)")
-            }
-        }
+        self.socket.on(Event.stateUpdate.rawValue, callback: self.stateUpdateEventHandler)
         
-        self.socket.on(Event.playEvent.rawValue) { (data, ack) in
-            print("playEvent recieved")
-            self.notificationCenter.post(name: .playEvent, object: nil)
-        }
+        self.socket.on(Event.playEvent.rawValue, callback: self.playEventHandler)
         
-        self.socket.on(Event.pauseEvent.rawValue) { (data, ack) in
-            print("pauseEvent recieved")
-            self.notificationCenter.post(name: .pauseEvent, object: nil)
-        }
+        self.socket.on(Event.pauseEvent.rawValue, callback: self.pauseEventHandler)
         
-        self.socket.on(Event.forwardEvent.rawValue) { (data, ack) in
-            print("forwardEvent recieved")
-            self.notificationCenter.post(name: .forwardEvent, object: nil)
-        }
+        self.socket.on(Event.forwardEvent.rawValue, callback: self.forwardEventHandler)
         
-        self.socket.on(Event.previousEvent.rawValue) { (data, ack) in
-            print("previousEvent recieved")
-            self.notificationCenter.post(name: .previousEvent, object: nil)
+        self.socket.on(Event.previousEvent.rawValue, callback: self.previousEventHandler)
+    }
+    
+    private func connectEventHandler(data: [Any], ack: SocketAckEmitter) {
+        // Wait for successful connection to emit events
+        print("Socket status: \(self.socket.status)")
+        self.socket.emit("testEvent", "Hello")
+    }
+    
+    private func sessionStartedEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print(data)
+        guard let data = data[0] as? [String:Any] else {
+            print("Could not unwrap dictionary")
+            // TODO: Handle this
+            return
         }
+        do {
+            try self.state.update(with: data)
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+    
+    private func assigningIdEventHandler(data: [Any], ack: SocketAckEmitter) {
+        let id: String = data[0] as! String
+        self.state.assignClientID(id)
+    }
+    
+    private func joinFailedEventHandler(data: [Any], ack: SocketAckEmitter) {
+        // TODO Send notification when join fails
+        print("Join Failed")
+    }
+    
+    private func requestStateUpdateEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("State update requested.")
+        self.notificationCenter.post(name: .stateUpdateRequested, object: nil)
+    }
+    
+    private func stateUpdateEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("State update recieved")
+        guard let data = data[0] as? [String:Any] else {
+            print("Could not unwrap dictionary")
+            // TODO: Handle this
+            return
+        }
+        do {
+            try self.state.update(with: data)
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+    
+    private func playEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("playEvent recieved")
+        self.notificationCenter.post(name: .playEvent, object: nil)
+    }
+    
+    private func pauseEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("pauseEvent recieved")
+        self.notificationCenter.post(name: .pauseEvent, object: nil)
+    }
+    
+    private func forwardEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("forwardEvent recieved")
+        self.notificationCenter.post(name: .forwardEvent, object: nil)
+    }
+    
+    private func previousEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("previousEvent recieved")
+        self.notificationCenter.post(name: .previousEvent, object: nil)
     }
     
     // MARK: Emitters - Outgoing Events
@@ -186,7 +206,10 @@ extension GMSockets {
         }
         
         init() { }
-        
+        // TODO: Make this use Codable to decode the dictionary
+        // We can put the session_id and coordinator_id keys into another Struct, and
+        // feed that Struct to this function to update its values without overwriting
+        // the clientID
         mutating func update(with dictionary: [String: Any]) throws {
             guard let sessionID = dictionary["session_id"] as? String,
                   let coordinatorID = dictionary["coordinator_id"] as? String else {
