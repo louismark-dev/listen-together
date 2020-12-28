@@ -14,12 +14,7 @@ class GMQueuePlayer: NSObject, ObservableObject {
     private var urls: [URL]
     private var avPlayerItems: [AVPlayerItem]
     private var playbackObservation: NSKeyValueObservation?
-    private var duration: TimeInterval = 0.0
-    @Published var status: AVPlayer.TimeControlStatus = .paused
-    @Published var currentTime: TimeInterval = 0.0
-    @Published var fractionPlayed: Double = 0.0
-    @Published var currentTimeString: String = "0:00"
-    @Published var durationString: String = "0:00"
+    @Published var state: State = State()
     
     init(socketManager: GMSockets = GMSockets.sharedInstance, notificationCenter: NotificationCenter = .default) {
         self.socketManager = socketManager
@@ -48,10 +43,10 @@ class GMQueuePlayer: NSObject, ObservableObject {
 
         // Observer for current time
         self.player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0, preferredTimescale: 1), queue: nil) { (newTime) in
-            self.currentTime = newTime.toSeconds()
+            self.state.playbackPosition = newTime.toSeconds()
             guard let duration = self.player.currentItem?.asset.duration.toSeconds() else { return }
-            self.fractionPlayed = self.currentTime / duration
-            self.currentTimeString = self.secondsToMinutesAndSecondsString(self.currentTime)
+            self.state.fractionPlayed = self.state.playbackPosition / duration
+            self.state.currentTimeString = self.secondsToMinutesAndSecondsString(self.state.playbackPosition)
         }
         
         // currentItem Observer
@@ -62,7 +57,7 @@ class GMQueuePlayer: NSObject, ObservableObject {
         if keyPath == #keyPath(AVPlayer.timeControlStatus) {
             if let statusNumber = change?[.newKey] as? Int,
                let status = AVPlayer.TimeControlStatus(rawValue: statusNumber) {
-                self.status = status
+                self.state.timeControlStatus = status
             }
             return
         }
@@ -81,7 +76,12 @@ class GMQueuePlayer: NSObject, ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     func play(shouldEmitEvent: Bool = true) {
         self.player.play()
-        if (shouldEmitEvent) { self.socketManager.emitPlayEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitPlayEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+            // TODO: Should revert to previous state in case of error (do this for all the events)
+        }
     }
     
     /// Pauses playback
@@ -89,7 +89,12 @@ class GMQueuePlayer: NSObject, ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     func pause(shouldEmitEvent: Bool = true) {
         self.player.pause()
-        if (shouldEmitEvent) { self.socketManager.emitPauseEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitPauseEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        
     }
     
     /// Sets curent song to next song in queue
@@ -102,7 +107,11 @@ class GMQueuePlayer: NSObject, ObservableObject {
         if (!avPlayerItems.indices.contains(nextIndex)) { return }
         self.player.replaceCurrentItem(with: avPlayerItems[nextIndex])
         self.player.seek(to: .zero)
-        if (shouldEmitEvent) { self.socketManager.emitForwardEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     /// Sets curent song to previous song in queue
@@ -115,7 +124,11 @@ class GMQueuePlayer: NSObject, ObservableObject {
         if (!avPlayerItems.indices.contains(previousIndex)) { return }
         player.replaceCurrentItem(with: avPlayerItems[previousIndex])
         player.seek(to: .zero)
-        if (shouldEmitEvent) { self.socketManager.emitPreviousEvent() }
+        do {
+            if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     /// Seeks to the given time
@@ -146,16 +159,20 @@ class GMQueuePlayer: NSObject, ObservableObject {
     
     private func updateDuration() {
         if let duration = self.player.currentItem?.asset.duration.toSeconds() {
-            self.duration = duration
+            self.state.duration = duration
         } else {
-            self.duration = 0.0
+            self.state.duration = 0.0
         }
-        self.durationString = secondsToMinutesAndSecondsString(self.duration)
+        self.state.durationString = secondsToMinutesAndSecondsString(self.state.duration)
     }
     
     // MARK: Notification Center
     /// Setup observers for Notification Center events emitted by GMSockets
     private func setupNotificationCenterObservers() {
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(stateUpdateRequested),
+                                            name: .stateUpdateRequested,
+                                            object: nil)
         self.notificationCenter.addObserver(self,
                                             selector: #selector(didRecievePlayEvent),
                                             name: .playEvent,
@@ -174,6 +191,10 @@ class GMQueuePlayer: NSObject, ObservableObject {
                                             object: nil)
     }
     
+    @objc private func stateUpdateRequested() {
+        self.socketManager.updateQueuePlayerState(with: self.state)
+    }
+    
     @objc private func didRecievePlayEvent() {
         self.play(shouldEmitEvent: false)
     }
@@ -190,4 +211,15 @@ class GMQueuePlayer: NSObject, ObservableObject {
         self.previous(shouldEmitEvent: false)
     }
 
+}
+
+extension GMQueuePlayer {
+    struct State: Codable {
+        var timeControlStatus: AVPlayer.TimeControlStatus = .paused
+        var duration: TimeInterval = 0.0
+        var playbackPosition: TimeInterval = 0.0
+        var currentTimeString: String = "0:00"
+        var durationString: String = "0:00"
+        var fractionPlayed: Double = 0.0
+    }
 }
