@@ -49,16 +49,14 @@ struct CiderUrlBuilder: UrlBuilder {
     // MARK: Inputs
 
     let storefront: Storefront
-    let developerToken: String
     var userToken: String?
     private let cachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy
     private let timeout: TimeInterval = 5
 
     // MARK: Init
 
-    init(storefront: Storefront, developerToken: String) {
+    init(storefront: Storefront) {
         self.storefront = storefront
-        self.developerToken = developerToken
     }
 
     private var baseApiUrl: URL {
@@ -128,29 +126,31 @@ struct CiderUrlBuilder: UrlBuilder {
 
     // MARK: Construct requests
 
-    func searchRequest(term: String, limit: Int?, offset: Int?, types: [MediaType]?) -> URLRequest {
+    public func searchRequest(term: String, limit: Int?, offset: Int?, types: [MediaType]?) -> URLRequest {
         let url = seachUrl(term: term, limit: limit, offset: offset, types: types)
         return constructRequest(url: url)
     }
 
-    func searchHintsRequest(term: String, limit: Int?, types: [MediaType]?) -> URLRequest {
+    public func searchHintsRequest(term: String, limit: Int?, types: [MediaType]?) -> URLRequest {
         let url = searchHintsUrl(term: term, limit: limit, types: types)
-        return constructRequest(url: url)
+        return self.constructRequest(url: url)
     }
 
-    func fetchRequest(mediaType: MediaType, id: String, include: [Include]?) -> URLRequest {
+    public func fetchRequest(mediaType: MediaType, id: String, include: [Include]?) -> URLRequest {
         let url = fetchUrl(mediaType: mediaType, id: id, include: include)
-        return constructRequest(url: url)
+        return self.constructRequest(url: url)
     }
 
-    func relationshipRequest(path: String, limit: Int?, offset: Int?) -> URLRequest {
+    public func relationshipRequest(path: String, limit: Int?, offset: Int?) -> URLRequest {
         let url = relationshipUrl(path: path, limit: limit, offset: offset)
-        return constructRequest(url: url)
+        return self.constructRequest(url: url)
     }
 
     private func constructRequest(url: URL) -> URLRequest {
-        var request = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
-        request = addAuth(request: request)
+        let timeout: TimeInterval = 5
+        let cachePolicy: URLRequest.CachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy
+        let request = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
+//        request = addAuth(request: request)
 
         return request
     }
@@ -158,10 +158,11 @@ struct CiderUrlBuilder: UrlBuilder {
     // MARK: Add authentication
 
     private func addAuth(request: URLRequest) -> URLRequest {
-        var request = request
+        // TODO: Replace with our own auth
+        let request = request
 
-        let authHeader = "Bearer \(developerToken)"
-        request.setValue(authHeader, forHTTPHeaderField: "Authorization")
+//        let authHeader = "Bearer \(developerToken)"
+//        request.setValue(authHeader, forHTTPHeaderField: "Authorization")
 
         return request
     }

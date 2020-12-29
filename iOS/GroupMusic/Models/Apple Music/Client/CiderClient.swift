@@ -40,7 +40,7 @@ public struct CiderClient {
        - urlFetcher: The `UrlFetcher` to use for processing requests. Defaults to a `URLSession` with the default `URLSessionConfiguration`.
      */
     public init(storefront: Storefront, developerToken: String, urlFetcher: UrlFetcher = CiderClient.defaultURLFetcher) {
-        let urlBuilder = CiderUrlBuilder(storefront: storefront, developerToken: developerToken)
+        let urlBuilder = CiderUrlBuilder(storefront: storefront)
         self.init(urlBuilder: urlBuilder, urlFetcher: urlFetcher)
     }
 
