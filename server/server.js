@@ -2,11 +2,35 @@ let port = parseInt(process.argv.slice(2)) || 4440;
 
 var express = require('express');
 var app = express();
+app.use(express.json()) // for parsing application/json
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+const fetch = require('node-fetch');
+const fs = require('fs')
 
 server.listen(port);
 console.log(`Server is running on port ${port}...`)
+
+// TODO: Need to put the Apple Music API code into a different file
+
+let headers = { "Content-Type": "application/json",
+                "Authorization": `Bearer ` };
+
+fs.readFile(`./bearer-token.txt`, 'utf8', function(err, data) { 
+    if (err) { return console.log(err) }
+    console.log(data)
+    const token = data
+    headers["Authorization"] = `Bearer ${token}`
+})
+                                  
+app.get("/am-api", (req, res) => {
+    const requestJSON = req.body
+    const targetURL = requestJSON.requestURL
+    // TODO: Error handling. 404, etc...
+    fetch(targetURL, { headers })
+        .then(res => res.text())
+        .then(text => res.send(text))
+  });
 
 io.sockets.on("connection", function(socket) {
     console.log("NEW CONNECTION")
