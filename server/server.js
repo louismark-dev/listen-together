@@ -23,13 +23,16 @@ fs.readFile(`./bearer-token.txt`, 'utf8', function(err, data) {
     headers["Authorization"] = `Bearer ${token}`
 })
                                   
-app.get("/am-api", (req, res) => {
+app.post("/am-api", (req, res) => {
     const requestJSON = req.body
     const targetURL = requestJSON.requestURL
     // TODO: Error handling. 404, etc...
     fetch(targetURL, { headers })
         .then(res => res.text())
-        .then(text => res.send(text))
+        .then(text => {
+            console.log("Sending response")
+            res.send(text)
+        })
   });
 
 io.sockets.on("connection", function(socket) {
