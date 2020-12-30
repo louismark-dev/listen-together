@@ -25,7 +25,6 @@ struct SessionView: View {
     
     init(socketManager: GMSockets = GMSockets.sharedInstance) {
         self.socketManager = socketManager
-        GMAppleMusic.generateSampleURL()
     }
     
     private func joinSession() {
