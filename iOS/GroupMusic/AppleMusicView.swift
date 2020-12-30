@@ -25,7 +25,7 @@ struct AppleMusicView: View {
     }
     
     private func searchForYoungThug() {
-        self.appleMusicManager.search(term: "Young Thug") { (results: SearchResults?, error: Error?) in
+        self.appleMusicManager.search(term: "Young Thug", limit: 10) { (results: SearchResults?, error: Error?) in
             if let error = error {
                 print("ERROR: Could not retrive search results: \(error)")
                 return

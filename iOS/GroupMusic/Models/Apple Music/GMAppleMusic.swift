@@ -28,7 +28,7 @@ class GMAppleMusic {
     }
     
     public func search(term: String, limit: Int? = nil, offset: Int? = nil, types: [MediaType]? = nil, completion: ((SearchResults?, Error?) -> Void)?) {
-        guard let applemusicURL: URL = urlBuilder.searchRequest(term: "Offset", limit: nil, offset: nil, types: [.songs]).url else {
+        guard let applemusicURL: URL = urlBuilder.searchRequest(term: "Offset", limit: limit, offset: offset, types: types).url else {
             print("ERROR: Could not generate Apple Music URL")
             return
         }
