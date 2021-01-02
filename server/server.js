@@ -31,6 +31,7 @@ app.post("/am-api", (req, res) => {
         .then(res => res.text())
         .then(text => {
             console.log("Sending response")
+            console.log(text)
             res.send(text)
         })
   });

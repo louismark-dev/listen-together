@@ -10,13 +10,31 @@ import SwiftUI
 struct AppleMusicView: View {
     let appleMusicManager: GMAppleMusic
     @State var songResults: [Track] = []
+    @State private var showPreview: Bool = false
+    @State private var previewTrack: Track? // Track to be previews
 
     var body: some View {
-        Button(String("Search for Young Thug")) {
-            self.searchForYoungThug()
-        }
-        ForEach(songResults, id: \.self) { songResult in
-            Text(songResult.attributes?.name ?? "There is no name")
+        ZStack {
+            Button(String("Search for Young Thug")) {
+                self.searchForYoungThug()
+            }
+            VStack(alignment: .leading) {
+                ForEach(songResults, id: \.self) { songResult in
+                    ResultCardView(result: songResult)
+                        .onTapGesture {
+                            self.previewTrack = songResult
+                            withAnimation {
+                                self.showPreview = true
+                            }
+                        }
+                }
+            }
+            if (showPreview) {
+                if let previewTrack = self.previewTrack {
+                    PreviewView(previewTrack: previewTrack)
+                        .transition(.move(edge: .bottom))
+                }
+            }
         }
     }
     

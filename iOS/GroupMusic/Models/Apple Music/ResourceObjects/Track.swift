@@ -27,6 +27,7 @@ public struct TrackAttributes: Codable {
     public let trackNumber: Int
     public let url: URL
     public let workName: String? // Classical music only
+    public let previews: [Preview]
 }
 
 public struct TrackRelationships: Codable {
