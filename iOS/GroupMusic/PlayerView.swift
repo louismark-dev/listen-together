@@ -10,7 +10,6 @@ import AVFoundation
 
 struct PlayerView: View {
     @ObservedObject var queuePlayer: GMQueuePlayer = GMQueuePlayer()
-    var gmSockets: GMSockets?
     
     var body: some View {
         VStack {

@@ -9,9 +9,10 @@ import Foundation
 import MediaPlayer
 
 class GMAppleMusicPlayer: ObservableObject {
+    @Published var queue: GMAppleMusicQueue
+    @Published var state: State = State()
     private let socketManager: GMSockets
     private let notificationCenter: NotificationCenter
-    @Published var queue: GMAppleMusicQueue
     private let appleMusicManager: GMAppleMusic // TODO: Remove this dependancy. It is only for testing
     let player: MPMusicPlayerApplicationController
     
@@ -26,7 +27,11 @@ class GMAppleMusicPlayer: ObservableObject {
         self.queue = queue
         self.appleMusicManager = appleMusicManager
         self.fillQueueWithTestItems()
+        
+        self.setupNotificationCenterObservers()
     }
+    
+    static let sharedInstance = GMAppleMusicPlayer()
     
     private func fillQueueWithTestItems() {
         self.appleMusicManager.search(term: "Young Thug", limit: 10) { (results: SearchResults?, error: Error?) in
@@ -43,6 +48,9 @@ class GMAppleMusicPlayer: ObservableObject {
                 print(songs)
                 DispatchQueue.main.async {
                     self.queue.append(tracks: songs)
+                    self.player.setQueue(with: songs.map({ (song) -> String in
+                        song.id
+                    })) // TODO: Come up with a better way to keep the queues in sync
                 }
             }
         }
@@ -86,6 +94,7 @@ class GMAppleMusicPlayer: ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToNextItem(shouldEmitEvent: Bool = true) {
         self.player.skipToNextItem()
+        self.queue.skipToNextItem()
         do {
             if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
         } catch {
@@ -109,12 +118,34 @@ class GMAppleMusicPlayer: ObservableObject {
     /// Starts playback of the previous media item in the playback queue; or, the music player is not playing, designates the previous media item as the next to be played.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func previous(shouldEmitEvent: Bool = true) {
+    public func skipToPreviousItem(shouldEmitEvent: Bool = true) {
         self.player.skipToPreviousItem()
+        self.queue.skipToPreviousItem()
         do {
             if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
         } catch {
             fatalError(error.localizedDescription)
         }
+    }
+    
+    // MARK: Notification Center
+    
+    private func setupNotificationCenterObservers() {
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(self.playbackStateDidChange),
+                                            name: .MPMusicPlayerControllerPlaybackStateDidChange,
+                                            object: nil)
+        
+        self.player.beginGeneratingPlaybackNotifications()
+    }
+    
+    @objc private func playbackStateDidChange() {
+        self.state.playbackState = player.playbackState
+    }
+}
+
+extension GMAppleMusicPlayer {
+    struct State {
+        var playbackState: MPMusicPlaybackState = .stopped
     }
 }

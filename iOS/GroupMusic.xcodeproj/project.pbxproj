@@ -30,6 +30,7 @@
 		BF5EE24125A13E06000C23DD /* GMAppleMusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24025A13E06000C23DD /* GMAppleMusicPlayer.swift */; };
 		BF5EE24625A14683000C23DD /* GMAppleMusicQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */; };
 		BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24825A14E0D000C23DD /* AppleMusicQueueView.swift */; };
+		BF5EE24C25A15445000C23DD /* AppleMusicPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */; };
 		BF831EAE2591DF260074FC3A /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = BF831EAD2591DF260074FC3A /* SocketIO */; };
 		BF8BEE49259B194400B9DCD3 /* GMAppleMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BEE48259B194400B9DCD3 /* GMAppleMusic.swift */; };
 		BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BEE4D259B1B3600B9DCD3 /* CiderUrlBuilder.swift */; };
@@ -86,6 +87,7 @@
 		BF5EE24025A13E06000C23DD /* GMAppleMusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicPlayer.swift; sourceTree = "<group>"; };
 		BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicQueue.swift; sourceTree = "<group>"; };
 		BF5EE24825A14E0D000C23DD /* AppleMusicQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicQueueView.swift; sourceTree = "<group>"; };
+		BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicPlayerView.swift; sourceTree = "<group>"; };
 		BF8BEE48259B194400B9DCD3 /* GMAppleMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusic.swift; sourceTree = "<group>"; };
 		BF8BEE4D259B1B3600B9DCD3 /* CiderUrlBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CiderUrlBuilder.swift; sourceTree = "<group>"; };
 		BF8BEE52259B1B9000B9DCD3 /* MusicVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicVideo.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				BF5EE21E25A0256C000C23DD /* ResultCardView.swift */,
 				BF5EE22225A028A3000C23DD /* PreviewView.swift */,
 				BF5EE22725A02F27000C23DD /* VisualEffectView.swift */,
+				BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */,
 				BF266BFE259026BA00029A2D /* Models */,
 				BF3468C9258FFC94000D609B /* Preview Content */,
 				BF266C002590277C00029A2D /* Resources */,
@@ -354,6 +357,7 @@
 				BF8BEE60259B1B9100B9DCD3 /* Artist.swift in Sources */,
 				BF8BEE5F259B1B9100B9DCD3 /* MusicVideo.swift in Sources */,
 				BF8BEE67259B1B9100B9DCD3 /* Storefront.swift in Sources */,
+				BF5EE24C25A15445000C23DD /* AppleMusicPlayerView.swift in Sources */,
 				BF8BEE81259B1C1B00B9DCD3 /* Include.swift in Sources */,
 				BF8BEE6A259B1B9100B9DCD3 /* Playlist.swift in Sources */,
 				BF266C0D25902A2000029A2D /* PlayerView.swift in Sources */,
