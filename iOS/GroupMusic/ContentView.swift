@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State var isShowingSheet: Bool = false
+    let appleMusicPlayer: GMAppleMusicPlayer = GMAppleMusicPlayer()
 
     var body: some View {
         VStack {
@@ -18,6 +19,10 @@ struct ContentView: View {
             Button(String("Add to Queue")) {
                 self.isShowingSheet = true
             }
+            Button(String("Play all songss")) {
+                self.appleMusicPlayer.playAllSongs()
+            }
+            AppleMusicQueueView()
             Spacer()
             PlayerView()
         }

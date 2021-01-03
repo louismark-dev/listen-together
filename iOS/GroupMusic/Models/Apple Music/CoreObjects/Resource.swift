@@ -8,9 +8,9 @@
 
 import Foundation
 
-public struct Resource<AttributesType: Codable, RelationshipsType: Codable>: Codable, Hashable {
+public struct Resource<AttributesType: Codable, RelationshipsType: Codable>: Codable, Hashable, Identifiable {
     
-    public let id: String
+    public let id: String // TODO: Duplicates of the same track will be identified as the same, becuase they share an id
     public let type: MediaType
     public let href: String
     public let attributes: AttributesType?
