@@ -28,6 +28,7 @@ class GMAppleMusicPlayer: ObservableObject {
         self.appleMusicManager = appleMusicManager
         self.fillQueueWithTestItems()
         
+        self.setupQueueStateUpdateHandler()
         self.setupNotificationCenterObservers()
     }
     
@@ -137,15 +138,34 @@ class GMAppleMusicPlayer: ObservableObject {
                                             object: nil)
         
         self.player.beginGeneratingPlaybackNotifications()
+        
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(stateUpdateRequested),
+                                            name: .stateUpdateRequested,
+                                            object: nil)
     }
     
     @objc private func playbackStateDidChange() {
         self.state.playbackState = player.playbackState
     }
+    
+    @objc private func stateUpdateRequested() {
+        self.socketManager.updateQueuePlayerState(with: self.state)
+    }
+    
+    // MARK: State Update Handler
+    private func setupQueueStateUpdateHandler() {
+        self.queue.updateHandler = { newState in
+            self.state.queueState = newState
+        }
+        self.queue.triggerUpdateHandler()
+    }
 }
 
 extension GMAppleMusicPlayer {
-    struct State {
+    struct State: Codable {
         var playbackState: MPMusicPlaybackState = .stopped
+        var queueState: GMAppleMusicQueue.State?
+        var playbackPosition: TimeInterval = 0.0
     }
 }

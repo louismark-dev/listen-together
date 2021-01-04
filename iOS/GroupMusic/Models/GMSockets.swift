@@ -7,13 +7,13 @@
 
 import Foundation
 import SocketIO
+import MediaPlayer
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4430")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.118:4406")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     @Published var state: State = State()
-    private var queuePlayerState: GMQueuePlayer.State?
     
     static let sharedInstance = GMSockets()
     
@@ -171,8 +171,8 @@ class GMSockets: ObservableObject {
         case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID
     }
     
-    public func updateQueuePlayerState(with queuePlayerState: GMQueuePlayer.State) {
-        self.queuePlayerState = queuePlayerState
+    public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicPlayer.State) {
+        self.state.playerState = queuePlayerState
         self.emitStateUpdate(withState: self.state)
     }
     
@@ -218,6 +218,7 @@ extension GMSockets {
             }
             return coordinatorID == clientID
         }
+        var playerState: GMAppleMusicPlayer.State?
         
         init() { }
         // TODO: Make this use Codable to decode the dictionary

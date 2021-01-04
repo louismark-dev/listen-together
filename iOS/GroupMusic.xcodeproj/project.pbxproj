@@ -59,6 +59,7 @@
 		BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */; };
 		BFA652EE2597E94100BF0FF0 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA652ED2597E94100BF0FF0 /* MonitorView.swift */; };
 		BFBF1424259BF5F400F2AB34 /* AppleMusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBF1423259BF5F400F2AB34 /* AppleMusicView.swift */; };
+		BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,6 +117,7 @@
 		BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		BFA652ED2597E94100BF0FF0 /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
 		BFBF1423259BF5F400F2AB34 /* AppleMusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicView.swift; sourceTree = "<group>"; };
+		BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MPMusicPlaybackState+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 				BF5D5DDD25915B1F00EF6C37 /* GMSockets.swift */,
 				BF266C1025904B2200029A2D /* CMTime+Extension.swift */,
 				BF8BEE50259B1B7200B9DCD3 /* Apple Music */,
+				BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				BF8BEE76259B1BC500B9DCD3 /* AppleMusicAPIError.swift in Sources */,
 				BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */,
 				BF8BEE69259B1B9100B9DCD3 /* MediaType.swift in Sources */,
+				BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */,
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
 				BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */,
 				BF8BEE60259B1B9100B9DCD3 /* Artist.swift in Sources */,
