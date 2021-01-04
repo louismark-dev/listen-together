@@ -82,12 +82,14 @@ io.sockets.on("connection", function(socket) {
         // Need to forward this to all clients in room
         const sessionID = data["sessionID"]
         const coordinatorID = data["coordinatorID"]
+        const playerState = data["playerState"]
 
         // console.log(`Clients in room: ${sessionID}`)
         // console.log(io.sockets.clients(sessionID))
 
         io.to(sessionID).emit(MESSAGES.STATE_UPDATE, {  session_id: sessionID,
-                                                            coordinator_id: coordinatorID })
+                                                        coordinator_id: coordinatorID,
+                                                        playerState: playerState })
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) {
