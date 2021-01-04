@@ -19,7 +19,7 @@ struct AppleMusicQueueView: View {
     
     var body: some View {
         VStack {
-            ForEach(self.appleMusicQueue.queue) { queueItem in
+            ForEach(self.appleMusicQueue.state.queue) { queueItem in
                 Text(queueItem.attributes?.name ?? "Name not available")
             }
         }

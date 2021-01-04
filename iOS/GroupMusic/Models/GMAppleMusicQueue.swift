@@ -8,20 +8,14 @@
 import Foundation
 
 class GMAppleMusicQueue: ObservableObject {
-    @Published public var queue: [Track]
-    public var indexOfNowPlayingItem: Int
-    public var nowPlayingItem: Track {
-        return queue[indexOfNowPlayingItem]
-    }
+    @Published public var state: GMAppleMusicQueue.State
     
     init() {
-        self.queue = []
-        self.indexOfNowPlayingItem = 0
+        self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
     }
     
     init(withQueue queue: [Track]) {
-        self.queue = queue
-        self.indexOfNowPlayingItem = 0
+        self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
     }
     
     static let sharedInstance = GMAppleMusicQueue()
@@ -32,25 +26,25 @@ class GMAppleMusicQueue: ObservableObject {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func append(track: Track) {
-        self.queue.append(track)
+        self.state.queue.append(track)
     }
     
     public func append(tracks: [Track]) {
-        self.queue.append(contentsOf: tracks)
+        self.state.queue.append(contentsOf: tracks)
     }
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func prepend(track: Track) {
-        self.queue.insert(track, at: self.indexOfNowPlayingItem)
+        self.state.queue.insert(track, at: self.state.indexOfNowPlayingItem)
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func prepend(tracks: [Track]) {
-        self.queue.insert(contentsOf: tracks, at: self.indexOfNowPlayingItem)
+        self.state.queue.insert(contentsOf: tracks, at: self.state.indexOfNowPlayingItem)
     }
     
     // MARK: Play State Management
@@ -59,9 +53,9 @@ class GMAppleMusicQueue: ObservableObject {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToNextItem() {
-        let nextIndex = self.indexOfNowPlayingItem + 1
-        if queue.indices.contains(nextIndex) {
-            self.indexOfNowPlayingItem = nextIndex
+        let nextIndex = self.state.indexOfNowPlayingItem + 1
+        if self.state.queue.indices.contains(nextIndex) {
+            self.state.indexOfNowPlayingItem = nextIndex
         }
     }
     
@@ -69,9 +63,17 @@ class GMAppleMusicQueue: ObservableObject {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToPreviousItem() {
-        let previousIndex = self.indexOfNowPlayingItem - 1
-        if queue.indices.contains(previousIndex) {
-            self.indexOfNowPlayingItem = previousIndex
+        let previousIndex = self.state.indexOfNowPlayingItem - 1
+        if self.state.queue.indices.contains(previousIndex) {
+            self.state.indexOfNowPlayingItem = previousIndex
+        }
+    }
+    
+    struct State {
+        public var queue: [Track]
+        public var indexOfNowPlayingItem: Int
+        public var nowPlayingItem: Track {
+            return queue[indexOfNowPlayingItem]
         }
     }
 }
