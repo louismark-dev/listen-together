@@ -9,6 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State var isShowingSheet: Bool = false
+    @ObservedObject private var socketManager: GMSockets
+    
+    init(socketManager: GMSockets = GMSockets.sharedInstance) {
+        self.socketManager = socketManager
+    }
 
     var body: some View {
         VStack {
@@ -20,7 +25,11 @@ struct ContentView: View {
             }
             AppleMusicQueueView()
             Spacer()
-            AppleMusicPlayerView()
+            if (socketManager.state.isCoordinator) {
+                AppleMusicPlayerView()
+            } else {
+                AppleMusicControllerView()
+            }
         }
         .padding()
         .sheet(isPresented: self.$isShowingSheet) {

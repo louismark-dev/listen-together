@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct AppleMusicQueueView: View {
-    @ObservedObject var appleMusicPlayer: GMAppleMusicPlayer
     @ObservedObject var appleMusicQueue: GMAppleMusicQueue // TODO: This should not be a dependency of this struct
     
-    init(appleMusicPlayer: GMAppleMusicPlayer = GMAppleMusicPlayer(),
-         appleMusicQueue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance) {
-        self.appleMusicPlayer = appleMusicPlayer
+    init(appleMusicQueue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance) {
         self.appleMusicQueue = appleMusicQueue
     }
     

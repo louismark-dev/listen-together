@@ -55,10 +55,13 @@
 		BF8BEE80259B1C1B00B9DCD3 /* UrlFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BEE7C259B1C1B00B9DCD3 /* UrlFetcher.swift */; };
 		BF8BEE81259B1C1B00B9DCD3 /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BEE7D259B1C1B00B9DCD3 /* Include.swift */; };
 		BF8BEE82259B1C1B00B9DCD3 /* CiderClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BEE7E259B1C1B00B9DCD3 /* CiderClient.swift */; };
+		BF99218125A405ED00F8CAC5 /* AppleMusicControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF99218025A405ED00F8CAC5 /* AppleMusicControllerView.swift */; };
 		BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA285C12595B53F00D8B4D6 /* SessionView.swift */; };
 		BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */; };
 		BFA652EE2597E94100BF0FF0 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA652ED2597E94100BF0FF0 /* MonitorView.swift */; };
 		BFBF1424259BF5F400F2AB34 /* AppleMusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBF1423259BF5F400F2AB34 /* AppleMusicView.swift */; };
+		BFED96E425A3FE5100AAC5FF /* Playable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFED96E325A3FE5100AAC5FF /* Playable.swift */; };
+		BFED96E725A3FEE700AAC5FF /* GMAppleMusicControllerPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFED96E625A3FEE700AAC5FF /* GMAppleMusicControllerPlayer.swift */; };
 		BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -113,10 +116,13 @@
 		BF8BEE7D259B1C1B00B9DCD3 /* Include.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Include.swift; sourceTree = "<group>"; };
 		BF8BEE7E259B1C1B00B9DCD3 /* CiderClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CiderClient.swift; sourceTree = "<group>"; };
 		BF8BEE86259B1C2400B9DCD3 /* CiderUrlBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiderUrlBuilder.swift; sourceTree = "<group>"; };
+		BF99218025A405ED00F8CAC5 /* AppleMusicControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicControllerView.swift; sourceTree = "<group>"; };
 		BFA285C12595B53F00D8B4D6 /* SessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		BFA652ED2597E94100BF0FF0 /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
 		BFBF1423259BF5F400F2AB34 /* AppleMusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicView.swift; sourceTree = "<group>"; };
+		BFED96E325A3FE5100AAC5FF /* Playable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playable.swift; sourceTree = "<group>"; };
+		BFED96E625A3FEE700AAC5FF /* GMAppleMusicControllerPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicControllerPlayer.swift; sourceTree = "<group>"; };
 		BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MPMusicPlaybackState+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +150,8 @@
 				BF266C1025904B2200029A2D /* CMTime+Extension.swift */,
 				BF8BEE50259B1B7200B9DCD3 /* Apple Music */,
 				BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */,
+				BFED96E325A3FE5100AAC5FF /* Playable.swift */,
+				BFED96E625A3FEE700AAC5FF /* GMAppleMusicControllerPlayer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -191,6 +199,7 @@
 				BF5EE22225A028A3000C23DD /* PreviewView.swift */,
 				BF5EE22725A02F27000C23DD /* VisualEffectView.swift */,
 				BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */,
+				BF99218025A405ED00F8CAC5 /* AppleMusicControllerView.swift */,
 				BF266BFE259026BA00029A2D /* Models */,
 				BF3468C9258FFC94000D609B /* Preview Content */,
 				BF266C002590277C00029A2D /* Resources */,
@@ -354,6 +363,7 @@
 				BF8BEE49259B194400B9DCD3 /* GMAppleMusic.swift in Sources */,
 				BF8BEE76259B1BC500B9DCD3 /* AppleMusicAPIError.swift in Sources */,
 				BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */,
+				BF99218125A405ED00F8CAC5 /* AppleMusicControllerView.swift in Sources */,
 				BF8BEE69259B1B9100B9DCD3 /* MediaType.swift in Sources */,
 				BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */,
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
@@ -366,6 +376,7 @@
 				BF8BEE6A259B1B9100B9DCD3 /* Playlist.swift in Sources */,
 				BF266C0D25902A2000029A2D /* PlayerView.swift in Sources */,
 				BFBF1424259BF5F400F2AB34 /* AppleMusicView.swift in Sources */,
+				BFED96E725A3FEE700AAC5FF /* GMAppleMusicControllerPlayer.swift in Sources */,
 				BF8BEE82259B1C1B00B9DCD3 /* CiderClient.swift in Sources */,
 				BF8BEE62259B1B9100B9DCD3 /* PlayParameters.swift in Sources */,
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
@@ -378,6 +389,7 @@
 				BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */,
 				BF8BEE78259B1BC500B9DCD3 /* SearchResults.swift in Sources */,
 				BF8BEE61259B1B9100B9DCD3 /* Track.swift in Sources */,
+				BFED96E425A3FE5100AAC5FF /* Playable.swift in Sources */,
 				BF5EE21F25A0256C000C23DD /* ResultCardView.swift in Sources */,
 				BF5D5DDE25915B1F00EF6C37 /* GMSockets.swift in Sources */,
 				BF5EE22325A028A3000C23DD /* PreviewView.swift in Sources */,

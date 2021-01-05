@@ -86,8 +86,12 @@ class GMAppleMusicQueue: ObservableObject {
     struct State: Codable {
         public var queue: [Track]
         public var indexOfNowPlayingItem: Int
-        public var nowPlayingItem: Track {
-            return queue[indexOfNowPlayingItem]
+        public var nowPlayingItem: Track? {
+            if (queue.indices.contains(indexOfNowPlayingItem)) {
+                return queue[indexOfNowPlayingItem]
+            } else {
+                return nil
+            }
         }
     }
 }

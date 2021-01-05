@@ -8,7 +8,7 @@
 import Foundation
 import MediaPlayer
 
-class GMAppleMusicPlayer: ObservableObject {
+class GMAppleMusicPlayer: ObservableObject, Playable {
     @Published var queue: GMAppleMusicQueue
     @Published var state: State = State()
     private let socketManager: GMSockets
@@ -143,14 +143,47 @@ class GMAppleMusicPlayer: ObservableObject {
                                             selector: #selector(stateUpdateRequested),
                                             name: .stateUpdateRequested,
                                             object: nil)
+        
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePlayEvent),
+                                            name: .playEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePauseEvent),
+                                            name: .pauseEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveForwardEvent),
+                                            name: .forwardEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePreviousEvent),
+                                            name: .previousEvent,
+                                            object: nil)
+    }
+    
+    @objc private func stateUpdateRequested() {
+        self.socketManager.updateQueuePlayerState(with: self.state)
     }
     
     @objc private func playbackStateDidChange() {
         self.state.playbackState = player.playbackState
     }
     
-    @objc private func stateUpdateRequested() {
-        self.socketManager.updateQueuePlayerState(with: self.state)
+    @objc private func didRecievePlayEvent() {
+        self.play(shouldEmitEvent: false)
+    }
+
+    @objc private func didRecievePauseEvent() {
+        self.pause(shouldEmitEvent: false)
+    }
+
+    @objc private func didRecieveForwardEvent() {
+        self.skipToNextItem(shouldEmitEvent: false)
+    }
+
+    @objc private func didRecievePreviousEvent() {
+        self.skipToPreviousItem(shouldEmitEvent: false)
     }
     
     // MARK: State Update Handler

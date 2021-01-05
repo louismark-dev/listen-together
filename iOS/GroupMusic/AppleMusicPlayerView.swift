@@ -15,9 +15,10 @@ struct AppleMusicPlayerView: View {
     }
     var body: some View {
         VStack {
+            Text(self.appleMusicPlayer.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
             HStack {
                 Button(action: {
-                    self.appleMusicPlayer.skipToPreviousItem(shouldEmitEvent: false)
+                    self.appleMusicPlayer.skipToPreviousItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "backward.fill")
                 }
@@ -29,20 +30,21 @@ struct AppleMusicPlayerView: View {
                 }
                 Spacer()
                 Button(action: {
-                    self.appleMusicPlayer.skipToNextItem(shouldEmitEvent: false)
+                    self.appleMusicPlayer.skipToNextItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "forward.fill")
                 }
             }
             .foregroundColor(.black)
+            .background(Color.green)
         }
     }
     
     private func togglePlayback() {
         if self.appleMusicPlayer.state.playbackState != .playing {
-            self.appleMusicPlayer.play(shouldEmitEvent: false)
+            self.appleMusicPlayer.play(shouldEmitEvent: true)
         } else {
-            self.appleMusicPlayer.pause(shouldEmitEvent: false)
+            self.appleMusicPlayer.pause(shouldEmitEvent: true)
         }
     }
 }
