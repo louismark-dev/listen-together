@@ -11,7 +11,7 @@ class GMAppleMusic {
     
     private let storefront: Storefront
     private let urlBuilder: CiderUrlBuilder
-    private let port: Int = 4407
+    private let port: Int = 4410
     private let apiEndpoint: URL
     private let fetcher: UrlFetcher
     

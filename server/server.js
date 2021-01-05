@@ -84,12 +84,14 @@ io.sockets.on("connection", function(socket) {
         const coordinatorID = data["coordinatorID"]
         const playerState = data["playerState"]
 
+        const encodedString = JSON.stringify({  sessionID: sessionID,
+                                                coordinatorID: coordinatorID,
+                                                playerState: playerState })
+
         // console.log(`Clients in room: ${sessionID}`)
         // console.log(io.sockets.clients(sessionID))
 
-        io.to(sessionID).emit(MESSAGES.STATE_UPDATE, {  session_id: sessionID,
-                                                        coordinator_id: coordinatorID,
-                                                        playerState: playerState })
+        io.to(sessionID).emit(MESSAGES.STATE_UPDATE, encodedString)
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) {

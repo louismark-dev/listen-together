@@ -11,7 +11,7 @@ import MediaPlayer
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.118:4407")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.118:4410")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     @Published var state: State = State()
     
@@ -83,15 +83,19 @@ class GMSockets: ObservableObject {
     
     private func stateUpdateEventHandler(data: [Any], ack: SocketAckEmitter) {
         print("State update recieved")
-        guard let data = data[0] as? [String:Any] else {
-            print("Could not unwrap dictionary")
+        guard var jsonString = data[0] as? String else {
+            print("Could not unwrap string")
             // TODO: Handle this
             return
         }
+        jsonString = jsonString.replacingOccurrences(of: "\\", with: "")
+        let jsonData = Data(jsonString.utf8)
+        let decoder = JSONDecoder()
         do {
-            try self.state.update(with: data)
+            let newState = try decoder.decode(GMSockets.State.self, from: jsonData)
+            self.state.update(withState: newState)
         } catch {
-            print("Error: \(error)")
+            print("State update decoding failed \(error)")
         }
     }
     
@@ -236,6 +240,16 @@ extension GMSockets {
             if let clientID = dictionary["client_id"] as? String {
                 self.clientID = clientID
             }
+        }
+        
+        /// Updates the state with the new state, but mainains the clientID
+        mutating func update(withState newState: State) {
+            self.sessionID = newState.sessionID
+            self.coordinatorID = newState.coordinatorID
+            self.playerState = newState.playerState
+            
+            let clientID = self.clientID
+            self.clientID = clientID
         }
         
         mutating func assignClientID(_ id: String) {
