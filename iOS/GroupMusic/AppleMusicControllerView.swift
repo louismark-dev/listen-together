@@ -8,17 +8,14 @@
 import SwiftUI
 
 struct AppleMusicControllerView: View {
-    @ObservedObject var appleMusicControllerPlayer: GMAppleMusicControllerPlayer
+    @EnvironmentObject var appleMusicController: GMAppleMusicControllerPlayer
     
-    init(appleMusicPlayer: GMAppleMusicControllerPlayer = GMAppleMusicControllerPlayer.sharedInstance) {
-        self.appleMusicControllerPlayer = appleMusicPlayer
-    }
     var body: some View {
         VStack {
-            Text(self.appleMusicControllerPlayer.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
+            Text(self.appleMusicController.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
             HStack {
                 Button(action: {
-                    self.appleMusicControllerPlayer.skipToPreviousItem(shouldEmitEvent: true)
+                    self.appleMusicController.skipToPreviousItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "backward.fill")
                 }
@@ -26,11 +23,11 @@ struct AppleMusicControllerView: View {
                 Button(action: {
                     togglePlayback()
                 }) {
-                    Image(systemName: (self.appleMusicControllerPlayer.state.playbackState != .playing) ? "play.fill" : "pause.fill")
+                    Image(systemName: (self.appleMusicController.state.playbackState != .playing) ? "play.fill" : "pause.fill")
                 }
                 Spacer()
                 Button(action: {
-                    self.appleMusicControllerPlayer.skipToNextItem(shouldEmitEvent: true)
+                    self.appleMusicController.skipToNextItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "forward.fill")
                 }
@@ -41,10 +38,10 @@ struct AppleMusicControllerView: View {
     }
     
     private func togglePlayback() {
-        if self.appleMusicControllerPlayer.state.playbackState != .playing {
-            self.appleMusicControllerPlayer.play(shouldEmitEvent: true)
+        if self.appleMusicController.state.playbackState != .playing {
+            self.appleMusicController.play(shouldEmitEvent: true)
         } else {
-            self.appleMusicControllerPlayer.pause(shouldEmitEvent: true)
+            self.appleMusicController.pause(shouldEmitEvent: true)
         }
     }
 }

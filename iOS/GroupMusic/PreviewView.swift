@@ -10,17 +10,15 @@ import SwiftUI
 struct PreviewView: View {
     let audioPreviewPlayer: AudioPreview
     var previewTrack: Track
-    @ObservedObject var appleMusicQueue: GMAppleMusicQueue // TODO: This should not be a dependency of this struct
+    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer // TODO: This should not be a dependency of this struct
     
     init(previewTrack: Track,
-         audioPreviewPlayer: AudioPreview = AudioPreview(),
-         appleMusicQueue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance) {
+         audioPreviewPlayer: AudioPreview = AudioPreview()) {
         self.previewTrack = previewTrack
         self.audioPreviewPlayer = audioPreviewPlayer
         if let previewURL = self.previewTrack.attributes?.previews.first?.url {
             self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
         }
-        self.appleMusicQueue = appleMusicQueue
     }
     
     private let radius: CGFloat = CGFloat(6.0)
@@ -90,12 +88,12 @@ struct PreviewView: View {
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     private func prependToQueue() {
-        self.appleMusicQueue.prepend(track: self.previewTrack)
+        self.appleMusicPlayer.queue.prepend(track: self.previewTrack)
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-        self.appleMusicQueue.append(track: self.previewTrack)
+        self.appleMusicPlayer.queue.append(track: self.previewTrack)
     }
 }
 

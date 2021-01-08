@@ -7,6 +7,7 @@
 
 import Foundation
 import MediaPlayer
+import Combine
 
 class GMAppleMusicPlayer: ObservableObject, Playable {
     @Published var queue: GMAppleMusicQueue
@@ -15,6 +16,8 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
     private let notificationCenter: NotificationCenter
     private let appleMusicManager: GMAppleMusic // TODO: Remove this dependancy. It is only for testing
     let player: MPMusicPlayerApplicationController
+    
+    var anyCancellable: AnyCancellable? = nil
     
     init(musicPlayer: MPMusicPlayerApplicationController = MPMusicPlayerApplicationController.applicationQueuePlayer,
          socketManager: GMSockets = GMSockets.sharedInstance,
@@ -30,10 +33,17 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
         
         self.setupQueueStateUpdateHandler()
         self.setupNotificationCenterObservers()
+        
+        anyCancellable = self.queue.objectWillChange.sink { [weak self] (_) in
+                self?.objectWillChange.send()
+            }
     }
     
-    static let sharedInstance = GMAppleMusicPlayer()
-    
+    /// Sets this class as reciever for events
+    public func setAsPrimaryPlayer() {
+        self.setupQueueStateUpdateHandler()
+    }
+        
     private func fillQueueWithTestItems() {
         self.appleMusicManager.search(term: "Drake", limit: 2) { (results: SearchResults?, error: Error?) in
             if let error = error {

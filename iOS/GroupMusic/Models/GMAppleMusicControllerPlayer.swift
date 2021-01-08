@@ -26,6 +26,11 @@ class GMAppleMusicControllerPlayer: ObservableObject, Playable {
     
     // MARK: Playback Controls
     
+    /// Sets this class as reciever for events
+    public func setAsPrimaryPlayer() {
+        self.setupQueueStateUpdateHandler()
+    }
+    
     func play(shouldEmitEvent: Bool  = true) {
         self.state.playbackState = .playing
         do {

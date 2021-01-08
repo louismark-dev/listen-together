@@ -8,15 +8,11 @@
 import SwiftUI
 
 struct AppleMusicQueueView: View {
-    @ObservedObject var appleMusicQueue: GMAppleMusicQueue // TODO: This should not be a dependency of this struct
-    
-    init(appleMusicQueue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance) {
-        self.appleMusicQueue = appleMusicQueue
-    }
+    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
     
     var body: some View {
         VStack {
-            ForEach(self.appleMusicQueue.state.queue) { queueItem in
+            ForEach(self.appleMusicPlayer.queue.state.queue) { queueItem in
                 Text(queueItem.attributes?.name ?? "Name not available")
             }
         }

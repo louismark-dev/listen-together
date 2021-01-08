@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct AppleMusicPlayerView: View {
-    @ObservedObject var appleMusicPlayer: GMAppleMusicPlayer
+    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
     
-    init(appleMusicPlayer: GMAppleMusicPlayer = GMAppleMusicPlayer.sharedInstance) {
-        self.appleMusicPlayer = appleMusicPlayer
-    }
     var body: some View {
         VStack {
             Text(self.appleMusicPlayer.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")

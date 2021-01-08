@@ -7,32 +7,176 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "62B69F6E-814A-48BD-A233-589FDA7FEB31"
+            uuid = "205A78FA-3A88-45E7-9F59-EC0561F166ED"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GroupMusic/Models/Apple Music/GMAppleMusic.swift"
+            filePath = "GroupMusic/Models/GMAppleMusicPlayer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "search(term:limit:offset:types:completion:)"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
+            landmarkName = "appendToMPMusicPlayerQueue(withTracks:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "205A78FA-3A88-45E7-9F59-EC0561F166ED - 26ec49b29253a6b0"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GroupMusic.GMAppleMusicPlayer.(appendToMPMusicPlayerQueue in _C9564FA9435C1CCF7411DFE19BC1741F)(withTracks: Swift.Array&lt;GroupMusic.Resource&lt;GroupMusic.TrackAttributes, GroupMusic.TrackRelationships&gt;&gt;) -&gt; ()"
+                  moduleName = "GroupMusic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/louis/Developer/GroupMusic/iOS/GroupMusic/Models/GMAppleMusicPlayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "214"
+                  endingLineNumber = "214"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  uuid = "205A78FA-3A88-45E7-9F59-EC0561F166ED - 91b760693a9c6072"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (__C.MPMusicPlayerControllerMutableQueue) -&gt; () in GroupMusic.GMAppleMusicPlayer.(appendToMPMusicPlayerQueue in _C9564FA9435C1CCF7411DFE19BC1741F)(withTracks: Swift.Array&lt;GroupMusic.Resource&lt;GroupMusic.TrackAttributes, GroupMusic.TrackRelationships&gt;&gt;) -&gt; ()"
+                  moduleName = "GroupMusic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/louis/Developer/GroupMusic/iOS/GroupMusic/Models/GMAppleMusicPlayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215"
+                  offsetFromSymbolStart = "60">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E183D1DA-75CE-4BBD-87FA-7C8FAF98960E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupMusic/Models/GMAppleMusicPlayer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
+            landmarkName = "preprendToMPMusicPlayerQueue(withTracks:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E183D1DA-75CE-4BBD-87FA-7C8FAF98960E - 619c04d3d0b427d0"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GroupMusic.GMAppleMusicPlayer.(preprendToMPMusicPlayerQueue in _C9564FA9435C1CCF7411DFE19BC1741F)(withTracks: Swift.Array&lt;GroupMusic.Resource&lt;GroupMusic.TrackAttributes, GroupMusic.TrackRelationships&gt;&gt;) -&gt; ()"
+                  moduleName = "GroupMusic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/louis/Developer/GroupMusic/iOS/GroupMusic/Models/GMAppleMusicPlayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "231"
+                  endingLineNumber = "231"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  uuid = "E183D1DA-75CE-4BBD-87FA-7C8FAF98960E - 1c3aea1d819a52fe"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (__C.MPMusicPlayerControllerMutableQueue) -&gt; () in GroupMusic.GMAppleMusicPlayer.(preprendToMPMusicPlayerQueue in _C9564FA9435C1CCF7411DFE19BC1741F)(withTracks: Swift.Array&lt;GroupMusic.Resource&lt;GroupMusic.TrackAttributes, GroupMusic.TrackRelationships&gt;&gt;) -&gt; ()"
+                  moduleName = "GroupMusic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/louis/Developer/GroupMusic/iOS/GroupMusic/Models/GMAppleMusicPlayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "232"
+                  endingLineNumber = "232"
+                  offsetFromSymbolStart = "72">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "79086A0F-FC06-4D62-B5FF-AA08D559ABD3"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupMusic/Models/GMAppleMusicPlayer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "setupQueueStateUpdateHandler()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "79086A0F-FC06-4D62-B5FF-AA08D559ABD3 - e723073d9d014654"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GroupMusic.GMAppleMusicPlayer.(setupQueueStateUpdateHandler in _C9564FA9435C1CCF7411DFE19BC1741F)() -&gt; ()"
+                  moduleName = "GroupMusic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/louis/Developer/GroupMusic/iOS/GroupMusic/Models/GMAppleMusicPlayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "201"
+                  endingLineNumber = "201"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  uuid = "79086A0F-FC06-4D62-B5FF-AA08D559ABD3 - a864ee14176b95ee"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (GroupMusic.GMAppleMusicQueue.State, GroupMusic.GMAppleMusicQueue.QueueUpdateEvent) -&gt; () in GroupMusic.GMAppleMusicPlayer.(setupQueueStateUpdateHandler in _C9564FA9435C1CCF7411DFE19BC1741F)() -&gt; ()"
+                  moduleName = "GroupMusic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/louis/Developer/GroupMusic/iOS/GroupMusic/Models/GMAppleMusicPlayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "202"
+                  endingLineNumber = "202"
+                  offsetFromSymbolStart = "92">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CB24E434-3035-4AB9-A539-51391642B6C0"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupMusic/Models/GMAppleMusicPlayer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
+            landmarkName = "setupQueueStateUpdateHandler()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "51609028-04B3-40D2-AEE9-3D377A94E5AC"
+            uuid = "EF8C68F3-5B07-48AD-B062-B495FAA7A385"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GroupMusic/Models/GMAppleMusicControllerPlayer.swift"
+            filePath = "GroupMusic/Models/GMAppleMusicQueue.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
-            landmarkName = "setupQueueStateUpdateHandler()"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "append(track:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -10,9 +10,15 @@ import SwiftUI
 struct ContentView: View {
     @State var isShowingSheet: Bool = false
     @ObservedObject private var socketManager: GMSockets
+    var appleMusicPlayer: GMAppleMusicPlayer
+    var appleMusicController: GMAppleMusicControllerPlayer
     
-    init(socketManager: GMSockets = GMSockets.sharedInstance) {
+    init(socketManager: GMSockets = GMSockets.sharedInstance,
+         appleMusicPlayer: GMAppleMusicPlayer = GMAppleMusicPlayer(),
+         appleMusicController: GMAppleMusicControllerPlayer = GMAppleMusicControllerPlayer()) {
         self.socketManager = socketManager
+        self.appleMusicPlayer = appleMusicPlayer
+        self.appleMusicController = appleMusicController
     }
 
     var body: some View {
@@ -27,8 +33,18 @@ struct ContentView: View {
             Spacer()
             if (socketManager.state.isCoordinator) {
                 AppleMusicPlayerView()
+                    .onAppear {
+                        if(self.socketManager.state.isCoordinator) {
+                            self.appleMusicPlayer.setAsPrimaryPlayer()
+                        }
+                    }
             } else {
                 AppleMusicControllerView()
+                    .onAppear {
+                        if(self.socketManager.state.isCoordinator == false) {
+                            self.appleMusicController.setAsPrimaryPlayer()
+                        }
+                    }
             }
         }
         .padding()
@@ -38,6 +54,15 @@ struct ContentView: View {
                     .navigationBarItems(leading: Button("Dismiss") {
                         isShowingSheet = false
                     })
+            }
+        }
+        .environmentObject(self.appleMusicPlayer)
+        .environmentObject(self.appleMusicController)
+        .onChange(of: self.socketManager.state.isCoordinator) { (_) in
+            if(self.socketManager.state.isCoordinator) {
+                self.appleMusicPlayer.setAsPrimaryPlayer()
+            } else {
+                self.appleMusicController.setAsPrimaryPlayer()
             }
         }
     }
