@@ -35,7 +35,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
     static let sharedInstance = GMAppleMusicPlayer()
     
     private func fillQueueWithTestItems() {
-        self.appleMusicManager.search(term: "Young Thug", limit: 10) { (results: SearchResults?, error: Error?) in
+        self.appleMusicManager.search(term: "Drake", limit: 2) { (results: SearchResults?, error: Error?) in
             if let error = error {
                 print("ERROR: Could not retrive search results: \(error)")
                 return
@@ -188,10 +188,56 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
     
     // MARK: State Update Handler
     private func setupQueueStateUpdateHandler() {
-        self.queue.updateHandler = { newState in
-            self.state.queueState = newState
+        self.queue.updateHandler = { newQueueState, event in
+            self.state.queueState = newQueueState
+            // If the queue was modified, updateMPMusicPlayerQueue
+            switch event {
+            
+            case .appendToQueue(withTracks: let tracks):
+                self.appendToMPMusicPlayerQueue(withTracks: tracks)
+            case .prependToQueue(withTracks: let tracks):
+                self.preprendToMPMusicPlayerQueue(withTracks: tracks)
+            default: return
+            }
         }
-        self.queue.triggerUpdateHandler()
+        self.queue.triggerUpdateHandler(withEvent: .none)
+    }
+    
+    private func appendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
+        self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
+            let storeIDs = tracks.map({ (song) -> String in
+                song.id
+            })
+            let descriptor = MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs)
+            let lastItem = queue.items.last
+            queue.insert(descriptor, after: lastItem)
+        } completionHandler: { (newQueue, error) in
+            if let error = error {
+                print(error)
+                return
+            }
+            print(newQueue.items)
+        }
+    }
+    
+    private func preprendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
+        self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
+            let storeIDs = tracks.map({ (song) -> String in
+                song.id
+            })
+            let descriptor = MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs)
+            guard let indexOfNowPlayingItem = self.state.queueState?.indexOfNowPlayingItem else { return }
+            let currentItem = queue.items[indexOfNowPlayingItem]
+            queue.insert(descriptor, after: currentItem)
+        } completionHandler: { (newQueue: MPMusicPlayerControllerQueue, error) in
+            if let error = error {
+                print(error)
+                return
+            }
+            print( newQueue.items.map({ (song) -> String in
+                (song.title ?? "No name")
+            }) )
+        }
     }
 }
 

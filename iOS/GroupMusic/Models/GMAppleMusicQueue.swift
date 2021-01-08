@@ -9,7 +9,7 @@ import Foundation
 
 class GMAppleMusicQueue: ObservableObject {
     @Published public var state: GMAppleMusicQueue.State
-    public var updateHandler: ((GMAppleMusicQueue.State) -> Void)?
+    public var updateHandler: ((_ state: GMAppleMusicQueue.State, _ event: GMAppleMusicQueue.QueueUpdateEvent) -> Void)?
     
     init() {
         self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
@@ -30,12 +30,12 @@ class GMAppleMusicQueue: ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func append(track: Track) {
         self.state.queue.append(track)
-        self.triggerUpdateHandler()
+        self.triggerUpdateHandler(withEvent: .appendToQueue(withTracks: [track]))
     }
     
     public func append(tracks: [Track]) {
         self.state.queue.append(contentsOf: tracks)
-        self.triggerUpdateHandler()
+        self.triggerUpdateHandler(withEvent: .appendToQueue(withTracks: tracks))
     }
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
@@ -43,7 +43,7 @@ class GMAppleMusicQueue: ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func prepend(track: Track) {
         self.state.queue.insert(track, at: self.state.indexOfNowPlayingItem)
-        self.triggerUpdateHandler()
+        self.triggerUpdateHandler(withEvent: .prependToQueue(withTracks: [track]))
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
@@ -51,7 +51,7 @@ class GMAppleMusicQueue: ObservableObject {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func prepend(tracks: [Track]) {
         self.state.queue.insert(contentsOf: tracks, at: self.state.indexOfNowPlayingItem)
-        self.triggerUpdateHandler()
+        self.triggerUpdateHandler(withEvent: .prependToQueue(withTracks: tracks))
     }
     
     // MARK: Play State Management
@@ -63,7 +63,7 @@ class GMAppleMusicQueue: ObservableObject {
         let nextIndex = self.state.indexOfNowPlayingItem + 1
         if self.state.queue.indices.contains(nextIndex) {
             self.state.indexOfNowPlayingItem = nextIndex
-            self.triggerUpdateHandler()
+            self.triggerUpdateHandler(withEvent: .skipToNextItem)
         }
     }
     
@@ -74,13 +74,13 @@ class GMAppleMusicQueue: ObservableObject {
         let previousIndex = self.state.indexOfNowPlayingItem - 1
         if self.state.queue.indices.contains(previousIndex) {
             self.state.indexOfNowPlayingItem = previousIndex
-            self.triggerUpdateHandler()
+            self.triggerUpdateHandler(withEvent: .skipToPreviousItem)
         }
     }
     
-    public func triggerUpdateHandler() {
+    public func triggerUpdateHandler(withEvent event: QueueUpdateEvent) {
         guard let updateHandler = self.updateHandler else { return }
-        updateHandler(self.state)
+        updateHandler(self.state, event)
     }
     
     struct State: Codable {
@@ -93,5 +93,17 @@ class GMAppleMusicQueue: ObservableObject {
                 return nil
             }
         }
+        public var itemsToBePlayed: [Track] {
+            Array(self.queue[(indexOfNowPlayingItem + 1)..<self.queue.count])
+        }
+        
+    }
+    
+    enum QueueUpdateEvent {
+        case appendToQueue(withTracks: [Track])
+        case prependToQueue(withTracks: [Track])
+        case skipToPreviousItem
+        case skipToNextItem
+        case none
     }
 }

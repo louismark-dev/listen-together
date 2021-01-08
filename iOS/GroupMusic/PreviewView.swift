@@ -10,6 +10,18 @@ import SwiftUI
 struct PreviewView: View {
     let audioPreviewPlayer: AudioPreview
     var previewTrack: Track
+    @ObservedObject var appleMusicQueue: GMAppleMusicQueue // TODO: This should not be a dependency of this struct
+    
+    init(previewTrack: Track,
+         audioPreviewPlayer: AudioPreview = AudioPreview(),
+         appleMusicQueue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance) {
+        self.previewTrack = previewTrack
+        self.audioPreviewPlayer = audioPreviewPlayer
+        if let previewURL = self.previewTrack.attributes?.previews.first?.url {
+            self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
+        }
+        self.appleMusicQueue = appleMusicQueue
+    }
     
     private let radius: CGFloat = CGFloat(6.0)
     var body: some View {
@@ -38,7 +50,7 @@ struct PreviewView: View {
             .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterialLight))
                             .cornerRadius(self.radius))
             VStack {
-                Button(action: { }) {
+                Button(action: self.prependToQueue) {
                     HStack {
                         Text("Play Next")
                         Spacer()
@@ -49,7 +61,7 @@ struct PreviewView: View {
                 }
 
                 Divider()
-                Button(action: { }) {
+                Button(action: self.appendToQueue) {
                     HStack {
                         Text("Play Later")
                         Spacer()
@@ -66,14 +78,6 @@ struct PreviewView: View {
         .padding()
     }
     
-    init(previewTrack: Track, audioPreviewPlayer: AudioPreview = AudioPreview()) {
-        self.previewTrack = previewTrack
-        self.audioPreviewPlayer = audioPreviewPlayer
-        if let previewURL = self.previewTrack.attributes?.previews.first?.url {
-            self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
-        }
-    }
-    
     private func playPreview() {
         if self.audioPreviewPlayer.ready {
             do {
@@ -82,6 +86,16 @@ struct PreviewView: View {
                 print("Could not play audio preview: \(error)")
             }
         }
+    }
+    
+    /// Inserts the media item defined into the current queue immediately after the currently playing media item.
+    private func prependToQueue() {
+        self.appleMusicQueue.prepend(track: self.previewTrack)
+    }
+    
+    /// Inserts the media items defined into the current queue immediately after the currently playing media item.
+    private func appendToQueue() {
+        self.appleMusicQueue.append(track: self.previewTrack)
     }
 }
 

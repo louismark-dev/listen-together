@@ -106,10 +106,10 @@ class GMAppleMusicControllerPlayer: ObservableObject, Playable {
     
     // MARK: State Update Handler
     private func setupQueueStateUpdateHandler() {
-        self.queue.updateHandler = { newState in
+        self.queue.updateHandler = { newState, event in
             self.state.queueState = newState
         }
-        self.queue.triggerUpdateHandler()
+        self.queue.triggerUpdateHandler(withEvent: .none)
     }
     
 }

@@ -11,7 +11,7 @@ class GMAppleMusic {
     
     private let storefront: Storefront
     private let urlBuilder: CiderUrlBuilder
-    private let port: Int = 4410
+    private let port: Int = 4400
     private let apiEndpoint: URL
     private let fetcher: UrlFetcher
     
@@ -28,7 +28,7 @@ class GMAppleMusic {
     }
     
     public func search(term: String, limit: Int? = nil, offset: Int? = nil, types: [MediaType]? = nil, completion: ((SearchResults?, Error?) -> Void)?) {
-        guard let applemusicURL: URL = urlBuilder.searchRequest(term: "Offset", limit: limit, offset: offset, types: types).url else {
+        guard let applemusicURL: URL = urlBuilder.searchRequest(term: term, limit: limit, offset: offset, types: types).url else {
             print("ERROR: Could not generate Apple Music URL")
             return
         }
