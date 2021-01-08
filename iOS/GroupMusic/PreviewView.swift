@@ -10,7 +10,7 @@ import SwiftUI
 struct PreviewView: View {
     let audioPreviewPlayer: AudioPreview
     var previewTrack: Track
-    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer // TODO: This should not be a dependency of this struct
+    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
     
     init(previewTrack: Track,
          audioPreviewPlayer: AudioPreview = AudioPreview()) {
@@ -88,12 +88,12 @@ struct PreviewView: View {
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     private func prependToQueue() {
-        self.appleMusicPlayer.queue.prepend(track: self.previewTrack)
+        self.appleMusicPlayer.prependToQueue(tracks: [self.previewTrack])
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-        self.appleMusicPlayer.queue.append(track: self.previewTrack)
+        self.appleMusicPlayer.appendToQueue(tracks: [self.previewTrack])
     }
 }
 

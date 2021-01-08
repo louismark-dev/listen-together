@@ -45,7 +45,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
     }
         
     private func fillQueueWithTestItems() {
-        self.appleMusicManager.search(term: "Drake", limit: 2) { (results: SearchResults?, error: Error?) in
+        self.appleMusicManager.search(term: "Beyonce", limit: 10) { (results: SearchResults?, error: Error?) in
             if let error = error {
                 print("ERROR: Could not retrive search results: \(error)")
                 return
@@ -213,6 +213,16 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
         self.queue.triggerUpdateHandler(withEvent: .none)
     }
     
+    // MARK: Queue Operations
+    
+    public func appendToQueue(tracks: [Track]) {
+        self.appendToMPMusicPlayerQueue(withTracks: tracks)
+    }
+    
+    public func prependToQueue(tracks: [Track]) {
+        self.preprendToMPMusicPlayerQueue(withTracks: tracks)
+    }
+    
     private func appendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
         self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
             let storeIDs = tracks.map({ (song) -> String in
@@ -221,12 +231,16 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
             let descriptor = MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs)
             let lastItem = queue.items.last
             queue.insert(descriptor, after: lastItem)
-        } completionHandler: { (newQueue, error) in
+        } completionHandler: { (newQueue: MPMusicPlayerControllerQueue, error) in
             if let error = error {
                 print(error)
                 return
             }
-            print(newQueue.items)
+            do {
+                try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
         }
     }
     
@@ -244,9 +258,11 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
                 print(error)
                 return
             }
-            print( newQueue.items.map({ (song) -> String in
-                (song.title ?? "No name")
-            }) )
+            do {
+                try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
         }
     }
 }
