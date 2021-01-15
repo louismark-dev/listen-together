@@ -11,14 +11,17 @@ struct PreviewView: View {
     let audioPreviewPlayer: AudioPreview
     var previewTrack: Track
     @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
+    @ObservedObject private var socketManager: GMSockets
     
     init(previewTrack: Track,
-         audioPreviewPlayer: AudioPreview = AudioPreview()) {
+         audioPreviewPlayer: AudioPreview = AudioPreview(),
+         socketManager: GMSockets = GMSockets.sharedInstance) {
         self.previewTrack = previewTrack
         self.audioPreviewPlayer = audioPreviewPlayer
         if let previewURL = self.previewTrack.attributes?.previews.first?.url {
             self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
         }
+        self.socketManager = socketManager
     }
     
     private let radius: CGFloat = CGFloat(6.0)
@@ -88,12 +91,12 @@ struct PreviewView: View {
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     private func prependToQueue() {
-        self.appleMusicPlayer.prependToQueue(tracks: [self.previewTrack])
+        self.appleMusicPlayer.prependToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-        self.appleMusicPlayer.appendToQueue(tracks: [self.previewTrack])
+        self.appleMusicPlayer.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
     }
 }
 

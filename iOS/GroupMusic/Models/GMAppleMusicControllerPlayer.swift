@@ -19,6 +19,7 @@ class GMAppleMusicControllerPlayer: ObservableObject, Playable {
         self.queue = queue
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
+        self.setupNotificationCenterObservers()
         self.setupQueueStateUpdateHandler()
     }
     
@@ -91,6 +92,14 @@ class GMAppleMusicControllerPlayer: ObservableObject, Playable {
                                             selector: #selector(didRecievePreviousEvent),
                                             name: .previousEvent,
                                             object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveAppendToQueueEvent),
+                                            name: .appendToQueueEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePrependToQueueEvent),
+                                            name: .prependToQueueEvent,
+                                            object: nil)
     }
     
     @objc private func didRecievePlayEvent() {
@@ -107,6 +116,20 @@ class GMAppleMusicControllerPlayer: ObservableObject, Playable {
 
     @objc private func didRecievePreviousEvent() {
         self.skipToPreviousItem(shouldEmitEvent: false)
+    }
+    
+    @objc private func didRecieveAppendToQueueEvent(_ notification: Notification) {
+        let tracks = notification.object as! [Track]
+        print(tracks)
+        self.queue.append(tracks: tracks)
+        print(self.queue.state.queue)
+    }
+
+    @objc private func didRecievePrependToQueueEvent(_ notification: Notification) {
+        let tracks = notification.object as! [Track]
+        print(tracks)
+        self.queue.prepend(tracks: tracks)
+        print(self.queue.state.queue)
     }
     
     // MARK: State Update Handler

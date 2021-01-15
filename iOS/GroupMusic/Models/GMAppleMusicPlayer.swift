@@ -215,12 +215,34 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
     
     // MARK: Queue Operations
     
-    public func appendToQueue(tracks: [Track]) {
-        self.appendToMPMusicPlayerQueue(withTracks: tracks)
+    /// Appends track to the song queue
+    /// - Parameters:
+    ///     - shouldAddToLocalQueue: If false, will only emit event, without adding to this device's  queue
+    public func appendToQueue(withTracks tracks: [Track], shouldAddToLocalQueue: Bool) {
+        if (shouldAddToLocalQueue) {
+            self.appendToMPMusicPlayerQueue(withTracks: tracks)
+        } else {
+            do {
+                try self.emitPrependToQueueEvent(withTracks: tracks)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
-    public func prependToQueue(tracks: [Track]) {
-        self.preprendToMPMusicPlayerQueue(withTracks: tracks)
+    /// Prepends track to the song queue
+    /// - Parameters:
+    ///     - shouldAddToLocalQueue: If false, will only emit event, without adding to this device's  queue
+    public func prependToQueue(withTracks tracks: [Track], shouldAddToLocalQueue: Bool) {
+        if (shouldAddToLocalQueue) {
+            self.preprendToMPMusicPlayerQueue(withTracks: tracks)
+        } else {
+            do {
+                try self.emitPrependToQueueEvent(withTracks: tracks)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     private func appendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
@@ -238,6 +260,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
             }
             do {
                 try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
+                try self.emitAppendToQueueEvent(withTracks: tracks)
             } catch {
                 fatalError(error.localizedDescription)
             }
@@ -260,10 +283,19 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
             }
             do {
                 try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
+                try self.emitPrependToQueueEvent(withTracks: tracks)
             } catch {
                 fatalError(error.localizedDescription)
             }
         }
+    }
+    
+    private func emitAppendToQueueEvent(withTracks tracks: [Track]) throws {
+        try self.socketManager.emitAppendToQueueEvent(withTracks: tracks)
+    }
+    
+    private func emitPrependToQueueEvent(withTracks tracks: [Track]) throws {
+        try self.socketManager.emitPrependToQueueEvent(withTracks: tracks)
     }
 }
 

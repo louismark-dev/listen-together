@@ -85,8 +85,7 @@ io.sockets.on("connection", function(socket) {
         const playerState = data["playerState"]
 
         const encodedString = JSON.stringify({  sessionID: sessionID,
-                                                coordinatorID: coordinatorID,
-                                                playerState: playerState })
+                                                coordinatorID: coordinatorID })
 
         // console.log(`Clients in room: ${sessionID}`)
         // console.log(io.sockets.clients(sessionID))
@@ -120,6 +119,24 @@ io.sockets.on("connection", function(socket) {
         const roomID = data.roomID
         console.log(`Emitting previousEvent to room: ${roomID}`)
         socket.broadcast.to(roomID).emit(MESSAGES.PREVIOUS_EVENT, data)
+    })
+
+    socket.on(MESSAGES.PREPEND_TO_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        console.log(parsedData)
+        const roomID = parsedData.roomID
+        console.log(`Emitting prependToQueue to room: ${roomID}`)
+        
+        socket.broadcast.to(roomID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+    })
+
+    socket.on(MESSAGES.APPEND_TO_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        console.log(parsedData)
+        const roomID = parsedData.roomID
+        console.log(`Emitting appendToQueueEvent to room: ${roomID}`)
+
+        socket.broadcast.to(roomID).emit(MESSAGES.APPEND_TO_QUEUE, data)
     })
 })
 
@@ -165,5 +182,7 @@ const MESSAGES = {
     PLAY_EVENT: "playEvent",
     PAUSE_EVENT: "pauseEvent",
     TEST_EVENT: "testEvent",
-    ASSIGNING_ID: "assigningID"
+    ASSIGNING_ID: "assigningID",
+    APPEND_TO_QUEUE: "appendToQueue",
+    PREPEND_TO_QUEUE: "prependToQueue"
 }

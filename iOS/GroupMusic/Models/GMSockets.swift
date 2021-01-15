@@ -11,7 +11,7 @@ import MediaPlayer
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.118:4400")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.118:\((UIApplication.shared.delegate as! AppDelegate).port)")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     @Published var state: State = State()
     
@@ -44,6 +44,10 @@ class GMSockets: ObservableObject {
         self.socket.on(Event.forwardEvent.rawValue, callback: self.forwardEventHandler)
         
         self.socket.on(Event.previousEvent.rawValue, callback: self.previousEventHandler)
+        
+        self.socket.on(Event.appendToQueue.rawValue, callback: self.appendToQueueEventHandler)
+        
+        self.socket.on(Event.prependToQueue.rawValue, callback: self.prependToQueueEventHandler)
     }
     
     private func connectEventHandler(data: [Any], ack: SocketAckEmitter) {
@@ -119,6 +123,38 @@ class GMSockets: ObservableObject {
         self.notificationCenter.post(name: .previousEvent, object: nil)
     }
     
+    private func appendToQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("appendToQueueEvent recieved")
+        do {
+            let tracks = try self.dataToObject(data: data) as [Track]
+            self.notificationCenter.post(name: .appendToQueueEvent, object: tracks)
+        } catch {
+            fatalError("prependToQueueEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func prependToQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("prependToQueueEvent recieved")
+        do {
+            let tracks = try self.dataToObject(data: data) as [Track]
+            self.notificationCenter.post(name: .prependToQueueEvent, object: tracks)
+        } catch {
+            fatalError("prependToQueueEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func dataToObject<T: Codable>(data: [Any]) throws -> T {
+        guard var jsonString = data[0] as? String else {
+            throw JSONDecodingErrors.couldNotCastAsString
+        }
+        // URLs in the JSONString will have "\\" before each "/". Remove these.
+        jsonString = jsonString.replacingOccurrences(of: "\\", with: "")
+        let jsonData = Data(jsonString.utf8)
+        let decoder = JSONDecoder()
+        let decodedValue = try decoder.decode(SocketIOArguments<T>.self, from: jsonData)
+        return decodedValue.data
+    }
+    
     // MARK: Emitters - Outgoing Events
     public func emitSessionStartRequest() {
         self.socket.emit(Event.startSession.rawValue, "")
@@ -160,6 +196,53 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.previousEvent.rawValue,  "{ \"roomID\": \"\(sessionID)\" }")
     }
     
+    public func emitPrependToQueueEvent(withTracks tracks: [Track]) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<[Track]>(roomID: sessionID, data: tracks)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.prependToQueue.rawValue, encodedJSON)
+    }
+    
+    public func emitAppendToQueueEvent(withTracks tracks: [Track]) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<[Track]>(roomID: sessionID, data: tracks)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.appendToQueue.rawValue, encodedJSON)
+    }
+    
+    private func encodeJSON<T: Codable>(fromObject object: T) throws -> String {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(object)
+            let encodedString = String(data: data, encoding: .utf8)!
+            return encodedString
+        } catch {
+            throw JSONEncodingErrors.couldNotEncodeJSON
+        }
+    }
+    
+    enum JSONDecodingErrors: Error, LocalizedError {
+        case couldNotCastAsString
+        
+        
+        public var errorDescription: String? {
+            switch self {
+            case .couldNotCastAsString: return String("Was unable to cast the incoming data as a string")
+            }
+        }
+    }
+    
+    enum JSONEncodingErrors: Error, LocalizedError {
+        case couldNotEncodeJSON
+        
+        public var errorDescription: String? {
+            switch self {
+            case .couldNotEncodeJSON: return String("Was unable to encode this object into JSON")
+            }
+        }
+    }
+    
     enum EventEmitterErrors: Error, LocalizedError {
         case noSessionId
         
@@ -172,7 +255,7 @@ class GMSockets: ObservableObject {
     
     /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID
+        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID, queueUpdate, appendToQueue, prependToQueue
     }
     
     public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicPlayer.State) {
@@ -200,8 +283,23 @@ extension Notification.Name {
         return .init(rawValue: "GMSockets.previousEvent")
     }
     
+    static var appendToQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.appendToQueueEvent")
+    }
+    
+    static var prependToQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.prependToQueueEvent")
+    }
+    
     static var stateUpdateRequested: Notification.Name {
         return .init(rawValue: "GMSockets.stateUpdateRequested")
+    }
+}
+
+extension GMSockets {
+    struct SocketIOArguments<Wrapped:Codable>: Codable {
+        let roomID: String
+        let data: Wrapped
     }
 }
 
