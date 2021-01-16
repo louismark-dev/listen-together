@@ -1,4 +1,4 @@
-let port = parseInt(process.argv.slice(2)) || 4440;
+let port = parseInt(process.argv.slice(2)) || 4405;
 
 var express = require('express');
 var app = express();
@@ -123,11 +123,16 @@ io.sockets.on("connection", function(socket) {
 
     socket.on(MESSAGES.PREPEND_TO_QUEUE, function(data) {
         const parsedData = JSON.parse(data)
-        console.log(parsedData)
         const roomID = parsedData.roomID
-        console.log(`Emitting prependToQueue to room: ${roomID}`)
-        
-        socket.broadcast.to(roomID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Prepend msg is from coordinator -> Broadcast to all in room
+            console.log(`Broadcasting prependToQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        } else { // Prepend msg is from coordinator -> Send to coordinator
+            console.log(`Sending prependToQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        }
     })
 
     socket.on(MESSAGES.APPEND_TO_QUEUE, function(data) {

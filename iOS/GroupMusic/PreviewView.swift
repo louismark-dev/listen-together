@@ -91,7 +91,25 @@ struct PreviewView: View {
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     private func prependToQueue() {
-        self.appleMusicPlayer.prependToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
+        // IF OBSERVER
+        if (self.socketManager.state.isCoordinator == false) {
+            self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
+        }
+        
+        // IF COORDINATOR
+        if (self.socketManager.state.isCoordinator == true) {
+            self.appleMusicPlayer.prependToQueue(withTracks: [self.previewTrack], completion: {
+                self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
+            })
+        }
+    }
+    
+    private func emitPrependToQueueEvent(withTracks: [Track]) {
+        do {
+            try self.socketManager.emitPrependToQueueEvent(withTracks: [self.previewTrack])
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.

@@ -149,6 +149,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
         
         self.player.beginGeneratingPlaybackNotifications()
         
+        // Notifications originating from GMSockets
         self.notificationCenter.addObserver(self,
                                             selector: #selector(stateUpdateRequested),
                                             name: .stateUpdateRequested,
@@ -169,6 +170,10 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
         self.notificationCenter.addObserver(self,
                                             selector: #selector(didRecievePreviousEvent),
                                             name: .previousEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecievePrependToQueueEvent),
+                                            name: .prependToQueueEvent,
                                             object: nil)
     }
     
@@ -196,6 +201,17 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
         self.skipToPreviousItem(shouldEmitEvent: false)
     }
     
+    @objc private func didRecievePrependToQueueEvent(_ notification: NSNotification) {
+        guard let tracks = notification.object as? [Track] else { return }
+        self.prependToQueue(withTracks: tracks) {
+            do {
+                try self.emitPrependToQueueEvent(withTracks: tracks)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
     // MARK: State Update Handler
     private func setupQueueStateUpdateHandler() {
         self.queue.updateHandler = { newQueueState, event in
@@ -206,7 +222,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
             case .appendToQueue(withTracks: let tracks):
                 self.appendToMPMusicPlayerQueue(withTracks: tracks)
             case .prependToQueue(withTracks: let tracks):
-                self.preprendToMPMusicPlayerQueue(withTracks: tracks)
+                self.prependToMPMusicPlayerQueue(withTracks: tracks, completion: { try! self.emitPrependToQueueEvent(withTracks: tracks) })
             default: return
             }
         }
@@ -223,7 +239,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
             self.appendToMPMusicPlayerQueue(withTracks: tracks)
         } else {
             do {
-                try self.emitPrependToQueueEvent(withTracks: tracks)
+                try self.emitAppendToQueueEvent(withTracks: tracks)
             } catch {
                 fatalError(error.localizedDescription)
             }
@@ -233,16 +249,8 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
     /// Prepends track to the song queue
     /// - Parameters:
     ///     - shouldAddToLocalQueue: If false, will only emit event, without adding to this device's  queue
-    public func prependToQueue(withTracks tracks: [Track], shouldAddToLocalQueue: Bool) {
-        if (shouldAddToLocalQueue) {
-            self.preprendToMPMusicPlayerQueue(withTracks: tracks)
-        } else {
-            do {
-                try self.emitPrependToQueueEvent(withTracks: tracks)
-            } catch {
-                fatalError(error.localizedDescription)
-            }
-        }
+    public func prependToQueue(withTracks tracks: [Track], completion: @escaping () -> Void) {
+        self.prependToMPMusicPlayerQueue(withTracks: tracks, completion: completion)
     }
     
     private func appendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
@@ -267,7 +275,7 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
         }
     }
     
-    private func preprendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
+    private func prependToMPMusicPlayerQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
             let storeIDs = tracks.map({ (song) -> String in
                 song.id
@@ -283,7 +291,9 @@ class GMAppleMusicPlayer: ObservableObject, Playable {
             }
             do {
                 try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
-                try self.emitPrependToQueueEvent(withTracks: tracks)
+                if (completion != nil) {
+                    completion!()
+                }
             } catch {
                 fatalError(error.localizedDescription)
             }
