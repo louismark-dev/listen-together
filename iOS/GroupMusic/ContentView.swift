@@ -26,9 +26,9 @@ struct ContentView: View {
             Button(String("Add to Queue")) {
                 self.isShowingSheet = true
             }
-//            AppleMusicQueueView()
-            Spacer()
             Group {
+                AppleMusicQueueView()
+                Spacer()
                 if (socketManager.state.isCoordinator) {
                     AppleMusicPlayerView()
                 } else {

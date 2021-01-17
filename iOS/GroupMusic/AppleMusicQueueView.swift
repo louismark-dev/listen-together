@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct AppleMusicQueueView: View {
-    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     
     var body: some View {
         VStack {
-            ForEach(self.appleMusicPlayer.queue.state.queue) { queueItem in
+            ForEach(self.playerAdapter.queue.state.queue) { queueItem in
                 Text(queueItem.attributes?.name ?? "Name not available")
             }
         }

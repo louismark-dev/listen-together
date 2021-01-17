@@ -41,7 +41,12 @@ class PlayerAdapter: ObservableObject {
     
     private func subscribeToSocketManagerPublishers() {
         // Automatically switches between GMAppleMusicPlayer and GMAppleMusicControllerPlayer when isCoordinator changes
-        self.socketManager.$state.sink { (newState: GMSockets.State) in
+        self.socketManager.$state.filter({ (newState: GMSockets.State) -> Bool in
+            // Filter out state updates where isCoordinator has not changed
+            // Failure to do this will result in new players being initialized when the state changes.
+            newState.isCoordinator != self.socketManager.state.isCoordinator
+            })
+            .sink { (newState: GMSockets.State) in
             if (newState.isCoordinator) {
                 self.player = GMAppleMusicPlayer()
             } else {
