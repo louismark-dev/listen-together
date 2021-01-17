@@ -12,17 +12,20 @@ class PlayerAdapter: ObservableObject {
     var player: PlayerProtocol
     @Published var queue: GMAppleMusicQueue
     @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
+    private var socketManager: GMSockets
     
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
+    init(socketManager: GMSockets = GMSockets.sharedInstance) {
         self.player = GMAppleMusicControllerPlayer()
         self.queue = GMAppleMusicQueue.sharedInstance // Just setting initial value
+        self.socketManager = socketManager
         
-        self.subscribeToPublishers()
+        self.subscribeToSocketManagerPublishers()
+        self.subscribeToPlayerPublishers()
     }
     
-    private func subscribeToPublishers() {
+    private func subscribeToPlayerPublishers() {
         self.player.statePublisher
             .receive(on: RunLoop.main)
             .sink { (state) in
@@ -33,6 +36,19 @@ class PlayerAdapter: ObservableObject {
             .receive(on: RunLoop.main)
             .sink { (queue) in
                 self.queue = queue
+        }.store(in: &cancellables)
+    }
+    
+    private func subscribeToSocketManagerPublishers() {
+        // Automatically switches between GMAppleMusicPlayer and GMAppleMusicControllerPlayer when isCoordinator changes
+        self.socketManager.$state.sink { (newState: GMSockets.State) in
+            if (newState.isCoordinator) {
+                self.player = GMAppleMusicPlayer()
+            } else {
+                self.player = GMAppleMusicControllerPlayer()
+            }
+            self.player.setAsPrimaryPlayer()
+            self.subscribeToPlayerPublishers()
         }.store(in: &cancellables)
     }
     

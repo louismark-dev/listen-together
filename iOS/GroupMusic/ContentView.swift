@@ -10,15 +10,12 @@ import SwiftUI
 struct ContentView: View {
     @State var isShowingSheet: Bool = false
     @ObservedObject private var socketManager: GMSockets
-    var appleMusicPlayer: GMAppleMusicPlayer
-    var appleMusicController: PlayerAdapter
+    var playerAdapter: PlayerAdapter
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
-         appleMusicPlayer: GMAppleMusicPlayer = GMAppleMusicPlayer(),
-         appleMusicController: PlayerAdapter = PlayerAdapter()) {
+         playerAdapter: PlayerAdapter = PlayerAdapter()) {
         self.socketManager = socketManager
-        self.appleMusicPlayer = appleMusicPlayer
-        self.appleMusicController = appleMusicController
+        self.playerAdapter = playerAdapter
     }
 
     var body: some View {
@@ -29,23 +26,16 @@ struct ContentView: View {
             Button(String("Add to Queue")) {
                 self.isShowingSheet = true
             }
-            AppleMusicQueueView()
+//            AppleMusicQueueView()
             Spacer()
-            if (socketManager.state.isCoordinator) {
-                AppleMusicPlayerView()
-                    .onAppear {
-                        if(self.socketManager.state.isCoordinator) {
-                            self.appleMusicPlayer.setAsPrimaryPlayer()
-                        }
-                    }
-            } else {
-                AppleMusicControllerView()
-                    .onAppear {
-                        if(self.socketManager.state.isCoordinator == false) {
-//                            self.appleMusicController.setAsPrimaryPlayer()
-                        }
-                    }
+            Group {
+                if (socketManager.state.isCoordinator) {
+                    AppleMusicPlayerView()
+                } else {
+                    AppleMusicControllerView()
+                }
             }
+            .environmentObject(self.playerAdapter)
         }
         .padding()
         .sheet(isPresented: self.$isShowingSheet) {
@@ -54,15 +44,6 @@ struct ContentView: View {
                     .navigationBarItems(leading: Button("Dismiss") {
                         isShowingSheet = false
                     })
-            }
-        }
-        .environmentObject(self.appleMusicPlayer)
-        .environmentObject(self.appleMusicController)
-        .onChange(of: self.socketManager.state.isCoordinator) { (_) in
-            if(self.socketManager.state.isCoordinator) {
-                self.appleMusicPlayer.setAsPrimaryPlayer()
-            } else {
-//                self.appleMusicController.setAsPrimaryPlayer()
             }
         }
     }

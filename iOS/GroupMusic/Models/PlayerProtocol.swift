@@ -24,4 +24,6 @@ protocol PlayerProtocol {
     func skipToPreviousItem(shouldEmitEvent: Bool)
     
     func setupNotificationCenterObservers()
+    
+    func setAsPrimaryPlayer()
 }

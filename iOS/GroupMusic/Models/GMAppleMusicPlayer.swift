@@ -9,11 +9,15 @@ import Foundation
 import MediaPlayer
 import Combine
 
-class GMAppleMusicPlayer: ObservableObject {
+class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     @Published var queue: GMAppleMusicQueue
+    var queuePublisher: Published<GMAppleMusicQueue>.Publisher { $queue }
+    
     @Published var state: State = State()
-    private let socketManager: GMSockets
-    private let notificationCenter: NotificationCenter
+    var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
+    
+    let socketManager: GMSockets
+    let notificationCenter: NotificationCenter
     private let appleMusicManager: GMAppleMusic // TODO: Remove this dependancy. It is only for testing
     let player: MPMusicPlayerApplicationController
     
@@ -141,7 +145,7 @@ class GMAppleMusicPlayer: ObservableObject {
     
     // MARK: Notification Center
     
-    private func setupNotificationCenterObservers() {
+    func setupNotificationCenterObservers() {
         self.notificationCenter.addObserver(self,
                                             selector: #selector(self.playbackStateDidChange),
                                             name: .MPMusicPlayerControllerPlaybackStateDidChange,
