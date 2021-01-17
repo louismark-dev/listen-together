@@ -7,11 +7,16 @@
 
 import Foundation
 
-class GMAppleMusicControllerPlayer: ObservableObject, Playable {
+class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
+    
     @Published var queue: GMAppleMusicQueue
+    var queuePublisher: Published<GMAppleMusicQueue>.Publisher { $queue }
+    
     @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
-    private let socketManager: GMSockets
-    private let notificationCenter: NotificationCenter
+    var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
+    
+    let socketManager: GMSockets
+    let notificationCenter: NotificationCenter
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
          queue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance,
@@ -75,7 +80,7 @@ class GMAppleMusicControllerPlayer: ObservableObject, Playable {
     }
     
     // MARK: Notification Center
-    private func setupNotificationCenterObservers() {
+    func setupNotificationCenterObservers() {
         self.notificationCenter.addObserver(self,
                                             selector: #selector(didRecievePlayEvent),
                                             name: .playEvent,

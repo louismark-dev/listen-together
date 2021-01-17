@@ -9,7 +9,7 @@ import Foundation
 import MediaPlayer
 import Combine
 
-class GMAppleMusicPlayer: ObservableObject, Playable {
+class GMAppleMusicPlayer: ObservableObject {
     @Published var queue: GMAppleMusicQueue
     @Published var state: State = State()
     private let socketManager: GMSockets

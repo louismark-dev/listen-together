@@ -11,11 +11,11 @@ struct ContentView: View {
     @State var isShowingSheet: Bool = false
     @ObservedObject private var socketManager: GMSockets
     var appleMusicPlayer: GMAppleMusicPlayer
-    var appleMusicController: GMAppleMusicControllerPlayer
+    var appleMusicController: PlayerAdapter
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
          appleMusicPlayer: GMAppleMusicPlayer = GMAppleMusicPlayer(),
-         appleMusicController: GMAppleMusicControllerPlayer = GMAppleMusicControllerPlayer()) {
+         appleMusicController: PlayerAdapter = PlayerAdapter()) {
         self.socketManager = socketManager
         self.appleMusicPlayer = appleMusicPlayer
         self.appleMusicController = appleMusicController
@@ -42,7 +42,7 @@ struct ContentView: View {
                 AppleMusicControllerView()
                     .onAppear {
                         if(self.socketManager.state.isCoordinator == false) {
-                            self.appleMusicController.setAsPrimaryPlayer()
+//                            self.appleMusicController.setAsPrimaryPlayer()
                         }
                     }
             }
@@ -62,7 +62,7 @@ struct ContentView: View {
             if(self.socketManager.state.isCoordinator) {
                 self.appleMusicPlayer.setAsPrimaryPlayer()
             } else {
-                self.appleMusicController.setAsPrimaryPlayer()
+//                self.appleMusicController.setAsPrimaryPlayer()
             }
         }
     }

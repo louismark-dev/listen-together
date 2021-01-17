@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AppleMusicControllerView: View {
-    @EnvironmentObject var appleMusicController: GMAppleMusicControllerPlayer
+    @EnvironmentObject var appleMusicController: PlayerAdapter
     
     var body: some View {
         VStack {
