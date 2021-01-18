@@ -87,17 +87,22 @@ class GMSockets: ObservableObject {
     
     private func stateUpdateEventHandler(data: [Any], ack: SocketAckEmitter) {
         print("State update recieved")
-        guard var jsonString = data[0] as? String else {
+        
+        
+        guard let jsonString = data[0] as? String else {
             print("Could not unwrap string")
             // TODO: Handle this
             return
         }
-        jsonString = jsonString.replacingOccurrences(of: "\\", with: "")
         let jsonData = Data(jsonString.utf8)
         let decoder = JSONDecoder()
         do {
             let newState = try decoder.decode(GMSockets.State.self, from: jsonData)
-            self.state.update(withState: newState)
+            
+            self.state.sessionID = newState.sessionID
+            self.state.coordinatorID = newState.coordinatorID
+            
+            self.notificationCenter.post(name: .stateUpdateEvent, object: newState.playerState)
         } catch {
             print("State update decoding failed \(error)")
         }
@@ -164,16 +169,11 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.joinSession.rawValue, sessionID)
     }
     
-    public func emitStateUpdate(withState state: State) {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        do {
-            let data = try encoder.encode(state)
-            let encodedString = String(data: data, encoding: .utf8)! //
-            self.socket.emit(Event.stateUpdate.rawValue, encodedString)
-        } catch {
-            fatalError("Could not contruct state update")
-        }
+    public func emitStateUpdate(withState state: State) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<State>(roomID: sessionID, data: state)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.stateUpdate.rawValue, encodedJSON)
     }
     
     public func emitPlayEvent() throws {
@@ -212,7 +212,7 @@ class GMSockets: ObservableObject {
     
     private func encodeJSON<T: Codable>(fromObject object: T) throws -> String {
         let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
+//        encoder.outputFormatting = .prettyPrinted
         do {
             let data = try encoder.encode(object)
             let encodedString = String(data: data, encoding: .utf8)!
@@ -260,13 +260,21 @@ class GMSockets: ObservableObject {
     
     public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicPlayer.State) {
         self.state.playerState = queuePlayerState
-        self.emitStateUpdate(withState: self.state)
+        do {
+            try self.emitStateUpdate(withState: self.state)
+        } catch {
+            print("WARNING: Could not emit state update. Error: \(error.localizedDescription)")
+        }
     }
     
 }
 // MARK: Notification Center Events
 /// Notification Center events
 extension Notification.Name {
+    static var stateUpdateEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.stateUpdateEvent")
+    }
+    
     static var playEvent: Notification.Name {
         return .init(rawValue: "GMSockets.playEvent")
     }
@@ -338,16 +346,6 @@ extension GMSockets {
             if let clientID = dictionary["client_id"] as? String {
                 self.clientID = clientID
             }
-        }
-        
-        /// Updates the state with the new state, but mainains the clientID
-        mutating func update(withState newState: State) {
-            self.sessionID = newState.sessionID
-            self.coordinatorID = newState.coordinatorID
-            self.playerState = newState.playerState
-            
-            let clientID = self.clientID
-            self.clientID = clientID
         }
         
         mutating func assignClientID(_ id: String) {

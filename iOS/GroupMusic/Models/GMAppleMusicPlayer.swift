@@ -59,8 +59,6 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
                 return
             }
             if let songs = results.songs?.data {
-                print("WE HAVE SONG DATA:")
-                print(songs)
                 DispatchQueue.main.async {
                     self.queue.append(tracks: songs)
                     self.player.setQueue(with: songs.map({ (song) -> String in
@@ -75,6 +73,10 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     public func playAllSongs() {
         self.player.setQueue(with: .songs())
         self.player.play()
+    }
+    
+    func updateState(with state: State) {
+        self.state = state
     }
     
     // MARK: Playback Controls

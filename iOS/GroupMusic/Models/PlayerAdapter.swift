@@ -53,6 +53,10 @@ class PlayerAdapter: ObservableObject {
         }.store(in: &cancellables)
     }
     
+    func updateState(with state: GMAppleMusicPlayer.State) {
+        self.player.updateState(with: state)
+    }
+    
     func play(shouldEmitEvent: Bool  = true) {
         self.player.play(shouldEmitEvent: shouldEmitEvent)
     }

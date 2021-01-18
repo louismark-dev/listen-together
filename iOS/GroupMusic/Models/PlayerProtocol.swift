@@ -12,6 +12,8 @@ protocol PlayerProtocol {
     var socketManager: GMSockets { get }
     var notificationCenter: NotificationCenter { get }
     
+    func updateState(with state: GMAppleMusicPlayer.State)
+    
     func play(shouldEmitEvent: Bool)
     
     func pause(shouldEmitEvent: Bool)

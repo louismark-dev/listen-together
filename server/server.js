@@ -1,4 +1,4 @@
-let port = parseInt(process.argv.slice(2)) || 4405;
+let port = parseInt(process.argv.slice(2)) || 4406;
 
 var express = require('express');
 var app = express();
@@ -80,12 +80,13 @@ io.sockets.on("connection", function(socket) {
         console.log(data)
         data = JSON.parse(data)
         // Need to forward this to all clients in room
-        const sessionID = data["sessionID"]
-        const coordinatorID = data["coordinatorID"]
-        const playerState = data["playerState"]
+        const sessionID = data.data.sessionID
+        const coordinatorID = data.data.coordinatorID
+        const playerState = data.data.playerState
 
         const encodedString = JSON.stringify({  sessionID: sessionID,
-                                                coordinatorID: coordinatorID })
+                                                coordinatorID: coordinatorID,
+                                                playerState: playerState })
 
         // console.log(`Clients in room: ${sessionID}`)
         // console.log(io.sockets.clients(sessionID))

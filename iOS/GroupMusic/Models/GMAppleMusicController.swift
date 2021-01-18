@@ -40,6 +40,10 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
             }.store(in: &cancellables)
     }
     
+    func updateState(with state: GMAppleMusicPlayer.State) {
+        self.state = state
+    }
+    
     // MARK: Playback Controls
     
     func play(shouldEmitEvent: Bool  = true) {

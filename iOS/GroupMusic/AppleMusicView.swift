@@ -53,8 +53,6 @@ struct AppleMusicView: View {
                 return
             }
             if let songs = results.songs?.data {
-                print("WE HAVE SONG DATA:")
-                print(songs)
                 self.songResults = songs
             }
             print("WE DID IT")

@@ -22,6 +22,11 @@ class NotificationMonitor {
     
     public func startListeningForNotifications() {
         self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveStateUpdateEvent),
+                                            name: .stateUpdateEvent,
+                                            object: nil)
+
+        self.notificationCenter.addObserver(self,
                                             selector: #selector(didRecievePlayEvent),
                                             name: .playEvent,
                                             object: nil)
@@ -45,6 +50,13 @@ class NotificationMonitor {
                                             selector: #selector(didRecieveAppendToQueueEvent),
                                             name: .appendToQueueEvent,
                                             object: nil)
+    }
+    
+    @objc private func didRecieveStateUpdateEvent(_ notification: NSNotification) {
+        guard let state = notification.object as? GMAppleMusicPlayer.State? else { fatalError("ERROR: Could not unwrap expected GMAppleMusicPlayer.State") }
+        if let state = state {
+            self.playerAdapter.updateState(with: state)
+        }
     }
     
     @objc private func didRecievePlayEvent() {
