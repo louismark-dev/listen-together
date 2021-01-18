@@ -102,14 +102,6 @@ class GMAppleMusicQueue: ObservableObject {
         
     }
     
-    enum QueueUpdateEvent {
-        case appendToQueue(withTracks: [Track])
-        case prependToQueue(withTracks: [Track])
-        case skipToPreviousItem
-        case skipToNextItem
-        case none
-    }
-    
     enum QueueUpdateError: Error {
         case failedToSetQueueEqualToMPMusicPlayerControllerQueue
     }

@@ -16,10 +16,10 @@ class PlayerAdapter: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     
     init(socketManager: GMSockets = GMSockets.sharedInstance) {
-        self.player = GMAppleMusicControllerPlayer()
+        self.player = GMAppleMusicController()
         self.socketManager = socketManager
         
-        self.subscribeToSocketManagerPublishers()
+        self.subscribeToSocketManagerStatePublisher()
         self.subscribeToPlayerPublishers()
     }
     
@@ -32,9 +32,13 @@ class PlayerAdapter: ObservableObject {
         
     }
     
-    private func subscribeToSocketManagerPublishers() {
+    /**
+     Subscribes to GMSocketManager's State publisher. This enables automaitc switching between GMAppleMusicPlayer and GMAppleMusicControllerPlayer.
+     */
+    private func subscribeToSocketManagerStatePublisher() {
         // Automatically switches between GMAppleMusicPlayer and GMAppleMusicControllerPlayer when isCoordinator changes
-        self.socketManager.$state.filter({ (newState: GMSockets.State) -> Bool in
+        self.socketManager.$state
+            .filter({ (newState: GMSockets.State) -> Bool in
             // Filter out state updates where isCoordinator has not changed
             // Failure to do this will result in new players being initialized when the state changes.
             newState.isCoordinator != self.socketManager.state.isCoordinator
@@ -43,7 +47,7 @@ class PlayerAdapter: ObservableObject {
             if (newState.isCoordinator) {
                 self.player = GMAppleMusicPlayer()
             } else {
-                self.player = GMAppleMusicControllerPlayer()
+                self.player = GMAppleMusicController()
             }
             self.subscribeToPlayerPublishers()
         }.store(in: &cancellables)

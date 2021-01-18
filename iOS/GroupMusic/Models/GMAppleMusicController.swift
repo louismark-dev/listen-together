@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
+class GMAppleMusicController: ObservableObject, PlayerProtocol {
     
     private var queue: GMAppleMusicQueue
     
