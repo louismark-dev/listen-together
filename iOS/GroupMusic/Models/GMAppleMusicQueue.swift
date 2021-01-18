@@ -10,16 +10,13 @@ import MediaPlayer
 
 class GMAppleMusicQueue: ObservableObject {
     @Published public var state: GMAppleMusicQueue.State
-    public var updateHandler: ((_ state: GMAppleMusicQueue.State, _ event: GMAppleMusicQueue.QueueUpdateEvent) -> Void)?
     
     init() {
         self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
-        self.updateHandler = nil
     }
     
     init(withQueue queue: [Track]) {
         self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
-        self.updateHandler = nil
     }
         
     // MARK: Queue Mangagement
@@ -76,7 +73,6 @@ class GMAppleMusicQueue: ObservableObject {
         let nextIndex = self.state.indexOfNowPlayingItem + 1
         if self.state.queue.indices.contains(nextIndex) {
             self.state.indexOfNowPlayingItem = nextIndex
-            self.triggerUpdateHandler(withEvent: .skipToNextItem)
         }
     }
     
@@ -87,13 +83,7 @@ class GMAppleMusicQueue: ObservableObject {
         let previousIndex = self.state.indexOfNowPlayingItem - 1
         if self.state.queue.indices.contains(previousIndex) {
             self.state.indexOfNowPlayingItem = previousIndex
-            self.triggerUpdateHandler(withEvent: .skipToPreviousItem)
         }
-    }
-    
-    public func triggerUpdateHandler(withEvent event: QueueUpdateEvent) {
-        guard let updateHandler = self.updateHandler else { return }
-        updateHandler(self.state, event)
     }
     
     struct State: Codable {
