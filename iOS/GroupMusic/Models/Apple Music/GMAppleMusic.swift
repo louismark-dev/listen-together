@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import UIKit
 
 class GMAppleMusic {
     
     private let storefront: Storefront
     private let urlBuilder: CiderUrlBuilder
-    private let port: Int = 4400
+    private let port: Int = (UIApplication.shared.delegate as! AppDelegate).port
     private let apiEndpoint: URL
     private let fetcher: UrlFetcher
     

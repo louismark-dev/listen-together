@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct AppleMusicPlayerView: View {
-    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     
     var body: some View {
         VStack {
-            Text(self.appleMusicPlayer.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
+            Text(self.playerAdapter.state.queueState?.nowPlayingItem?.attributes?.name ?? "No name available")
             HStack {
                 Button(action: {
-                    self.appleMusicPlayer.skipToPreviousItem(shouldEmitEvent: true)
+                    self.playerAdapter.skipToPreviousItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "backward.fill")
                 }
@@ -23,11 +23,11 @@ struct AppleMusicPlayerView: View {
                 Button(action: {
                     togglePlayback()
                 }) {
-                    Image(systemName: (self.appleMusicPlayer.state.playbackState != .playing) ? "play.fill" : "pause.fill")
+                    Image(systemName: (self.playerAdapter.state.playbackState != .playing) ? "play.fill" : "pause.fill")
                 }
                 Spacer()
                 Button(action: {
-                    self.appleMusicPlayer.skipToNextItem(shouldEmitEvent: true)
+                    self.playerAdapter.skipToNextItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "forward.fill")
                 }
@@ -38,10 +38,10 @@ struct AppleMusicPlayerView: View {
     }
     
     private func togglePlayback() {
-        if self.appleMusicPlayer.state.playbackState != .playing {
-            self.appleMusicPlayer.play(shouldEmitEvent: true)
+        if self.playerAdapter.state.playbackState != .playing {
+            self.playerAdapter.play(shouldEmitEvent: true)
         } else {
-            self.appleMusicPlayer.pause(shouldEmitEvent: true)
+            self.playerAdapter.pause(shouldEmitEvent: true)
         }
     }
 }

@@ -23,7 +23,7 @@ public struct TrackAttributes: Codable {
     public let movementNumber: Int? // Classical music only
     public let name: String
     public let playParams: PlayParameters?
-    public let releaseDate: String
+    public let releaseDate: String?
     public let trackNumber: Int
     public let url: URL
     public let workName: String? // Classical music only

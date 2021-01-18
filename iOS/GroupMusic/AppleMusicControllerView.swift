@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct AppleMusicControllerView: View {
-    @EnvironmentObject var appleMusicController: GMAppleMusicControllerPlayer
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     
     var body: some View {
         VStack {
-            Text(self.appleMusicController.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
+            Text(self.playerAdapter.state.queueState?.nowPlayingItem?.attributes?.name  ?? "No name available")
             HStack {
                 Button(action: {
-                    self.appleMusicController.skipToPreviousItem(shouldEmitEvent: true)
+                    self.playerAdapter.skipToPreviousItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "backward.fill")
                 }
@@ -23,11 +23,11 @@ struct AppleMusicControllerView: View {
                 Button(action: {
                     togglePlayback()
                 }) {
-                    Image(systemName: (self.appleMusicController.state.playbackState != .playing) ? "play.fill" : "pause.fill")
+                    Image(systemName: (self.playerAdapter.state.playbackState != .playing) ? "play.fill" : "pause.fill")
                 }
                 Spacer()
                 Button(action: {
-                    self.appleMusicController.skipToNextItem(shouldEmitEvent: true)
+                    self.playerAdapter.skipToNextItem(shouldEmitEvent: true)
                 }) {
                     Image(systemName: "forward.fill")
                 }
@@ -38,10 +38,10 @@ struct AppleMusicControllerView: View {
     }
     
     private func togglePlayback() {
-        if self.appleMusicController.state.playbackState != .playing {
-            self.appleMusicController.play(shouldEmitEvent: true)
+        if self.playerAdapter.state.playbackState != .playing {
+            self.playerAdapter.play(shouldEmitEvent: true)
         } else {
-            self.appleMusicController.pause(shouldEmitEvent: true)
+            self.playerAdapter.pause(shouldEmitEvent: true)
         }
     }
 }

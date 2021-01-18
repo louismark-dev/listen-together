@@ -10,15 +10,18 @@ import SwiftUI
 struct PreviewView: View {
     let audioPreviewPlayer: AudioPreview
     var previewTrack: Track
-    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer // TODO: This should not be a dependency of this struct
+    @EnvironmentObject var playerAdapter: PlayerAdapter
+    @ObservedObject private var socketManager: GMSockets
     
     init(previewTrack: Track,
-         audioPreviewPlayer: AudioPreview = AudioPreview()) {
+         audioPreviewPlayer: AudioPreview = AudioPreview(),
+         socketManager: GMSockets = GMSockets.sharedInstance) {
         self.previewTrack = previewTrack
         self.audioPreviewPlayer = audioPreviewPlayer
         if let previewURL = self.previewTrack.attributes?.previews.first?.url {
             self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
         }
+        self.socketManager = socketManager
     }
     
     private let radius: CGFloat = CGFloat(6.0)
@@ -88,12 +91,50 @@ struct PreviewView: View {
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     private func prependToQueue() {
-        self.appleMusicPlayer.queue.prepend(track: self.previewTrack)
+        // IF OBSERVER
+        if (self.socketManager.state.isCoordinator == false) {
+            self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
+        }
+        
+        // IF COORDINATOR
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.prependToQueue(withTracks: [self.previewTrack], completion: {
+                self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
+            })
+        }
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-        self.appleMusicPlayer.queue.append(track: self.previewTrack)
+//        self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
+        
+        // IF OBSERVER
+        if (self.socketManager.state.isCoordinator == false) {
+            self.emitAppendToQueueEvent(withTracks: [self.previewTrack])
+        }
+        
+        // IF COORDINATOR
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], completion: {
+                self.emitAppendToQueueEvent(withTracks: [self.previewTrack])
+            })
+        }
+    }
+    
+    private func emitPrependToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitPrependToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func emitAppendToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitAppendToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
     }
 }
 

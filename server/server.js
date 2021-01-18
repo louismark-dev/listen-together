@@ -1,4 +1,4 @@
-let port = parseInt(process.argv.slice(2)) || 4440;
+let port = parseInt(process.argv.slice(2)) || 4405;
 
 var express = require('express');
 var app = express();
@@ -85,8 +85,7 @@ io.sockets.on("connection", function(socket) {
         const playerState = data["playerState"]
 
         const encodedString = JSON.stringify({  sessionID: sessionID,
-                                                coordinatorID: coordinatorID,
-                                                playerState: playerState })
+                                                coordinatorID: coordinatorID })
 
         // console.log(`Clients in room: ${sessionID}`)
         // console.log(io.sockets.clients(sessionID))
@@ -120,6 +119,34 @@ io.sockets.on("connection", function(socket) {
         const roomID = data.roomID
         console.log(`Emitting previousEvent to room: ${roomID}`)
         socket.broadcast.to(roomID).emit(MESSAGES.PREVIOUS_EVENT, data)
+    })
+
+    socket.on(MESSAGES.PREPEND_TO_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Prepend msg is from coordinator -> Broadcast to all in room
+            console.log(`Broadcasting prependToQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        } else { // Prepend msg is from guest -> Send to coordinator
+            console.log(`Sending prependToQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        }
+    })
+
+    socket.on(MESSAGES.APPEND_TO_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Append msg is from coordinator -> Broadcast to all in room
+            console.log(`Broadcasting appendToQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        } else { // Append msg is from guest -> Send to coordinator
+            console.log(`Sending appendToQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        }
     })
 })
 
@@ -165,5 +192,7 @@ const MESSAGES = {
     PLAY_EVENT: "playEvent",
     PAUSE_EVENT: "pauseEvent",
     TEST_EVENT: "testEvent",
-    ASSIGNING_ID: "assigningID"
+    ASSIGNING_ID: "assigningID",
+    APPEND_TO_QUEUE: "appendToQueue",
+    PREPEND_TO_QUEUE: "prependToQueue"
 }
