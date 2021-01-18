@@ -21,9 +21,7 @@ class GMAppleMusicQueue: ObservableObject {
         self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
         self.updateHandler = nil
     }
-    
-    static let sharedInstance = GMAppleMusicQueue()
-    
+        
     // MARK: Queue Mangagement
     
     /// This function is designed to be used with the MPMusicPlayerApplicationController.

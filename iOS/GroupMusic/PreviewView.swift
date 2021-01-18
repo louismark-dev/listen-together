@@ -10,7 +10,7 @@ import SwiftUI
 struct PreviewView: View {
     let audioPreviewPlayer: AudioPreview
     var previewTrack: Track
-    @EnvironmentObject var appleMusicPlayer: GMAppleMusicPlayer
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     @ObservedObject private var socketManager: GMSockets
     
     init(previewTrack: Track,
@@ -98,7 +98,7 @@ struct PreviewView: View {
         
         // IF COORDINATOR
         if (self.socketManager.state.isCoordinator == true) {
-            self.appleMusicPlayer.prependToQueue(withTracks: [self.previewTrack], completion: {
+            self.playerAdapter.prependToQueue(withTracks: [self.previewTrack], completion: {
                 self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
             })
         }
@@ -114,7 +114,7 @@ struct PreviewView: View {
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-        self.appleMusicPlayer.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
+//        self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
     }
 }
 

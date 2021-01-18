@@ -10,7 +10,7 @@ import MediaPlayer
 import Combine
 
 class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
-    @Published var queue: GMAppleMusicQueue
+    @Published var queue: GMAppleMusicQueue = GMAppleMusicQueue()
     var queuePublisher: Published<GMAppleMusicQueue>.Publisher { $queue }
     
     @Published var state: State = State()
@@ -21,31 +21,31 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     private let appleMusicManager: GMAppleMusic // TODO: Remove this dependancy. It is only for testing
     let player: MPMusicPlayerApplicationController
     
-    var anyCancellable: AnyCancellable? = nil
+    private var cancellables: Set<AnyCancellable> = []
     
     init(musicPlayer: MPMusicPlayerApplicationController = MPMusicPlayerApplicationController.applicationQueuePlayer,
          socketManager: GMSockets = GMSockets.sharedInstance,
          notificationCenter: NotificationCenter = .default,
-         queue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance,
          appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
         self.player = musicPlayer
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
-        self.queue = queue
         self.appleMusicManager = appleMusicManager
         self.fillQueueWithTestItems()
         
-        self.setupQueueStateUpdateHandler()
         self.setupNotificationCenterObservers()
-        
-        anyCancellable = self.queue.objectWillChange.sink { [weak self] (_) in
-                self?.objectWillChange.send()
-            }
+        self.subscribeToQueuePublisher()
     }
     
-    /// Sets this class as reciever for events
-    public func setAsPrimaryPlayer() {
-        self.setupQueueStateUpdateHandler()
+    /**
+     Updates GMAppleMusicPlayer's state whenever GMAppleMusicQueue.state is updated.
+     */
+    private func subscribeToQueuePublisher() {
+        self.queue.$state
+            .receive(on: RunLoop.main)
+            .sink { (newQueueState) in
+                self.state.queueState = newQueueState
+            }.store(in: &cancellables)
     }
         
     private func fillQueueWithTestItems() {
@@ -216,23 +216,6 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
         }
     }
     
-    // MARK: State Update Handler
-    private func setupQueueStateUpdateHandler() {
-        self.queue.updateHandler = { newQueueState, event in
-            self.state.queueState = newQueueState
-            // If the queue was modified, updateMPMusicPlayerQueue
-            switch event {
-            
-            case .appendToQueue(withTracks: let tracks):
-                self.appendToMPMusicPlayerQueue(withTracks: tracks)
-            case .prependToQueue(withTracks: let tracks):
-                self.prependToMPMusicPlayerQueue(withTracks: tracks, completion: { try! self.emitPrependToQueueEvent(withTracks: tracks) })
-            default: return
-            }
-        }
-        self.queue.triggerUpdateHandler(withEvent: .none)
-    }
-    
     // MARK: Queue Operations
     
     /// Appends track to the song queue
@@ -253,7 +236,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     /// Prepends track to the song queue
     /// - Parameters:
     ///     - shouldAddToLocalQueue: If false, will only emit event, without adding to this device's  queue
-    public func prependToQueue(withTracks tracks: [Track], completion: @escaping () -> Void) {
+    public func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.prependToMPMusicPlayerQueue(withTracks: tracks, completion: completion)
     }
     

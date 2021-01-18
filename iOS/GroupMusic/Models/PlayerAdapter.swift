@@ -18,7 +18,7 @@ class PlayerAdapter: ObservableObject {
     
     init(socketManager: GMSockets = GMSockets.sharedInstance) {
         self.player = GMAppleMusicControllerPlayer()
-        self.queue = GMAppleMusicQueue.sharedInstance // Just setting initial value
+        self.queue = GMAppleMusicQueue() // Just setting initial value
         self.socketManager = socketManager
         
         self.subscribeToSocketManagerPublishers()
@@ -52,7 +52,6 @@ class PlayerAdapter: ObservableObject {
             } else {
                 self.player = GMAppleMusicControllerPlayer()
             }
-            self.player.setAsPrimaryPlayer()
             self.subscribeToPlayerPublishers()
         }.store(in: &cancellables)
     }
@@ -71,5 +70,9 @@ class PlayerAdapter: ObservableObject {
     
     func skipToPreviousItem(shouldEmitEvent: Bool = true) {
         self.player.skipToPreviousItem(shouldEmitEvent: shouldEmitEvent)
+    }
+    
+    func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
+        self.player.prependToQueue(withTracks: tracks, completion: completion)
     }
 }

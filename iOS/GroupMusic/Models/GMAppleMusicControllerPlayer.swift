@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
     
@@ -19,23 +20,30 @@ class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
     let notificationCenter: NotificationCenter
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
-         queue: GMAppleMusicQueue = GMAppleMusicQueue.sharedInstance,
+         queue: GMAppleMusicQueue = GMAppleMusicQueue(),
          notificationCenter: NotificationCenter = .default) {
         self.queue = queue
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
         self.setupNotificationCenterObservers()
-        self.setupQueueStateUpdateHandler()
     }
     
     static let sharedInstance = GMAppleMusicControllerPlayer()
     
-    // MARK: Playback Controls
+    private var cancellables: Set<AnyCancellable> = []
     
-    /// Sets this class as reciever for events
-    public func setAsPrimaryPlayer() {
-        self.setupQueueStateUpdateHandler()
+    /**
+     Updates GMAppleMusicPlayer's state whenever GMAppleMusicQueue.state is updated.
+     */
+    private func subscribeToQueuePublisher() {
+        self.queue.$state
+            .receive(on: RunLoop.main)
+            .sink { (newQueueState) in
+                self.state.queueState = newQueueState
+            }.store(in: &cancellables)
     }
+    
+    // MARK: Playback Controls
     
     func play(shouldEmitEvent: Bool  = true) {
         self.state.playbackState = .playing
@@ -133,16 +141,12 @@ class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
     @objc private func didRecievePrependToQueueEvent(_ notification: Notification) {
         let tracks = notification.object as! [Track]
         print(tracks)
-        self.queue.prepend(tracks: tracks)
-        print(self.queue.state.queue)
+        self.prependToQueue(withTracks: tracks, completion: nil)
     }
     
-    // MARK: State Update Handler
-    private func setupQueueStateUpdateHandler() {
-        self.queue.updateHandler = { newState, event in
-            self.state.queueState = newState
-        }
-        self.queue.triggerUpdateHandler(withEvent: .none)
+    func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
+        self.queue.prepend(tracks: tracks)
+        print(self.queue.state.queue)
     }
     
 }

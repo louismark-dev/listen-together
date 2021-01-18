@@ -25,5 +25,6 @@ protocol PlayerProtocol {
     
     func setupNotificationCenterObservers()
     
-    func setAsPrimaryPlayer()
+    func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
+    
 }

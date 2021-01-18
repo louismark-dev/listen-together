@@ -23,10 +23,10 @@ struct ContentView: View {
             SessionView()
             MonitorView()
             Spacer()
-            Button(String("Add to Queue")) {
-                self.isShowingSheet = true
-            }
             Group {
+                Button(String("Add to Queue")) {
+                    self.isShowingSheet = true
+                }
                 AppleMusicQueueView()
                 Spacer()
                 if (socketManager.state.isCoordinator) {
@@ -44,6 +44,7 @@ struct ContentView: View {
                     .navigationBarItems(leading: Button("Dismiss") {
                         isShowingSheet = false
                     })
+                    .environmentObject(self.playerAdapter)
             }
         }
     }
