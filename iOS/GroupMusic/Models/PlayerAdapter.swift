@@ -10,7 +10,6 @@ import Combine
 
 class PlayerAdapter: ObservableObject {
     var player: PlayerProtocol
-    @Published var queue: GMAppleMusicQueue
     @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
     private var socketManager: GMSockets
     
@@ -18,7 +17,6 @@ class PlayerAdapter: ObservableObject {
     
     init(socketManager: GMSockets = GMSockets.sharedInstance) {
         self.player = GMAppleMusicControllerPlayer()
-        self.queue = GMAppleMusicQueue() // Just setting initial value
         self.socketManager = socketManager
         
         self.subscribeToSocketManagerPublishers()
@@ -32,11 +30,6 @@ class PlayerAdapter: ObservableObject {
                 self.state = state
         }.store(in: &cancellables)
         
-        self.player.queuePublisher
-            .receive(on: RunLoop.main)
-            .sink { (queue) in
-                self.queue = queue
-        }.store(in: &cancellables)
     }
     
     private func subscribeToSocketManagerPublishers() {
