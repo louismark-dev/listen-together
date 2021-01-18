@@ -10,7 +10,7 @@ import Combine
 
 class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
     
-    var queue: GMAppleMusicQueue
+    private var queue: GMAppleMusicQueue
     
     @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
     var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
@@ -26,9 +26,7 @@ class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
         self.notificationCenter = notificationCenter
         self.setupNotificationCenterObservers()
     }
-    
-    static let sharedInstance = GMAppleMusicControllerPlayer()
-    
+        
     private var cancellables: Set<AnyCancellable> = []
     
     /**
@@ -88,63 +86,12 @@ class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
     
     // MARK: Notification Center
     func setupNotificationCenterObservers() {
-        self.notificationCenter.addObserver(self,
-                                            selector: #selector(didRecievePlayEvent),
-                                            name: .playEvent,
-                                            object: nil)
-        self.notificationCenter.addObserver(self,
-                                            selector: #selector(didRecievePauseEvent),
-                                            name: .pauseEvent,
-                                            object: nil)
-        self.notificationCenter.addObserver(self,
-                                            selector: #selector(didRecieveForwardEvent),
-                                            name: .forwardEvent,
-                                            object: nil)
-        self.notificationCenter.addObserver(self,
-                                            selector: #selector(didRecievePreviousEvent),
-                                            name: .previousEvent,
-                                            object: nil)
-        self.notificationCenter.addObserver(self,
-                                            selector: #selector(didRecieveAppendToQueueEvent),
-                                            name: .appendToQueueEvent,
-                                            object: nil)
-        self.notificationCenter.addObserver(self,
-                                            selector: #selector(didRecievePrependToQueueEvent),
-                                            name: .prependToQueueEvent,
-                                            object: nil)
-    }
-    
-    @objc private func didRecievePlayEvent() {
-        self.play(shouldEmitEvent: false)
-    }
-
-    @objc private func didRecievePauseEvent() {
-        self.pause(shouldEmitEvent: false)
-    }
-
-    @objc private func didRecieveForwardEvent() {
-        self.skipToNextItem(shouldEmitEvent: false)
-    }
-
-    @objc private func didRecievePreviousEvent() {
-        self.skipToPreviousItem(shouldEmitEvent: false)
-    }
-    
-    @objc private func didRecieveAppendToQueueEvent(_ notification: Notification) {
-        let tracks = notification.object as! [Track]
-        print(tracks)
-        self.appendToQueue(withTracks: tracks, completion: nil)
+        
     }
     
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.queue.append(tracks: tracks)
         print(self.queue.state.queue)
-    }
-
-    @objc private func didRecievePrependToQueueEvent(_ notification: Notification) {
-        let tracks = notification.object as! [Track]
-        print(tracks)
-        self.prependToQueue(withTracks: tracks, completion: nil)
     }
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {

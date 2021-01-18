@@ -129,7 +129,7 @@ io.sockets.on("connection", function(socket) {
         if (socket.id == sessionData.coordinatorID) { // Prepend msg is from coordinator -> Broadcast to all in room
             console.log(`Broadcasting prependToQueue to room ${roomID}`)
             socket.broadcast.to(roomID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
-        } else { // Prepend msg is from coordinator -> Send to coordinator
+        } else { // Prepend msg is from guest -> Send to coordinator
             console.log(`Sending prependToQueue to coordinator ${sessionData.coordinatorID}`)
             socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
         }
@@ -137,11 +137,16 @@ io.sockets.on("connection", function(socket) {
 
     socket.on(MESSAGES.APPEND_TO_QUEUE, function(data) {
         const parsedData = JSON.parse(data)
-        console.log(parsedData)
         const roomID = parsedData.roomID
-        console.log(`Emitting appendToQueueEvent to room: ${roomID}`)
+        const sessionData = current_sessions[roomID]
 
-        socket.broadcast.to(roomID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        if (socket.id == sessionData.coordinatorID) { // Append msg is from coordinator -> Broadcast to all in room
+            console.log(`Broadcasting appendToQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        } else { // Append msg is from guest -> Send to coordinator
+            console.log(`Sending appendToQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        }
     })
 })
 

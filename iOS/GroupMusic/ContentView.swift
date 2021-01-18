@@ -10,12 +10,15 @@ import SwiftUI
 struct ContentView: View {
     @State var isShowingSheet: Bool = false
     @ObservedObject private var socketManager: GMSockets
-    var playerAdapter: PlayerAdapter
+    let playerAdapter: PlayerAdapter
+    let notificationMonitor: NotificationMonitor
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
          playerAdapter: PlayerAdapter = PlayerAdapter()) {
         self.socketManager = socketManager
         self.playerAdapter = playerAdapter
+        self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
+        self.notificationMonitor.startListeningForNotifications()
     }
 
     var body: some View {
