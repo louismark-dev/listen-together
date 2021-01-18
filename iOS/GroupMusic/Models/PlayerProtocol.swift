@@ -8,7 +8,6 @@
 import Foundation
 
 protocol PlayerProtocol {
-    var queuePublisher: Published<GMAppleMusicQueue>.Publisher { get }
     var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { get }
     var socketManager: GMSockets { get }
     var notificationCenter: NotificationCenter { get }

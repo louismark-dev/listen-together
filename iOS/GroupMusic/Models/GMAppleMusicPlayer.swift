@@ -10,8 +10,7 @@ import MediaPlayer
 import Combine
 
 class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
-    @Published var queue: GMAppleMusicQueue = GMAppleMusicQueue() // TODO: Remove
-    var queuePublisher: Published<GMAppleMusicQueue>.Publisher { $queue }
+    var queue: GMAppleMusicQueue = GMAppleMusicQueue()
     
     @Published var state: State = State()
     var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
