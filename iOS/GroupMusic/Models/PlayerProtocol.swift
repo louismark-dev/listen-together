@@ -26,4 +26,6 @@ protocol PlayerProtocol {
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
     
+    func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
+    
 }

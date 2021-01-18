@@ -68,4 +68,8 @@ class PlayerAdapter: ObservableObject {
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.prependToQueue(withTracks: tracks, completion: completion)
     }
+    
+    func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
+        self.player.appendToQueue(withTracks: tracks, completion: completion)
+    }
 }

@@ -10,6 +10,7 @@ import MediaPlayer
 import Combine
 
 class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
+    
     var queue: GMAppleMusicQueue = GMAppleMusicQueue()
     
     @Published var state: State = State()
@@ -219,27 +220,17 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     
     /// Appends track to the song queue
     /// - Parameters:
-    ///     - shouldAddToLocalQueue: If false, will only emit event, without adding to this device's  queue
-    public func appendToQueue(withTracks tracks: [Track], shouldAddToLocalQueue: Bool) {
-        if (shouldAddToLocalQueue) {
-            self.appendToMPMusicPlayerQueue(withTracks: tracks)
-        } else {
-            do {
-                try self.emitAppendToQueueEvent(withTracks: tracks)
-            } catch {
-                fatalError(error.localizedDescription)
-            }
-        }
+    func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
+        self.appendToMPMusicPlayerQueue(withTracks: tracks, completion: completion)
     }
     
     /// Prepends track to the song queue
     /// - Parameters:
-    ///     - shouldAddToLocalQueue: If false, will only emit event, without adding to this device's  queue
     public func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.prependToMPMusicPlayerQueue(withTracks: tracks, completion: completion)
     }
     
-    private func appendToMPMusicPlayerQueue(withTracks tracks: [Track]) {
+    private func appendToMPMusicPlayerQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
             let storeIDs = tracks.map({ (song) -> String in
                 song.id
@@ -254,7 +245,9 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
             }
             do {
                 try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
-                try self.emitAppendToQueueEvent(withTracks: tracks)
+                if (completion != nil) {
+                    completion!()
+                }
             } catch {
                 fatalError(error.localizedDescription)
             }

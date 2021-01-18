@@ -104,17 +104,37 @@ struct PreviewView: View {
         }
     }
     
-    private func emitPrependToQueueEvent(withTracks: [Track]) {
+    /// Inserts the media items defined into the current queue immediately after the currently playing media item.
+    private func appendToQueue() {
+//        self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
+        
+        // IF OBSERVER
+        if (self.socketManager.state.isCoordinator == false) {
+            self.emitAppendToQueueEvent(withTracks: [self.previewTrack])
+        }
+        
+        // IF COORDINATOR
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], completion: {
+                self.emitAppendToQueueEvent(withTracks: [self.previewTrack])
+            })
+        }
+    }
+    
+    private func emitPrependToQueueEvent(withTracks tracks: [Track]) {
         do {
-            try self.socketManager.emitPrependToQueueEvent(withTracks: [self.previewTrack])
+            try self.socketManager.emitPrependToQueueEvent(withTracks: tracks)
         } catch {
             print("Emit failed \(error.localizedDescription)")
         }
     }
     
-    /// Inserts the media items defined into the current queue immediately after the currently playing media item.
-    private func appendToQueue() {
-//        self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
+    private func emitAppendToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitAppendToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
     }
 }
 

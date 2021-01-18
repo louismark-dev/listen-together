@@ -133,6 +133,10 @@ class GMAppleMusicControllerPlayer: ObservableObject, PlayerProtocol {
     @objc private func didRecieveAppendToQueueEvent(_ notification: Notification) {
         let tracks = notification.object as! [Track]
         print(tracks)
+        self.appendToQueue(withTracks: tracks, completion: nil)
+    }
+    
+    func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.queue.append(tracks: tracks)
         print(self.queue.state.queue)
     }
