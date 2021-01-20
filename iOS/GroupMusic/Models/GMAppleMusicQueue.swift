@@ -54,14 +54,14 @@ struct GMAppleMusicQueue: Codable {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public mutating func prepend(track: Track) {
-        self.state.queue.insert(track, at: self.state.indexOfNowPlayingItem)
+        self.state.queue.insert(track, at: self.state.indexOfNowPlayingItem + 1)
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public mutating func prepend(tracks: [Track]) {
-        self.state.queue.insert(contentsOf: tracks, at: self.state.indexOfNowPlayingItem)
+        self.state.queue.insert(contentsOf: tracks, at: self.state.indexOfNowPlayingItem + 1)
     }
     
     // MARK: Play State Management
