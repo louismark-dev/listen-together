@@ -8,8 +8,8 @@
 import Foundation
 import MediaPlayer
 
-class GMAppleMusicQueue: ObservableObject {
-    @Published public var state: GMAppleMusicQueue.State
+struct GMAppleMusicQueue: Codable {
+    public var state: GMAppleMusicQueue.State
     
     init() {
         self.state = GMAppleMusicQueue.State(queue: [], indexOfNowPlayingItem: 0)
@@ -26,7 +26,7 @@ class GMAppleMusicQueue: ObservableObject {
     /// - Parameters:
     ///     - mpMediaItems: The sorted MPMediaItems returned by the MPMusicPlayerApplicationController.perform() completion handler
     ///     - withNewTracks: The new Track objects that are being added to the queue
-    public func setQueueTo(mpMediaItems: [MPMediaItem], withNewTracks tracks: [Track]) throws {
+    public mutating func setQueueTo(mpMediaItems: [MPMediaItem], withNewTracks tracks: [Track]) throws {
         var unsortedTracks = self.state.queue
         unsortedTracks.append(contentsOf: tracks)
         let sortedTracks = try mpMediaItems.map { (mediaItem) -> Track in
@@ -42,25 +42,25 @@ class GMAppleMusicQueue: ObservableObject {
     /// Inserts the media item  after the last media item in the current queue.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func append(track: Track) {
+    public mutating func append(track: Track) {
         self.state.queue.append(track)
     }
     
-    public func append(tracks: [Track]) {
+    public mutating func append(tracks: [Track]) {
         self.state.queue.append(contentsOf: tracks)
     }
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func prepend(track: Track) {
+    public mutating func prepend(track: Track) {
         self.state.queue.insert(track, at: self.state.indexOfNowPlayingItem)
     }
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func prepend(tracks: [Track]) {
+    public mutating func prepend(tracks: [Track]) {
         self.state.queue.insert(contentsOf: tracks, at: self.state.indexOfNowPlayingItem)
     }
     
@@ -69,7 +69,7 @@ class GMAppleMusicQueue: ObservableObject {
     /// Marks the currently playing item as the next media item in the playback queue
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func skipToNextItem() {
+    public mutating func skipToNextItem() {
         let nextIndex = self.state.indexOfNowPlayingItem + 1
         if self.state.queue.indices.contains(nextIndex) {
             self.state.indexOfNowPlayingItem = nextIndex
@@ -79,7 +79,7 @@ class GMAppleMusicQueue: ObservableObject {
     /// Marks the previously playing item as the current item in the playback queue
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func skipToPreviousItem() {
+    public mutating func skipToPreviousItem() {
         let previousIndex = self.state.indexOfNowPlayingItem - 1
         if self.state.queue.indices.contains(previousIndex) {
             self.state.indexOfNowPlayingItem = previousIndex

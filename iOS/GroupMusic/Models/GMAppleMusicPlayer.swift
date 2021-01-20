@@ -10,9 +10,6 @@ import MediaPlayer
 import Combine
 
 class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
-    
-    private var queue: GMAppleMusicQueue = GMAppleMusicQueue()
-    
     @Published var state: State = State()
     var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
     
@@ -20,9 +17,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     let notificationCenter: NotificationCenter
     private let appleMusicManager: GMAppleMusic // TODO: Remove this dependancy. It is only for testing
     let player: MPMusicPlayerApplicationController
-    
-    private var cancellables: Set<AnyCancellable> = []
-    
+        
     init(musicPlayer: MPMusicPlayerApplicationController = MPMusicPlayerApplicationController.applicationQueuePlayer,
          socketManager: GMSockets = GMSockets.sharedInstance,
          notificationCenter: NotificationCenter = .default,
@@ -34,18 +29,6 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
         self.fillQueueWithTestItems()
         
         self.setupNotificationCenterObservers()
-        self.subscribeToQueuePublisher()
-    }
-    
-    /**
-     Updates GMAppleMusicPlayer's state whenever GMAppleMusicQueue.state is updated.
-     */
-    private func subscribeToQueuePublisher() {
-        self.queue.$state
-            .receive(on: RunLoop.main)
-            .sink { (newQueueState) in
-                self.state.queueState = newQueueState
-            }.store(in: &cancellables)
     }
         
     private func fillQueueWithTestItems() {
@@ -60,7 +43,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
             }
             if let songs = results.songs?.data {
                 DispatchQueue.main.async {
-                    self.queue.append(tracks: songs)
+                    self.state.queue.append(tracks: songs)
                     self.player.setQueue(with: songs.map({ (song) -> String in
                         song.id
                     })) // TODO: Come up with a better way to keep the queues in sync
@@ -111,7 +94,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToNextItem(shouldEmitEvent: Bool = true) {
         self.player.skipToNextItem()
-        self.queue.skipToNextItem()
+        self.state.queue.skipToNextItem()
         do {
             if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
         } catch {
@@ -137,7 +120,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToPreviousItem(shouldEmitEvent: Bool = true) {
         self.player.skipToPreviousItem()
-        self.queue.skipToPreviousItem()
+        self.state.queue.skipToPreviousItem()
         do {
             if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
         } catch {
@@ -198,7 +181,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
                 return
             }
             do {
-                try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
+                try self.state.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
                 if (completion != nil) {
                     completion!()
                 }
@@ -214,7 +197,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
                 song.id
             })
             let descriptor = MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs)
-            guard let indexOfNowPlayingItem = self.state.queueState?.indexOfNowPlayingItem else { return }
+            let indexOfNowPlayingItem = self.state.queue.state.indexOfNowPlayingItem
             let currentItem = queue.items[indexOfNowPlayingItem]
             queue.insert(descriptor, after: currentItem)
         } completionHandler: { (newQueue: MPMusicPlayerControllerQueue, error) in
@@ -223,7 +206,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
                 return
             }
             do {
-                try self.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
+                try self.state.queue.setQueueTo(mpMediaItems: newQueue.items, withNewTracks: tracks)
                 if (completion != nil) {
                     completion!()
                 }
@@ -245,7 +228,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
 extension GMAppleMusicPlayer {
     struct State: Codable {
         var playbackState: MPMusicPlaybackState = .stopped
-        var queueState: GMAppleMusicQueue.State?
         var playbackPosition: TimeInterval = 0.0
+        var queue: GMAppleMusicQueue = GMAppleMusicQueue()
     }
 }

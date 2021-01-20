@@ -12,7 +12,7 @@ struct AppleMusicControllerView: View {
     
     var body: some View {
         VStack {
-            Text(self.playerAdapter.state.queueState?.nowPlayingItem?.attributes?.name  ?? "No name available")
+            Text(self.playerAdapter.state.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
             HStack {
                 Button(action: {
                     self.playerAdapter.skipToPreviousItem(shouldEmitEvent: true)

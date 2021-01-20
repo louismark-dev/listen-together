@@ -9,9 +9,7 @@ import Foundation
 import Combine
 
 class GMAppleMusicController: ObservableObject, PlayerProtocol {
-    
-    private var queue: GMAppleMusicQueue
-    
+        
     @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
     var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
     
@@ -19,25 +17,10 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
     let notificationCenter: NotificationCenter
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
-         queue: GMAppleMusicQueue = GMAppleMusicQueue(),
          notificationCenter: NotificationCenter = .default) {
-        self.queue = queue
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
         self.setupNotificationCenterObservers()
-    }
-        
-    private var cancellables: Set<AnyCancellable> = []
-    
-    /**
-     Updates GMAppleMusicPlayer's state whenever GMAppleMusicQueue.state is updated.
-     */
-    private func subscribeToQueuePublisher() {
-        self.queue.$state
-            .receive(on: RunLoop.main)
-            .sink { (newQueueState) in
-                self.state.queueState = newQueueState
-            }.store(in: &cancellables)
     }
     
     func updateState(with state: GMAppleMusicPlayer.State) {
@@ -66,7 +49,7 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
     }
     
     func skipToNextItem(shouldEmitEvent: Bool = true) {
-        self.queue.skipToNextItem()
+        self.state.queue.skipToNextItem()
         do {
             if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
         } catch {
@@ -80,7 +63,7 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
     }
     
     func skipToPreviousItem(shouldEmitEvent: Bool = true) {
-        self.queue.skipToPreviousItem()
+        self.state.queue.skipToPreviousItem()
         do {
             if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
         } catch {
@@ -94,13 +77,13 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
     }
     
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
-        self.queue.append(tracks: tracks)
-        print(self.queue.state.queue)
+        self.state.queue.append(tracks: tracks)
+        print(self.state.queue.state.queue)
     }
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
-        self.queue.prepend(tracks: tracks)
-        print(self.queue.state.queue)
+        self.state.queue.prepend(tracks: tracks)
+        print(self.state.queue.state.queue)
     }
     
 }
