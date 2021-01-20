@@ -14,20 +14,20 @@ protocol PlayerProtocol {
     
     func updateState(with state: GMAppleMusicPlayer.State)
     
-    func play(shouldEmitEvent: Bool)
+    func play(completion: (() -> Void)?)
     
-    func pause(shouldEmitEvent: Bool)
+    func pause(completion: (() -> Void)?)
     
-    func skipToNextItem(shouldEmitEvent: Bool)
+    func skipToNextItem(completion: (() -> Void)?)
     
-    func skipToBeginning(shouldEmitEvent: Bool)
+    func skipToBeginning(completion: (() -> Void)?)
     
-    func skipToPreviousItem(shouldEmitEvent: Bool)
-    
-    func setupNotificationCenterObservers()
+    func skipToPreviousItem(completion: (() -> Void)?)
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
     
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
+    
+    func setupNotificationCenterObservers()
     
 }

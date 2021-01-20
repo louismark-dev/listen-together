@@ -60,19 +60,51 @@ class NotificationMonitor {
     }
     
     @objc private func didRecievePlayEvent() {
-        self.playerAdapter.play(shouldEmitEvent: false)
+        self.playerAdapter.play(completion: {
+            // Emit event only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitPlayEvent()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        })
     }
 
     @objc private func didRecievePauseEvent() {
-        self.playerAdapter.pause(shouldEmitEvent: false)
+        self.playerAdapter.pause(completion: {
+            // Emit event only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitPauseEvent()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        })
     }
 
     @objc private func didRecieveForwardEvent() {
-        self.playerAdapter.skipToNextItem(shouldEmitEvent: false)
+        self.playerAdapter.skipToNextItem(completion: {
+            // Emit event only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitForwardEvent()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        })
     }
 
     @objc private func didRecievePreviousEvent() {
-        self.playerAdapter.skipToPreviousItem(shouldEmitEvent: false)
+        self.playerAdapter.skipToPreviousItem(completion: {
+            // Emit event only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitPreviousEvent()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        })
     }
     
     @objc private func didRecievePrependToQueueEvent(_ notification: NSNotification) {

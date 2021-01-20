@@ -57,20 +57,20 @@ class PlayerAdapter: ObservableObject {
         self.player.updateState(with: state)
     }
     
-    func play(shouldEmitEvent: Bool  = true) {
-        self.player.play(shouldEmitEvent: shouldEmitEvent)
+    func play(completion: (() -> Void)?) {
+        self.player.play(completion: completion)
     }
     
-    func pause(shouldEmitEvent: Bool  = true) {
-        self.player.pause(shouldEmitEvent: shouldEmitEvent)
+    func pause(completion: (() -> Void)?) {
+        self.player.pause(completion: completion)
     }
     
-    func skipToNextItem(shouldEmitEvent: Bool  = true) {
-        self.player.skipToNextItem(shouldEmitEvent: shouldEmitEvent)
+    func skipToNextItem(completion: (() -> Void)?) {
+        self.player.skipToNextItem(completion: completion)
     }
     
-    func skipToPreviousItem(shouldEmitEvent: Bool = true) {
-        self.player.skipToPreviousItem(shouldEmitEvent: shouldEmitEvent)
+    func skipToPreviousItem(completion: (() -> Void)?) {
+        self.player.skipToPreviousItem(completion: completion)
     }
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {

@@ -9,14 +9,18 @@ import SwiftUI
 
 struct AppleMusicControllerView: View {
     @EnvironmentObject var playerAdapter: PlayerAdapter
+    let socketManager: GMSockets
     
+
+    init(socketManager: GMSockets = GMSockets.sharedInstance) {
+        self.socketManager = socketManager
+    }
+ 
     var body: some View {
         VStack {
             Text(self.playerAdapter.state.queue.state.nowPlayingItem?.attributes?.name ?? "No name available")
             HStack {
-                Button(action: {
-                    self.playerAdapter.skipToPreviousItem(shouldEmitEvent: true)
-                }) {
+                Button(action: self.skipToPreviousItem) {
                     Image(systemName: "backward.fill")
                 }
                 Spacer()
@@ -26,9 +30,7 @@ struct AppleMusicControllerView: View {
                     Image(systemName: (self.playerAdapter.state.playbackState != .playing) ? "play.fill" : "pause.fill")
                 }
                 Spacer()
-                Button(action: {
-                    self.playerAdapter.skipToNextItem(shouldEmitEvent: true)
-                }) {
+                Button(action: self.skipToNextItem) {
                     Image(systemName: "forward.fill")
                 }
             }
@@ -39,9 +41,33 @@ struct AppleMusicControllerView: View {
     
     private func togglePlayback() {
         if self.playerAdapter.state.playbackState != .playing {
-            self.playerAdapter.play(shouldEmitEvent: true)
+            do {
+                try self.socketManager.emitPlayEvent()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
         } else {
-            self.playerAdapter.pause(shouldEmitEvent: true)
+            do {
+                try self.socketManager.emitPauseEvent()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func skipToNextItem() {
+        do {
+            try self.socketManager.emitForwardEvent()
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    private func skipToPreviousItem() {
+        do {
+            try self.socketManager.emitPreviousEvent()
+        } catch {
+            fatalError(error.localizedDescription)
         }
     }
 }

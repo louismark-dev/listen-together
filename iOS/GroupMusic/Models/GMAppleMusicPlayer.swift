@@ -66,25 +66,20 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     /// Starts playback
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func play(shouldEmitEvent: Bool = true) {
+    public func play(completion: (() -> Void)?) {
         self.player.play()
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitPlayEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
-            // TODO: Should revert to previous state in case of error (do this for all the events)
+        if let completion = completion {
+            completion()
         }
     }
     
     /// Pauses playback
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func pause(shouldEmitEvent: Bool = true) {
+    public func pause(completion: (() -> Void)?) {
         self.player.pause()
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitPauseEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
         
     }
@@ -92,25 +87,21 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     /// Starts playback of the next media item in the playback queue; or, the music player is not playing, designates the next media item as the next to be played.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func skipToNextItem(shouldEmitEvent: Bool = true) {
+    public func skipToNextItem(completion: (() -> Void)?) {
         self.player.skipToNextItem()
         self.state.queue.skipToNextItem()
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
     }
     
     /// Starts playback of the previous media item in the playback queue; or, the music player is not playing, designates the previous media item as the next to be played.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func skipToBeginning(shouldEmitEvent: Bool = true) {
+    public func skipToBeginning(completion: (() -> Void)?) {
         self.player.skipToBeginning()
-        do {
-            // TODO: Need to setup event to emit
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
     }
     
@@ -118,13 +109,11 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     /// Starts playback of the previous media item in the playback queue; or, the music player is not playing, designates the previous media item as the next to be played.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
-    public func skipToPreviousItem(shouldEmitEvent: Bool = true) {
+    public func skipToPreviousItem(completion: (() -> Void)?) {
         self.player.skipToPreviousItem()
         self.state.queue.skipToPreviousItem()
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
     }
     

@@ -29,45 +29,36 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
     
     // MARK: Playback Controls
     
-    func play(shouldEmitEvent: Bool  = true) {
+    func play(completion: (() -> Void)?) {
         self.state.playbackState = .playing
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitPlayEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
-            // TODO: Should revert to previous state in case of error (do this for all the events)
+        if let completion = completion {
+            completion()
         }
     }
     
-    func pause(shouldEmitEvent: Bool = true) {
+    func pause(completion: (() -> Void)?) {
         self.state.playbackState = .paused
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitPauseEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
     }
     
-    func skipToNextItem(shouldEmitEvent: Bool = true) {
+    func skipToNextItem(completion: (() -> Void)?) {
         self.state.queue.skipToNextItem()
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitForwardEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
     }
     
-    func skipToBeginning(shouldEmitEvent: Bool = true) {
+    func skipToBeginning(completion: (() -> Void)?) {
         // TODO: Adjust playback time
         // TODO: Emit event
     }
     
-    func skipToPreviousItem(shouldEmitEvent: Bool = true) {
+    func skipToPreviousItem(completion: (() -> Void)?) {
         self.state.queue.skipToPreviousItem()
-        do {
-            if (shouldEmitEvent) { try self.socketManager.emitPreviousEvent() }
-        } catch {
-            fatalError(error.localizedDescription)
+        if let completion = completion {
+            completion()
         }
     }
     
