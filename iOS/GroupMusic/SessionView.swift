@@ -11,6 +11,10 @@ struct SessionView: View {
     @State var sessionID: String = ""
     var socketManager: GMSockets
     
+    init(socketManager: GMSockets = GMSockets.sharedInstance) {
+        self.socketManager = socketManager
+    }
+    
     var body: some View {
         VStack {
             Button("Start New Session") {
@@ -21,10 +25,6 @@ struct SessionView: View {
                 Button(action: joinSession, label: { Text("Join") })
             }
         }
-    }
-    
-    init(socketManager: GMSockets = GMSockets.sharedInstance) {
-        self.socketManager = socketManager
     }
     
     private func joinSession() {

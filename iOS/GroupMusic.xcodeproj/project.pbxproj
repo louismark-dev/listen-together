@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		250E821025B932EB001990E9 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E820F25B932EB001990E9 /* RootView.swift */; };
+		250E821425B93861001990E9 /* PlaybackControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821325B93861001990E9 /* PlaybackControlsView.swift */; };
+		250E821825B93894001990E9 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821725B93894001990E9 /* BottomBarView.swift */; };
+		250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821F25B938F2001990E9 /* SessionSettingsView.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
+		2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE825B9321000F65B8F /* QueueCellBackground.swift */; };
+		2577BCED25B9321100F65B8F /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE925B9321000F65B8F /* QueueView.swift */; };
+		2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCEA25B9321100F65B8F /* QueueCell.swift */; };
+		2577BCF525B9326200F65B8F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCF425B9326200F65B8F /* SampleData.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -69,6 +77,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		250E820F25B932EB001990E9 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		250E821325B93861001990E9 /* PlaybackControlsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackControlsView.swift; sourceTree = "<group>"; };
+		250E821725B93894001990E9 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BottomBarView.swift; path = GroupMusic/Views/BottomBar/BottomBarView.swift; sourceTree = SOURCE_ROOT; };
+		250E821F25B938F2001990E9 /* SessionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSettingsView.swift; sourceTree = "<group>"; };
+		2577BCE825B9321000F65B8F /* QueueCellBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCellBackground.swift; sourceTree = "<group>"; };
+		2577BCE925B9321000F65B8F /* QueueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
+		2577BCEA25B9321100F65B8F /* QueueCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCell.swift; sourceTree = "<group>"; };
+		2577BCF425B9326200F65B8F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -144,6 +160,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		250E822225B9390D001990E9 /* BottomBar */ = {
+			isa = PBXGroup;
+			children = (
+				250E821725B93894001990E9 /* BottomBarView.swift */,
+			);
+			path = BottomBar;
+			sourceTree = "<group>";
+		};
+		2577BCE625B931B800F65B8F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				250E820F25B932EB001990E9 /* RootView.swift */,
+				2577BCF425B9326200F65B8F /* SampleData.swift */,
+				250E821325B93861001990E9 /* PlaybackControlsView.swift */,
+				2577BCF125B9322C00F65B8F /* Queue */,
+				250E822225B9390D001990E9 /* BottomBar */,
+				250E821F25B938F2001990E9 /* SessionSettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2577BCF125B9322C00F65B8F /* Queue */ = {
+			isa = PBXGroup;
+			children = (
+				2577BCEA25B9321100F65B8F /* QueueCell.swift */,
+				2577BCE825B9321000F65B8F /* QueueCellBackground.swift */,
+				2577BCE925B9321000F65B8F /* QueueView.swift */,
+			);
+			path = Queue;
+			sourceTree = "<group>";
+		};
 		BF266BFE259026BA00029A2D /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,6 +242,7 @@
 		BF3468C0258FFC92000D609B /* GroupMusic */ = {
 			isa = PBXGroup;
 			children = (
+				2577BCE625B931B800F65B8F /* Views */,
 				BF3468C1258FFC92000D609B /* AppDelegate.swift */,
 				BF3468C3258FFC92000D609B /* SceneDelegate.swift */,
 				BF3468C5258FFC92000D609B /* ContentView.swift */,
@@ -365,6 +413,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				250E821425B93861001990E9 /* PlaybackControlsView.swift in Sources */,
 				BF3468C2258FFC92000D609B /* AppDelegate.swift in Sources */,
 				BF3468C4258FFC92000D609B /* SceneDelegate.swift in Sources */,
 				BF3468C6258FFC92000D609B /* ContentView.swift in Sources */,
@@ -379,8 +428,13 @@
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
 				BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */,
 				BF8BEE60259B1B9100B9DCD3 /* Artist.swift in Sources */,
+				250E821025B932EB001990E9 /* RootView.swift in Sources */,
 				BF8BEE5F259B1B9100B9DCD3 /* MusicVideo.swift in Sources */,
+				2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */,
 				BF8BEE67259B1B9100B9DCD3 /* Storefront.swift in Sources */,
+				250E821825B93894001990E9 /* BottomBarView.swift in Sources */,
+				2577BCF525B9326200F65B8F /* SampleData.swift in Sources */,
+				250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */,
 				BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */,
 				BF5EE24C25A15445000C23DD /* AppleMusicPlayerView.swift in Sources */,
 				BF8BEE81259B1C1B00B9DCD3 /* Include.swift in Sources */,
@@ -393,6 +447,7 @@
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
 				BF8BEE64259B1B9100B9DCD3 /* EditorialNotes.swift in Sources */,
 				BF8BEE6B259B1B9100B9DCD3 /* Artwork.swift in Sources */,
+				2577BCED25B9321100F65B8F /* QueueView.swift in Sources */,
 				BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */,
 				BF266C1125904B2200029A2D /* CMTime+Extension.swift in Sources */,
 				BF8BEE75259B1BC500B9DCD3 /* Resource.swift in Sources */,
@@ -412,6 +467,7 @@
 				BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */,
 				BF8BEE77259B1BC500B9DCD3 /* Relationship.swift in Sources */,
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
+				2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */,
 				BF8BEE80259B1C1B00B9DCD3 /* UrlFetcher.swift in Sources */,
 				BF5EE24125A13E06000C23DD /* GMAppleMusicPlayer.swift in Sources */,
 			);
