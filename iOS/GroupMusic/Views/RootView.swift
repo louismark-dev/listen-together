@@ -36,7 +36,6 @@ struct RootView: View {
 //            BackgroundBlurView(selectedCell: self.$selectedCell, queueItems: sampleData)
             VStack {
                 QueueView()
-                    .environmentObject(self.playerAdapter)
                 Spacer()
                 PlaybackControlsView()
                     .scaleEffect()
@@ -46,6 +45,7 @@ struct RootView: View {
             }
                 .padding()
         }
+        .environmentObject(self.playerAdapter)
     }
 }
 

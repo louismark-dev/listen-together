@@ -13,7 +13,7 @@ struct QueueView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 20) {
                 ForEach(self.playerAdapter.state.queue.state.queue) { (track: Track) in
                     // TODO: Handle case where attributes is null
                     if let attributes = track.attributes {
