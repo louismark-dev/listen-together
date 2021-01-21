@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -135,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2548812025B92A89005241DB /* URLImage in Frameworks */,
 				BF831EAE2591DF260074FC3A /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -298,6 +300,7 @@
 			name = GroupMusic;
 			packageProductDependencies = (
 				BF831EAD2591DF260074FC3A /* SocketIO */,
+				2548811F25B92A89005241DB /* URLImage */,
 			);
 			productName = GroupMusic;
 			productReference = BF3468BE258FFC92000D609B /* GroupMusic.app */;
@@ -328,6 +331,7 @@
 			mainGroup = BF3468B5258FFC91000D609B;
 			packageReferences = (
 				BF831EAC2591DF260074FC3A /* XCRemoteSwiftPackageReference "socket" */,
+				2548811E25B92A89005241DB /* XCRemoteSwiftPackageReference "url-image" */,
 			);
 			productRefGroup = BF3468BF258FFC92000D609B /* Products */;
 			projectDirPath = "";
@@ -609,6 +613,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2548811E25B92A89005241DB /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.1;
+			};
+		};
 		BF831EAC2591DF260074FC3A /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
@@ -620,6 +632,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2548811F25B92A89005241DB /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2548811E25B92A89005241DB /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
 		BF831EAD2591DF260074FC3A /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BF831EAC2591DF260074FC3A /* XCRemoteSwiftPackageReference "socket" */;
