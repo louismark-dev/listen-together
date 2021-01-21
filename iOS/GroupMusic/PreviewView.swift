@@ -30,13 +30,15 @@ struct PreviewView: View {
         VStack {
             Spacer()
             HStack {
-                URLImage(url: URL(string: "https://e.snmc.io/i/600/w/8ed2434495c11a1fcd38b9d89a4d74d9/7485998")!, content: { (image: Image) in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                })
-                    .frame(maxWidth: 100)
-                    .cornerRadius(self.radius)
+                if let artworkURL = self.previewTrack.attributes?.artwork.urlForMaxWidth() {
+                    URLImage(url: artworkURL, content: { (image: Image) in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    })
+                        .frame(maxWidth: 100)
+                        .cornerRadius(self.radius)
+                }
                 VStack(alignment: .leading) {
                     Text(self.previewTrack.attributes?.name ?? "---")
                         .font(.headline)

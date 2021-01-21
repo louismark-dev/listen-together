@@ -47,4 +47,8 @@ public struct Artwork: Codable {
         let urlString = url.replacingOccurrences(of: "{w}", with: "\(width)").replacingOccurrences(of: "{h}", with: "\(height)")
         return URL(string: urlString)
     }
+    
+    public func urlForMaxWidth() -> URL? {
+        return url(forWidth: self.width)
+    }
 }

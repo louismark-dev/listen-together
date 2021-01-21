@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
+		2577BCE325B92C7C00F65B8F /* GMAppleMusicImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE225B92C7C00F65B8F /* GMAppleMusicImages.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -69,6 +70,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2577BCE225B92C7C00F65B8F /* GMAppleMusicImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicImages.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				BF8BEE85259B1C2300B9DCD3 /* Client */,
 				BF8BEE7A259B1BD200B9DCD3 /* CoreObjects */,
 				BF8BEE6D259B1B9700B9DCD3 /* ResourceObjects */,
+				2577BCE225B92C7C00F65B8F /* GMAppleMusicImages.swift */,
 			);
 			path = "Apple Music";
 			sourceTree = "<group>";
@@ -409,6 +412,7 @@
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
 				BF5EE22B25A03353000C23DD /* AudioPreview.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
+				2577BCE325B92C7C00F65B8F /* GMAppleMusicImages.swift in Sources */,
 				BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */,
 				BF8BEE77259B1BC500B9DCD3 /* Relationship.swift in Sources */,
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
