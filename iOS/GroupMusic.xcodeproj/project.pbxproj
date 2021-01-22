@@ -20,11 +20,6 @@
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
-		BF266C062590279D00029A2D /* sample5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF266C012590279C00029A2D /* sample5.mp3 */; };
-		BF266C072590279D00029A2D /* sample1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF266C022590279C00029A2D /* sample1.mp3 */; };
-		BF266C082590279D00029A2D /* sample2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF266C032590279C00029A2D /* sample2.mp3 */; };
-		BF266C092590279D00029A2D /* sample3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF266C042590279C00029A2D /* sample3.mp3 */; };
-		BF266C0A2590279D00029A2D /* sample4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF266C052590279D00029A2D /* sample4.mp3 */; };
 		BF266C0D25902A2000029A2D /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266C0C25902A2000029A2D /* PlayerView.swift */; };
 		BF266C1125904B2200029A2D /* CMTime+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266C1025904B2200029A2D /* CMTime+Extension.swift */; };
 		BF3468C2258FFC92000D609B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3468C1258FFC92000D609B /* AppDelegate.swift */; };
@@ -90,11 +85,6 @@
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
-		BF266C012590279C00029A2D /* sample5.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sample5.mp3; sourceTree = "<group>"; };
-		BF266C022590279C00029A2D /* sample1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sample1.mp3; sourceTree = "<group>"; };
-		BF266C032590279C00029A2D /* sample2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sample2.mp3; sourceTree = "<group>"; };
-		BF266C042590279C00029A2D /* sample3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sample3.mp3; sourceTree = "<group>"; };
-		BF266C052590279D00029A2D /* sample4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sample4.mp3; sourceTree = "<group>"; };
 		BF266C0C25902A2000029A2D /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		BF266C1025904B2200029A2D /* CMTime+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime+Extension.swift"; sourceTree = "<group>"; };
 		BF3468BE258FFC92000D609B /* GroupMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroupMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -217,11 +207,6 @@
 		BF266C002590277C00029A2D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BF266C022590279C00029A2D /* sample1.mp3 */,
-				BF266C032590279C00029A2D /* sample2.mp3 */,
-				BF266C042590279C00029A2D /* sample3.mp3 */,
-				BF266C052590279D00029A2D /* sample4.mp3 */,
-				BF266C012590279C00029A2D /* sample5.mp3 */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -398,14 +383,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF266C062590279D00029A2D /* sample5.mp3 in Resources */,
 				BF3468CE258FFC94000D609B /* LaunchScreen.storyboard in Resources */,
 				BF3468CB258FFC94000D609B /* Preview Assets.xcassets in Resources */,
-				BF266C072590279D00029A2D /* sample1.mp3 in Resources */,
 				BF3468C8258FFC94000D609B /* Assets.xcassets in Resources */,
-				BF266C092590279D00029A2D /* sample3.mp3 in Resources */,
-				BF266C082590279D00029A2D /* sample2.mp3 in Resources */,
-				BF266C0A2590279D00029A2D /* sample4.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

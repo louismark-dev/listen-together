@@ -24,6 +24,7 @@ struct QueueView: View {
                                       indexInQueue: self.playerAdapter.state.queue.state.queue.firstIndex(of: track)!,
                                       expanded: false)
                                 .id(track)
+//                                .animation(Animation.default.speed(1))
                         }
                     }
                 }

@@ -124,6 +124,10 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
                                             selector: #selector(self.playbackStateDidChange),
                                             name: .MPMusicPlayerControllerPlaybackStateDidChange,
                                             object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(self.nowPlayingItemDidChange),
+                                            name: .MPMusicPlayerControllerNowPlayingItemDidChange,
+                                            object: nil)
         
         self.player.beginGeneratingPlaybackNotifications()
         
@@ -138,8 +142,27 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
         self.socketManager.updateQueuePlayerState(with: self.state)
     }
     
+    @objc private func nowPlayingItemDidChange() {
+        self.state.queue.state.indexOfNowPlayingItem = self.player.indexOfNowPlayingItem
+        // TODO: Send update with index of new playing item
+        self.socketManager.updateQueuePlayerState(with: self.state)
+    }
+    
     @objc private func playbackStateDidChange() {
         self.state.playbackState = player.playbackState
+        if (player.playbackState == .playing) {
+            do {
+                try self.socketManager.emitPlayEvent()
+            } catch {
+                fatalError("ERROR: Could not emit play event in playbackStateDidChange: \(error.localizedDescription)")
+            }
+        } else {
+            do {
+                try self.socketManager.emitPauseEvent()
+            } catch {
+                fatalError("ERROR: Could not emit pause event in playbackStateDidChange: \(error.localizedDescription)")
+            }
+        }
     }
     
     // MARK: Queue Operations
