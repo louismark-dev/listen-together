@@ -32,7 +32,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     }
         
     private func fillQueueWithTestItems() {
-        self.appleMusicManager.search(term: "Young Thug", limit: 25) { (results: SearchResults?, error: Error?) in
+        self.appleMusicManager.search(term: "Beyonce", limit: 25) { (results: SearchResults?, error: Error?) in
             if let error = error {
                 print("ERROR: Could not retrive search results: \(error)")
                 return

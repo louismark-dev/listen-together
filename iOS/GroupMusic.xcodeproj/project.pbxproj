@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		250E821025B932EB001990E9 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E820F25B932EB001990E9 /* RootView.swift */; };
-		250E821425B93861001990E9 /* PlaybackControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821325B93861001990E9 /* PlaybackControlsView.swift */; };
+		250E821425B93861001990E9 /* PlaybackHostControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821325B93861001990E9 /* PlaybackHostControllerView.swift */; };
 		250E821825B93894001990E9 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821725B93894001990E9 /* BottomBarView.swift */; };
 		250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821F25B938F2001990E9 /* SessionSettingsView.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
@@ -16,6 +16,7 @@
 		2577BCED25B9321100F65B8F /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE925B9321000F65B8F /* QueueView.swift */; };
 		2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCEA25B9321100F65B8F /* QueueCell.swift */; };
 		2577BCF525B9326200F65B8F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCF425B9326200F65B8F /* SampleData.swift */; };
+		257E32B425BA6F4C003BA73F /* PlaybackGuestControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -78,13 +79,14 @@
 
 /* Begin PBXFileReference section */
 		250E820F25B932EB001990E9 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		250E821325B93861001990E9 /* PlaybackControlsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackControlsView.swift; sourceTree = "<group>"; };
+		250E821325B93861001990E9 /* PlaybackHostControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackHostControllerView.swift; sourceTree = "<group>"; };
 		250E821725B93894001990E9 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BottomBarView.swift; path = GroupMusic/Views/BottomBar/BottomBarView.swift; sourceTree = SOURCE_ROOT; };
 		250E821F25B938F2001990E9 /* SessionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSettingsView.swift; sourceTree = "<group>"; };
 		2577BCE825B9321000F65B8F /* QueueCellBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCellBackground.swift; sourceTree = "<group>"; };
 		2577BCE925B9321000F65B8F /* QueueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
 		2577BCEA25B9321100F65B8F /* QueueCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCell.swift; sourceTree = "<group>"; };
 		2577BCF425B9326200F65B8F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackGuestControllerView.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -173,7 +175,8 @@
 			children = (
 				250E820F25B932EB001990E9 /* RootView.swift */,
 				2577BCF425B9326200F65B8F /* SampleData.swift */,
-				250E821325B93861001990E9 /* PlaybackControlsView.swift */,
+				250E821325B93861001990E9 /* PlaybackHostControllerView.swift */,
+				257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */,
 				2577BCF125B9322C00F65B8F /* Queue */,
 				250E822225B9390D001990E9 /* BottomBar */,
 				250E821F25B938F2001990E9 /* SessionSettingsView.swift */,
@@ -413,12 +416,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				250E821425B93861001990E9 /* PlaybackControlsView.swift in Sources */,
+				250E821425B93861001990E9 /* PlaybackHostControllerView.swift in Sources */,
 				BF3468C2258FFC92000D609B /* AppDelegate.swift in Sources */,
 				BF3468C4258FFC92000D609B /* SceneDelegate.swift in Sources */,
 				BF3468C6258FFC92000D609B /* ContentView.swift in Sources */,
 				BF8BEE63259B1B9100B9DCD3 /* Album.swift in Sources */,
 				BFA652EE2597E94100BF0FF0 /* MonitorView.swift in Sources */,
+				257E32B425BA6F4C003BA73F /* PlaybackGuestControllerView.swift in Sources */,
 				BF8BEE49259B194400B9DCD3 /* GMAppleMusic.swift in Sources */,
 				BF8BEE76259B1BC500B9DCD3 /* AppleMusicAPIError.swift in Sources */,
 				BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */,

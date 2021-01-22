@@ -37,7 +37,13 @@ struct RootView: View {
             VStack {
                 QueueView()
                 Spacer()
-                PlaybackControlsView()
+                Group {
+                    if (socketManager.state.isCoordinator) {
+                        PlaybackHostControllerView()
+                    } else {
+                        PlaybackGuestControllerView()
+                    }
+                }
                     .scaleEffect()
                     .padding()
                 BottomBarView()

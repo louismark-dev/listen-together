@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PlaybackControlsView: View {
+struct PlaybackHostControllerView: View {
     @EnvironmentObject var playerAdapter: PlayerAdapter
     let socketManager: GMSockets
     
@@ -111,12 +111,12 @@ struct PlaybackControlsView: View {
     }
 }
 
-struct PlaybackControlsView_Previews: PreviewProvider {
+struct PlaybackHostControllerView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             Color("RussianViolet")
             .ignoresSafeArea(.all, edges: .all)
-            PlaybackControlsView()
+            PlaybackHostControllerView()
                 .padding()
         }
     }
