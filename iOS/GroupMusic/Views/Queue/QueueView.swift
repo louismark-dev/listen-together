@@ -12,17 +12,25 @@ struct QueueView: View {
 
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 20) {
-                ForEach(self.playerAdapter.state.queue.state.queue) { (track: Track) in
-                    // TODO: Handle case where attributes is null
-                    if let attributes = track.attributes {
-                        QueueCell(songName: attributes.name,
-                                  artistName: attributes.artistName,
-                                  artworkURL: attributes.artwork.url(forWidth: 400),
-                                  indexInQueue: self.playerAdapter.state.queue.state.queue.firstIndex(of: track)!,
-                                  expanded: false)
+        ScrollViewReader { scrollView in
+            ScrollView {
+                LazyVStack(spacing: 20) {
+                    ForEach(self.playerAdapter.state.queue.state.queue) { (track: Track) in
+                        // TODO: Handle case where attributes is null
+                        if let attributes = track.attributes {
+                            QueueCell(songName: attributes.name,
+                                      artistName: attributes.artistName,
+                                      artworkURL: attributes.artwork.url(forWidth: 400),
+                                      indexInQueue: self.playerAdapter.state.queue.state.queue.firstIndex(of: track)!,
+                                      expanded: false)
+                                .id(track)
+                        }
                     }
+                }
+            }
+            .onChange(of: self.playerAdapter.state.queue.state.indexOfNowPlayingItem) { (indexOfNowPlayingItem: Int) in
+                withAnimation {
+                    scrollView.scrollTo(self.playerAdapter.state.queue.state.queue[indexOfNowPlayingItem], anchor: .top)
                 }
             }
         }
