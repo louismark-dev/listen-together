@@ -20,6 +20,7 @@ struct QueueView: View {
                         QueueCell(songName: attributes.name,
                                   artistName: attributes.artistName,
                                   artworkURL: attributes.artwork.url(forWidth: 400),
+                                  indexInQueue: self.playerAdapter.state.queue.state.queue.firstIndex(of: track)!,
                                   expanded: false)
                     }
                 }

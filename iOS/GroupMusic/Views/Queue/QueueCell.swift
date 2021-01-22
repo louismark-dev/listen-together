@@ -12,7 +12,9 @@ struct QueueCell: View {
     var songName: String
     var artistName: String
     var artworkURL: URL?
+    let indexInQueue: Int
     @State var expanded: Bool = false
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     
     var body: some View {
         VStack {
@@ -46,10 +48,13 @@ struct QueueCell: View {
         .padding()
         .frame(height: expanded ? 140 : 80)
         .background(QueueCellBackground(artworkURL: self.artworkURL, expanded: $expanded))
-        .onTapGesture {
+        .onChange(of: self.playerAdapter.state.queue.state.indexOfNowPlayingItem) { (indexOfNowPlayingItem: Int) in
             withAnimation {
-                self.expanded.toggle()
+                self.expanded = (indexOfNowPlayingItem == indexInQueue)
             }
+        }
+        .onAppear {
+            self.expanded = (self.playerAdapter.state.queue.state.indexOfNowPlayingItem == indexInQueue)
         }
     }
 }
