@@ -17,6 +17,7 @@
 		2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCEA25B9321100F65B8F /* QueueCell.swift */; };
 		2577BCF525B9326200F65B8F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCF425B9326200F65B8F /* SampleData.swift */; };
 		257E32B425BA6F4C003BA73F /* PlaybackGuestControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */; };
+		2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -82,6 +83,7 @@
 		2577BCEA25B9321100F65B8F /* QueueCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCell.swift; sourceTree = "<group>"; };
 		2577BCF425B9326200F65B8F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackGuestControllerView.swift; sourceTree = "<group>"; };
+		2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				2577BCF125B9322C00F65B8F /* Queue */,
 				250E822225B9390D001990E9 /* BottomBar */,
 				250E821F25B938F2001990E9 /* SessionSettingsView.swift */,
+				2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -398,6 +401,7 @@
 			files = (
 				250E821425B93861001990E9 /* PlaybackHostControllerView.swift in Sources */,
 				BF3468C2258FFC92000D609B /* AppDelegate.swift in Sources */,
+				2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */,
 				BF3468C4258FFC92000D609B /* SceneDelegate.swift in Sources */,
 				BF3468C6258FFC92000D609B /* ContentView.swift in Sources */,
 				BF8BEE63259B1B9100B9DCD3 /* Album.swift in Sources */,

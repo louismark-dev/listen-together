@@ -27,7 +27,8 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
         self.notificationCenter = notificationCenter
         self.appleMusicManager = appleMusicManager
         self.fillQueueWithTestItems()
-        
+        self.updatePlaybackTime()
+
         self.setupNotificationCenterObservers()
     }
         
@@ -60,6 +61,13 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     
     func updateState(with state: State) {
         self.state = state
+    }
+    
+    private func updatePlaybackTime() {
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { (timer: Timer) in
+            self.state.playbackPosition.currentPlaybackTime = self.player.currentPlaybackTime
+            self.state.playbackPosition.playbackDuration = self.player.nowPlayingItem?.playbackDuration ?? 0.0
+        }
     }
     
     // MARK: Playback Controls
@@ -240,7 +248,19 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
 extension GMAppleMusicPlayer {
     struct State: Codable {
         var playbackState: MPMusicPlaybackState = .stopped
-        var playbackPosition: TimeInterval = 0.0
+        var playbackPosition: PlaybackPosition = PlaybackPosition()
         var queue: GMAppleMusicQueue = GMAppleMusicQueue()
+    }
+}
+
+struct PlaybackPosition: Codable {
+    var currentPlaybackTime: TimeInterval = 0
+    var playbackDuration: TimeInterval = 0
+    var playbackFraction: Double {
+        if (playbackDuration == 0) {
+            // Return 0: We cannot divide by 0
+            return 0
+        }
+        return currentPlaybackTime / playbackDuration
     }
 }

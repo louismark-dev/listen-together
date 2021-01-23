@@ -37,6 +37,7 @@ struct RootView: View {
             VStack {
                 QueueView()
                 Spacer()
+                PlaybackProgressView()
                 Group {
                     if (socketManager.state.isCoordinator) {
                         PlaybackHostControllerView()
