@@ -14,22 +14,43 @@ struct PlaybackProgressView: View {
     @State var playbackProgressTimestamp: String = "0:00"
     @State var playbackDurationTimestamp: String = "0:00"
     // Hide the progress view when app is in background, to stop error: "onChange(of: Double) action tried to update multiple times per frame."
+    @State var showProgressView: Bool = true
+    
+    let notificationCenter: NotificationCenter
+    let enteringBackgroundPublisher: NotificationCenter.Publisher
+    let enteringForegroundPublisher: NotificationCenter.Publisher
+        
+    init(notificationCenter: NotificationCenter = NotificationCenter.default) {
+        self.notificationCenter = notificationCenter
+        self.enteringBackgroundPublisher = self.notificationCenter.publisher(for: UIApplication.willResignActiveNotification)
+        self.enteringForegroundPublisher = self.notificationCenter.publisher(for: UIApplication.willEnterForegroundNotification)
+    }
     
     var body: some View {
-        VStack {
-            ProgressView(value: self.playbackFraction)
-            HStack {
-                Text(self.playbackProgressTimestamp)
-                Spacer()
-                Text(self.playbackDurationTimestamp)
+        Group {
+            if (self.showProgressView) { // TODO: Replace with TRUE in production
+                VStack {
+                    ProgressView(value: self.playbackFraction)
+                    HStack {
+                        Text(self.playbackProgressTimestamp)
+                        Spacer()
+                        Text(self.playbackDurationTimestamp)
+                    }
+                    .font(.custom("Arial Rounded MT Bold", size: 16, relativeTo: .title))
+                    .foregroundColor(.white)
+                    .opacity(0.9)
+                }
+                .onChange(of: self.playerAdapter.state.playbackPosition.playbackFraction, perform: self.setPlaybackProgress)
+                .onChange(of: self.playerAdapter.state.playbackPosition.currentPlaybackTime, perform: self.setPlaybackProgressTimestamp)
+                .onChange(of: self.playerAdapter.state.playbackPosition.playbackDuration, perform: self.setPlaybackDurationTimestamp)
             }
-            .font(.custom("Arial Rounded MT Bold", size: 16, relativeTo: .title))
-            .foregroundColor(.white)
-            .opacity(0.9)
         }
-        .onChange(of: self.playerAdapter.state.playbackPosition.playbackFraction, perform: self.setPlaybackProgress)
-        .onChange(of: self.playerAdapter.state.playbackPosition.currentPlaybackTime, perform: self.setPlaybackProgressTimestamp)
-        .onChange(of: self.playerAdapter.state.playbackPosition.playbackDuration, perform: self.setPlaybackDurationTimestamp)
+        .onReceive(self.enteringBackgroundPublisher, perform: { _ in
+            self.showProgressView = false
+        })
+        .onReceive(self.enteringForegroundPublisher, perform: { _ in
+            self.showProgressView = true
+        })
     }
     
     /// Sets the visual progress of the ProgressView. When playbackFraction is 0.0, the ProgressView will be set to 0.01, so that a progress bar is still displayed
