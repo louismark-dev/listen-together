@@ -9,13 +9,12 @@ import SwiftUI
 
 struct BottomBarView: View {
     @State var showSessionSettings: Bool = false
-    @State var activeSheet: ActiveSheet?
     
     var body: some View {
         HStack {
             EndSessionButton()
-            AddToQueueButton(activeSheet: self.$activeSheet)
-            SessionSettingsButton(activeSheet: self.$activeSheet)
+            AddToQueueButton()
+            SessionSettingsButton(showSessionSettings: self.$showSessionSettings)
         }
         .foregroundColor(.white)
         .opacity(0.9)
@@ -24,30 +23,20 @@ struct BottomBarView: View {
         .sheet(isPresented: self.$showSessionSettings) {
             SessionSettingsView()
         }
-        .sheet(item: self.$activeSheet) { (item: ActiveSheet) in
-            switch item {
-            case .sessionSettings: SessionSettingsView()
-            case .addToQueue: AppleMusicView()
-            }
-        }
     }
     
     struct AddToQueueButton: View {
-        @Binding var activeSheet: ActiveSheet?
-        
         var body: some View {
-            Button(action: { self.activeSheet = .addToQueue  }) {
+            HStack {
                 HStack {
-                    HStack {
-                        Image(systemName: "plus")
-                        Text("Add to Queue")
-                    }
-                    .padding()
+                    Image(systemName: "plus")
+                    Text("Add to Queue")
                 }
-                .background(RoundedRectangle(cornerRadius: 50, style: .continuous)
-                                .foregroundColor(Color("Emerald")))
                 .padding()
             }
+            .background(RoundedRectangle(cornerRadius: 50, style: .continuous)
+                            .foregroundColor(Color("Emerald")))
+            .padding()
         }
     }
     
@@ -63,10 +52,10 @@ struct BottomBarView: View {
     }
     
     struct SessionSettingsButton: View {
-        @Binding var activeSheet: ActiveSheet?
+        @Binding var showSessionSettings: Bool
         
         var body: some View {
-            Button(action: { self.activeSheet = .sessionSettings }) {
+            Button(action: { self.showSessionSettings.toggle() }) {
                 ZStack {
                     Circle()
                         .foregroundColor(Color("Bluetiful"))
@@ -74,14 +63,6 @@ struct BottomBarView: View {
                 }
                 .aspectRatio(1.0, contentMode: .fit)
             }
-        }
-    }
-    
-    enum ActiveSheet: Identifiable {
-        case sessionSettings, addToQueue
-        
-        var id: Int {
-            hashValue
         }
     }
 }
