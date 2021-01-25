@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import Combine
 
 struct PlaybackProgressView: View {
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @State var playbackFraction: Double = 0.01
     @State var playbackProgressTimestamp: String = "0:00"
     @State var playbackDurationTimestamp: String = "0:00"
-    // Only accept state updates when application is in the foreground. Otherwise SwiftUI will produce the following error in the console:
+    // Only accept state updates when application is in the foreground. Otherwise SwiftUI will repeatedly produce the following error in the console:
     // onChange(of: Double) action tried to update multiple times per frame."
     @State var acceptStateUpdates: Bool = true
     

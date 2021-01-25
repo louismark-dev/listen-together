@@ -165,8 +165,8 @@
 		2577BCE625B931B800F65B8F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				250E820F25B932EB001990E9 /* RootView.swift */,
 				2577BCF425B9326200F65B8F /* SampleData.swift */,
+				250E820F25B932EB001990E9 /* RootView.swift */,
 				250E821325B93861001990E9 /* PlaybackHostControllerView.swift */,
 				257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */,
 				2577BCF125B9322C00F65B8F /* Queue */,
