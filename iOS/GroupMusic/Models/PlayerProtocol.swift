@@ -8,11 +8,11 @@
 import Foundation
 
 protocol PlayerProtocol {
-    var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { get }
+    var statePublisher: Published<GMAppleMusicHostController.State>.Publisher { get }
     var socketManager: GMSockets { get }
     var notificationCenter: NotificationCenter { get }
     
-    func updateState(with state: GMAppleMusicPlayer.State)
+    func updateState(with state: GMAppleMusicHostController.State)
     
     func play(completion: (() -> Void)?)
     

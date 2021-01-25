@@ -36,7 +36,7 @@
 		BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22725A02F27000C23DD /* VisualEffectView.swift */; };
 		BF5EE22B25A03353000C23DD /* AudioPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22A25A03353000C23DD /* AudioPreview.swift */; };
 		BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22F25A06AE7000C23DD /* Preview.swift */; };
-		BF5EE24125A13E06000C23DD /* GMAppleMusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24025A13E06000C23DD /* GMAppleMusicPlayer.swift */; };
+		BF5EE24125A13E06000C23DD /* GMAppleMusicHostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24025A13E06000C23DD /* GMAppleMusicHostController.swift */; };
 		BF5EE24625A14683000C23DD /* GMAppleMusicQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */; };
 		BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24825A14E0D000C23DD /* AppleMusicQueueView.swift */; };
 		BF5EE24C25A15445000C23DD /* AppleMusicPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */; };
@@ -69,7 +69,7 @@
 		BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */; };
 		BFA652EE2597E94100BF0FF0 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA652ED2597E94100BF0FF0 /* MonitorView.swift */; };
 		BFBF1424259BF5F400F2AB34 /* AppleMusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBF1423259BF5F400F2AB34 /* AppleMusicView.swift */; };
-		BFED96E725A3FEE700AAC5FF /* GMAppleMusicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFED96E625A3FEE700AAC5FF /* GMAppleMusicController.swift */; };
+		BFED96E725A3FEE700AAC5FF /* GMAppleMusicGuestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFED96E625A3FEE700AAC5FF /* GMAppleMusicGuestController.swift */; };
 		BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -104,7 +104,7 @@
 		BF5EE22725A02F27000C23DD /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		BF5EE22A25A03353000C23DD /* AudioPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPreview.swift; sourceTree = "<group>"; };
 		BF5EE22F25A06AE7000C23DD /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
-		BF5EE24025A13E06000C23DD /* GMAppleMusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicPlayer.swift; sourceTree = "<group>"; };
+		BF5EE24025A13E06000C23DD /* GMAppleMusicHostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicHostController.swift; sourceTree = "<group>"; };
 		BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicQueue.swift; sourceTree = "<group>"; };
 		BF5EE24825A14E0D000C23DD /* AppleMusicQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicQueueView.swift; sourceTree = "<group>"; };
 		BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicPlayerView.swift; sourceTree = "<group>"; };
@@ -137,7 +137,7 @@
 		BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		BFA652ED2597E94100BF0FF0 /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
 		BFBF1423259BF5F400F2AB34 /* AppleMusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicView.swift; sourceTree = "<group>"; };
-		BFED96E625A3FEE700AAC5FF /* GMAppleMusicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicController.swift; sourceTree = "<group>"; };
+		BFED96E625A3FEE700AAC5FF /* GMAppleMusicGuestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicGuestController.swift; sourceTree = "<group>"; };
 		BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MPMusicPlaybackState+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,14 +192,14 @@
 			children = (
 				BF5EE22A25A03353000C23DD /* AudioPreview.swift */,
 				BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */,
-				BF5EE24025A13E06000C23DD /* GMAppleMusicPlayer.swift */,
+				BF5EE24025A13E06000C23DD /* GMAppleMusicHostController.swift */,
 				BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */,
 				BF266BFB259026B300029A2D /* GMQueuePlayer.swift */,
 				BF5D5DDD25915B1F00EF6C37 /* GMSockets.swift */,
 				BF266C1025904B2200029A2D /* CMTime+Extension.swift */,
 				BF8BEE50259B1B7200B9DCD3 /* Apple Music */,
 				BFFED62425A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift */,
-				BFED96E625A3FEE700AAC5FF /* GMAppleMusicController.swift */,
+				BFED96E625A3FEE700AAC5FF /* GMAppleMusicGuestController.swift */,
 				BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */,
 				BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */,
 				BF49D37625B5F67200CAFAC9 /* NotificationMonitor.swift */,
@@ -429,7 +429,7 @@
 				BF8BEE6A259B1B9100B9DCD3 /* Playlist.swift in Sources */,
 				BF266C0D25902A2000029A2D /* PlayerView.swift in Sources */,
 				BFBF1424259BF5F400F2AB34 /* AppleMusicView.swift in Sources */,
-				BFED96E725A3FEE700AAC5FF /* GMAppleMusicController.swift in Sources */,
+				BFED96E725A3FEE700AAC5FF /* GMAppleMusicGuestController.swift in Sources */,
 				BF8BEE82259B1C1B00B9DCD3 /* CiderClient.swift in Sources */,
 				BF8BEE62259B1B9100B9DCD3 /* PlayParameters.swift in Sources */,
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
@@ -457,7 +457,7 @@
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
 				2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */,
 				BF8BEE80259B1C1B00B9DCD3 /* UrlFetcher.swift in Sources */,
-				BF5EE24125A13E06000C23DD /* GMAppleMusicPlayer.swift in Sources */,
+				BF5EE24125A13E06000C23DD /* GMAppleMusicHostController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -53,7 +53,7 @@ class NotificationMonitor {
     }
     
     @objc private func didRecieveStateUpdateEvent(_ notification: NSNotification) {
-        guard let state = notification.object as? GMAppleMusicPlayer.State? else { fatalError("ERROR: Could not unwrap expected GMAppleMusicPlayer.State") }
+        guard let state = notification.object as? GMAppleMusicHostController.State? else { fatalError("ERROR: Could not unwrap expected GMAppleMusicPlayer.State") }
         if let state = state {
             self.playerAdapter.updateState(with: state)
         }

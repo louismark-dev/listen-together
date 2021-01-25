@@ -10,13 +10,13 @@ import Combine
 
 class PlayerAdapter: ObservableObject {
     var player: PlayerProtocol
-    @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
+    @Published var state: GMAppleMusicHostController.State = GMAppleMusicHostController.State()
     private var socketManager: GMSockets
     
     private var cancellables: Set<AnyCancellable> = []
     
     init(socketManager: GMSockets = GMSockets.sharedInstance) {
-        self.player = GMAppleMusicController()
+        self.player = GMAppleMusicGuestController()
         self.socketManager = socketManager
         
         self.subscribeToSocketManagerStatePublisher()
@@ -45,15 +45,15 @@ class PlayerAdapter: ObservableObject {
             })
             .sink { (newState: GMSockets.State) in
             if (newState.isCoordinator) {
-                self.player = GMAppleMusicPlayer()
+                self.player = GMAppleMusicHostController()
             } else {
-                self.player = GMAppleMusicController()
+                self.player = GMAppleMusicGuestController()
             }
             self.subscribeToPlayerPublishers()
         }.store(in: &cancellables)
     }
     
-    func updateState(with state: GMAppleMusicPlayer.State) {
+    func updateState(with state: GMAppleMusicHostController.State) {
         self.player.updateState(with: state)
     }
     

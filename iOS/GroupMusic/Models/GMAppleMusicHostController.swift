@@ -9,9 +9,9 @@ import Foundation
 import MediaPlayer
 import Combine
 
-class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
+class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     @Published var state: State = State()
-    var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
+    var statePublisher: Published<GMAppleMusicHostController.State>.Publisher { $state }
     
     let socketManager: GMSockets
     let notificationCenter: NotificationCenter
@@ -245,7 +245,7 @@ class GMAppleMusicPlayer: ObservableObject, PlayerProtocol {
     }
 }
 
-extension GMAppleMusicPlayer {
+extension GMAppleMusicHostController {
     struct State: Codable {
         var playbackState: MPMusicPlaybackState = .stopped
         var playbackPosition: PlaybackPosition = PlaybackPosition()

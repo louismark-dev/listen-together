@@ -258,7 +258,7 @@ class GMSockets: ObservableObject {
         case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID, queueUpdate, appendToQueue, prependToQueue
     }
     
-    public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicPlayer.State) {
+    public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicHostController.State) {
         self.state.playerState = queuePlayerState
         do {
             try self.emitStateUpdate(withState: self.state)
@@ -328,7 +328,7 @@ extension GMSockets {
             }
             return coordinatorID == clientID
         }
-        var playerState: GMAppleMusicPlayer.State?
+        var playerState: GMAppleMusicHostController.State?
         
         init() { }
         // TODO: Make this use Codable to decode the dictionary

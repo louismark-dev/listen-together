@@ -8,10 +8,10 @@
 import Foundation
 import Combine
 
-class GMAppleMusicController: ObservableObject, PlayerProtocol {
+class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         
-    @Published var state: GMAppleMusicPlayer.State = GMAppleMusicPlayer.State()
-    var statePublisher: Published<GMAppleMusicPlayer.State>.Publisher { $state }
+    @Published var state: GMAppleMusicHostController.State = GMAppleMusicHostController.State()
+    var statePublisher: Published<GMAppleMusicHostController.State>.Publisher { $state }
     
     let socketManager: GMSockets
     let notificationCenter: NotificationCenter
@@ -33,7 +33,7 @@ class GMAppleMusicController: ObservableObject, PlayerProtocol {
         }
     }
     
-    func updateState(with state: GMAppleMusicPlayer.State) {
+    func updateState(with state: GMAppleMusicHostController.State) {
         self.state = state
         if (self.state.playbackState == .playing) {
             self.startPlaybackProgressTimer()
