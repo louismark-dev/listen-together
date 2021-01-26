@@ -18,6 +18,7 @@
 		2577BCF525B9326200F65B8F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCF425B9326200F65B8F /* SampleData.swift */; };
 		257E32B425BA6F4C003BA73F /* PlaybackGuestControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */; };
 		2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */; };
+		259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -84,6 +85,7 @@
 		2577BCF425B9326200F65B8F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackGuestControllerView.swift; sourceTree = "<group>"; };
 		2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView.swift; sourceTree = "<group>"; };
+		259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimer.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */,
 				BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */,
 				BF49D37625B5F67200CAFAC9 /* NotificationMonitor.swift */,
+				259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -441,6 +444,7 @@
 				BF8BEE75259B1BC500B9DCD3 /* Resource.swift in Sources */,
 				BF8BEE65259B1B9100B9DCD3 /* ContentRating.swift in Sources */,
 				BF5EE24625A14683000C23DD /* GMAppleMusicQueue.swift in Sources */,
+				259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */,
 				BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */,
 				BF8BEE78259B1BC500B9DCD3 /* SearchResults.swift in Sources */,
 				BF8BEE61259B1B9100B9DCD3 /* Track.swift in Sources */,

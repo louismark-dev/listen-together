@@ -15,28 +15,28 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     
     let socketManager: GMSockets
     let notificationCenter: NotificationCenter
-    var playbackProgressTimer: Timer?
+    let playbackTimer: PlaybackTimer
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
-         notificationCenter: NotificationCenter = .default) {
+         notificationCenter: NotificationCenter = .default,
+         playbackTimer: PlaybackTimer = PlaybackTimer()) {
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
+        self.playbackTimer = playbackTimer
+        self.setupPlaybackTimer()
         self.setupNotificationCenterObservers()
     }
     
-    func startPlaybackProgressTimer() {
-        let interval = 0.25
-        if (self.playbackProgressTimer == nil) { // Only set new timer if the existing timer is nil
-            self.playbackProgressTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { (timer: Timer) in
-                self.state.playbackPosition.currentPlaybackTime = self.state.playbackPosition.currentPlaybackTime + interval
-            }
+    private func setupPlaybackTimer() {
+        self.playbackTimer.onPlaybackTimeUpdate = { (newPlaybackTime: TimeInterval) in
+            self.state.playbackPosition.currentPlaybackTime = newPlaybackTime
         }
     }
     
     func updateState(with state: GMAppleMusicHostController.State) {
         self.state = state
         if (self.state.playbackState == .playing) {
-            self.startPlaybackProgressTimer()
+            self.playbackTimer.didPlay()
         }
     }
     
@@ -47,7 +47,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         if let completion = completion {
             completion()
         }
-        self.startPlaybackProgressTimer()
+        self.playbackTimer.didPlay()
     }
     
     func pause(completion: (() -> Void)?) {
@@ -55,8 +55,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         if let completion = completion {
             completion()
         }
-        self.playbackProgressTimer?.invalidate()
-        self.playbackProgressTimer = nil
+        self.playbackTimer.didPause()
     }
     
     func skipToNextItem(completion: (() -> Void)?) {
@@ -64,8 +63,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         if let completion = completion {
             completion()
         }
-        self.state.playbackPosition.currentPlaybackTime = 0
-        self.startPlaybackProgressTimer()
+        self.playbackTimer.didSkip()
     }
     
     func skipToBeginning(completion: (() -> Void)?) {
@@ -78,8 +76,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         if let completion = completion {
             completion()
         }
-        self.state.playbackPosition.currentPlaybackTime = 0
-        self.startPlaybackProgressTimer()
+        self.playbackTimer.didSkip()
     }
     
     // MARK: Notification Center
