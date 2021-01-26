@@ -12,6 +12,7 @@ struct RootView: View {
     @ObservedObject private var socketManager: GMSockets
     let notificationMonitor: NotificationMonitor
     let playerAdapter: PlayerAdapter
+//    let backgroundAudio: BackgroundAudio
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
          playerAdapter: PlayerAdapter = PlayerAdapter()) {
@@ -19,6 +20,8 @@ struct RootView: View {
         self.playerAdapter = playerAdapter
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
         self.notificationMonitor.startListeningForNotifications()
+        
+//        self.backgroundAudio = BackgroundAudio()
     }
     
     let sampleData = [

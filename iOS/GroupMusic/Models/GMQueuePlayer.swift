@@ -15,7 +15,7 @@
 //    private var avPlayerItems: [AVPlayerItem]
 //    private var playbackObservation: NSKeyValueObservation?
 //    @Published var state: State = State()
-//    
+//
 //    init(socketManager: GMSockets = GMSockets.sharedInstance, notificationCenter: NotificationCenter = .default) {
 //        self.socketManager = socketManager
 //        self.notificationCenter = notificationCenter
@@ -28,13 +28,13 @@
 //        ]
 //        self.avPlayerItems = urls.map { (url) -> AVPlayerItem in AVPlayerItem.init(url: url) }
 //        self.player = AVPlayer(playerItem: avPlayerItems[0])
-//        
+//
 //        super.init()
 //        self.updateDuration()
 //        self.setupAVPlayerObservers()
 //        self.setupNotificationCenterObservers()
 //    }
-//    
+//
 //    // MARK: Observers
 //    /// Setup observations emitted from AVPlayer
 //    private func setupAVPlayerObservers() {
@@ -48,11 +48,11 @@
 //            self.state.fractionPlayed = self.state.playbackPosition / duration
 //            self.state.currentTimeString = self.secondsToMinutesAndSecondsString(self.state.playbackPosition)
 //        }
-//        
+//
 //        // currentItem Observer
 //        self.player.addObserver(self, forKeyPath: #keyPath(AVPlayer.currentItem), options: [.new], context: nil)
 //    }
-//    
+//
 //    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 //        if keyPath == #keyPath(AVPlayer.timeControlStatus) {
 //            if let statusNumber = change?[.newKey] as? Int,
@@ -61,16 +61,16 @@
 //            }
 //            return
 //        }
-//        
+//
 //        if keyPath == #keyPath(AVPlayer.currentItem) {
 //            // player.currentItem changed. Update duration
 //            updateDuration()
 //            return
 //        }
 //    }
-//    
+//
 //    // MARK: Playback controls
-//    
+//
 //    /// Starts playback
 //    /// - Parameters:
 //    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
@@ -83,7 +83,7 @@
 //            // TODO: Should revert to previous state in case of error (do this for all the events)
 //        }
 //    }
-//    
+//
 //    /// Pauses playback
 //    /// - Parameters:
 //    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
@@ -94,9 +94,9 @@
 //        } catch {
 //            fatalError(error.localizedDescription)
 //        }
-//        
+//
 //    }
-//    
+//
 //    /// Sets curent song to next song in queue
 //    /// - Parameters:
 //    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
@@ -113,7 +113,7 @@
 //            fatalError(error.localizedDescription)
 //        }
 //    }
-//    
+//
 //    /// Sets curent song to previous song in queue
 //    /// - Parameters:
 //    ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
@@ -130,7 +130,7 @@
 //            fatalError(error.localizedDescription)
 //        }
 //    }
-//    
+//
 //    /// Seeks to the given time
 //    /// - Parameters:
 //    ///     - seconds: The time to seek to in seconds
@@ -139,7 +139,7 @@
 //        let cmTime = CMTime(seconds: fraction * duration, preferredTimescale: 1)
 //        self.player.seek(to: cmTime)
 //    }
-//    
+//
 //    // MARK: Helpers
 //
 //    /// Converts time in seconds to minutes and seconds in the format mm:ss
@@ -156,7 +156,7 @@
 //        }
 //        return formattedString
 //    }
-//    
+//
 //    private func updateDuration() {
 //        if let duration = self.player.currentItem?.asset.duration.toSeconds() {
 //            self.state.duration = duration
@@ -165,7 +165,7 @@
 //        }
 //        self.state.durationString = secondsToMinutesAndSecondsString(self.state.duration)
 //    }
-//    
+//
 //    // MARK: Notification Center
 //    /// Setup observers for Notification Center events emitted by GMSockets
 //    private func setupNotificationCenterObservers() {
@@ -190,23 +190,23 @@
 //                                            name: .previousEvent,
 //                                            object: nil)
 //    }
-//    
+//
 //    @objc private func stateUpdateRequested() {
 //        self.socketManager.updateQueuePlayerState(with: self.state)
 //    }
-//    
+//
 //    @objc private func didRecievePlayEvent() {
 //        self.play(shouldEmitEvent: false)
 //    }
-//    
+//
 //    @objc private func didRecievePauseEvent() {
 //        self.pause(shouldEmitEvent: false)
 //    }
-//    
+//
 //    @objc private func didRecieveForwardEvent() {
 //        self.forward(shouldEmitEvent: false)
 //    }
-//    
+//
 //    @objc private func didRecievePreviousEvent() {
 //        self.previous(shouldEmitEvent: false)
 //    }
@@ -216,9 +216,9 @@
 //extension GMQueuePlayer {
 //    struct State: PlayerState {
 //        var playbackState: MPMusicPlaybackState
-//        
+//
 //        var queueState: GMAppleMusicQueue.State?
-//        
+//
 //        var timeControlStatus: AVPlayer.TimeControlStatus = .paused
 //        var duration: TimeInterval = 0.0
 //        var playbackPosition: TimeInterval = 0.0

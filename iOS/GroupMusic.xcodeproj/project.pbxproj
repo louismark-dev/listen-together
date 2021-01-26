@@ -12,6 +12,10 @@
 		250E821825B93894001990E9 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821725B93894001990E9 /* BottomBarView.swift */; };
 		250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821F25B938F2001990E9 /* SessionSettingsView.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
+		2550D0AC25BFC2FF0030E17E /* BackgroundAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */; };
+		2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0AE25BFC34D0030E17E /* sample-1.mp3 */; };
+		2550D0BB25BFCEE50030E17E /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0BA25BFCEE50030E17E /* background.mp3 */; };
+		2550D0BE25BFD1100030E17E /* 15-sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0BD25BFD1100030E17E /* 15-sec.mp3 */; };
 		2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE825B9321000F65B8F /* QueueCellBackground.swift */; };
 		2577BCED25B9321100F65B8F /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE925B9321000F65B8F /* QueueView.swift */; };
 		2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCEA25B9321100F65B8F /* QueueCell.swift */; };
@@ -79,6 +83,10 @@
 		250E821325B93861001990E9 /* PlaybackHostControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackHostControllerView.swift; sourceTree = "<group>"; };
 		250E821725B93894001990E9 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BottomBarView.swift; path = GroupMusic/Views/BottomBar/BottomBarView.swift; sourceTree = SOURCE_ROOT; };
 		250E821F25B938F2001990E9 /* SessionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSettingsView.swift; sourceTree = "<group>"; };
+		2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudio.swift; sourceTree = "<group>"; };
+		2550D0AE25BFC34D0030E17E /* sample-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sample-1.mp3"; sourceTree = "<group>"; };
+		2550D0BA25BFCEE50030E17E /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
+		2550D0BD25BFD1100030E17E /* 15-sec.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "15-sec.mp3"; sourceTree = "<group>"; };
 		2577BCE825B9321000F65B8F /* QueueCellBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCellBackground.swift; sourceTree = "<group>"; };
 		2577BCE925B9321000F65B8F /* QueueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
 		2577BCEA25B9321100F65B8F /* QueueCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCell.swift; sourceTree = "<group>"; };
@@ -206,6 +214,7 @@
 				BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */,
 				BF49D37625B5F67200CAFAC9 /* NotificationMonitor.swift */,
 				259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */,
+				2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -213,6 +222,9 @@
 		BF266C002590277C00029A2D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2550D0BD25BFD1100030E17E /* 15-sec.mp3 */,
+				2550D0BA25BFCEE50030E17E /* background.mp3 */,
+				2550D0AE25BFC34D0030E17E /* sample-1.mp3 */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -390,7 +402,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF3468CE258FFC94000D609B /* LaunchScreen.storyboard in Resources */,
+				2550D0BB25BFCEE50030E17E /* background.mp3 in Resources */,
 				BF3468CB258FFC94000D609B /* Preview Assets.xcassets in Resources */,
+				2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */,
+				2550D0BE25BFD1100030E17E /* 15-sec.mp3 in Resources */,
 				BF3468C8258FFC94000D609B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -423,6 +438,7 @@
 				BF8BEE5F259B1B9100B9DCD3 /* MusicVideo.swift in Sources */,
 				2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */,
 				BF8BEE67259B1B9100B9DCD3 /* Storefront.swift in Sources */,
+				2550D0AC25BFC2FF0030E17E /* BackgroundAudio.swift in Sources */,
 				250E821825B93894001990E9 /* BottomBarView.swift in Sources */,
 				2577BCF525B9326200F65B8F /* SampleData.swift in Sources */,
 				250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */,
