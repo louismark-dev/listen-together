@@ -8,33 +8,51 @@
 import Foundation
 import AVFoundation
 import UIKit
+import MediaPlayer
 
 class BackgroundAudio {
-    private let audioURL = Bundle.main.url(forResource: "sample-1", withExtension: "mp3")!
+    private let audioURL = Bundle.main.url(forResource: "15-sec", withExtension: "mp3")!
     private var player: AVAudioPlayer? = nil
     private let notificationCenter: NotificationCenter
+    private var musicPlayerApplicationController: MPMusicPlayerApplicationController
+    private var musicIsPlaying: Bool = false
+    private var timeoutTimer: Timer? = nil
     
-    init(notificationCenter: NotificationCenter = NotificationCenter.default) {
+    init(notificationCenter: NotificationCenter = NotificationCenter.default,
+         musicPlayerApplicationController: MPMusicPlayerApplicationController) {
         self.notificationCenter = notificationCenter
-        self.start()
+        self.musicPlayerApplicationController = musicPlayerApplicationController
         
-        self.notificationCenter.addObserver(self, selector: #selector(self.setToPlayback), name: UIApplication.willResignActiveNotification, object: nil)
+        self.setupNotificationCentreObservers()
+        
+        self.start()
     }
     
-    public func start() {
+    @objc func playbackStateDidChange() {
+        if (musicPlayerApplicationController.playbackState == .playing) {
+            self.musicIsPlaying = true
+            self.invalidateTimer()
+            self.start()
+        } else {
+            self.musicIsPlaying = false
+            if (UIApplication.shared.applicationState == .background) {
+                self.setTimeout()
+            }
+        }
+    }
+        
+    private func start() {
         do {
             try self.player = AVAudioPlayer(contentsOf: self.audioURL)
             self.player!.rate = 1.0
             self.player!.numberOfLoops = -1
             
-            try AVAudioSession.sharedInstance().setCategory(.ambient)
-            try AVAudioSession.sharedInstance().setActive(true, options: [])
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, options: [.mixWithOthers])
             
             print("Starting background audio")
             self.player!.play()
-            self.setTimeout()
         } catch {
-            print("ERROR \(error.localizedDescription)")
+            print("ERROR starting background audio: \(error.localizedDescription)")
         }
     }
     
@@ -43,19 +61,38 @@ class BackgroundAudio {
         self.player?.stop()
     }
     
+    /// Call this when the application goes to background to trigger timeout
     private func setTimeout() {
-        Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { (timer: Timer) in
-            self.stop()
+        self.timeoutTimer?.invalidate()
+        self.timeoutTimer = nil
+        
+        if (self.timeoutTimer == nil) {
+            self.timeoutTimer = Timer.scheduledTimer(withTimeInterval: 3 * 60, repeats: false) { (timer: Timer) in
+                self.stop()
+            }
+            print("Timeout set")
         }
     }
     
-    @objc func setToPlayback() {
-        do {
-            self.start()
-            try AVAudioSession.sharedInstance().setCategory(.playback)
-            print("Set category to playback")
-        } catch {
-            print("ERROR \(error.localizedDescription)")
+    private func invalidateTimer() {
+        self.timeoutTimer?.invalidate()
+        self.timeoutTimer = nil
+    }
+    
+    @objc private func applicationWillEnterBackground() {
+        if (self.musicIsPlaying == false) {
+            self.setTimeout()
         }
+    }
+    
+    private func setupNotificationCentreObservers() {
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(self.applicationWillEnterBackground),
+                                            name: UIApplication.willResignActiveNotification,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(self.playbackStateDidChange),
+                                            name: .MPMusicPlayerControllerPlaybackStateDidChange,
+                                            object: nil)
     }
 }

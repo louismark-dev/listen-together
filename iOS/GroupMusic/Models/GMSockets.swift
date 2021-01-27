@@ -13,6 +13,8 @@ class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
     private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.134:\((UIApplication.shared.delegate as! AppDelegate).port)")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
+    private var backgroundTaskID: UIBackgroundTaskIdentifier? = nil
+    private var timer: Timer? = nil
     @Published var state: State = State()
     
     static let sharedInstance = GMSockets()
@@ -21,6 +23,10 @@ class GMSockets: ObservableObject {
         self.notificationCenter = notificationCenter
         self.socket = self.manager.defaultSocket
         self.addHandlers()
+        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: "Sockets") {
+            print("SOCKET CONNECTION WILL DIE")
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskID!)
+        }
         self.socket.connect()
     }
     // MARK: Handlers - Incoming Events
@@ -48,6 +54,10 @@ class GMSockets: ObservableObject {
         self.socket.on(Event.appendToQueue.rawValue, callback: self.appendToQueueEventHandler)
         
         self.socket.on(Event.prependToQueue.rawValue, callback: self.prependToQueueEventHandler)
+        
+//        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer: Timer) in
+//            print("Execution time remaining: \(UIApplication.shared.backgroundTimeRemaining)")
+//        }
     }
     
     private func connectEventHandler(data: [Any], ack: SocketAckEmitter) {

@@ -22,13 +22,12 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     init(musicPlayer: MPMusicPlayerApplicationController = MPMusicPlayerApplicationController.applicationQueuePlayer,
          socketManager: GMSockets = GMSockets.sharedInstance,
          notificationCenter: NotificationCenter = .default,
-         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada),
-         backgroundAudio: BackgroundAudio = BackgroundAudio()) {
+         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
         self.player = musicPlayer
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
         self.appleMusicManager = appleMusicManager
-        self.backgroundAudio = backgroundAudio
+        self.backgroundAudio = BackgroundAudio(musicPlayerApplicationController: self.player)
         self.fillQueueWithTestItems()
         self.updatePlaybackTime()
 
@@ -79,7 +78,6 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func play(completion: (() -> Void)?) {
         self.player.play()
-//        self.backgroundAudio.stop()
         if let completion = completion {
             completion()
         }
@@ -89,8 +87,6 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func pause(completion: (() -> Void)?) {
-//        self.backgroundAudio.start()
-        self.backgroundAudio.setToPlayback()
         self.player.pause()
         if let completion = completion {
             completion()
