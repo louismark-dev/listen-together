@@ -97,6 +97,12 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         print(self.state.queue.state.queue)
     }
     
+    func nowPlayingIndexDidChange(to index: Int) {
+        self.state.queue.state.indexOfNowPlayingItem = index
+        self.updateDuration()
+        self.playbackTimer.didSkip()
+    }
+    
     private func updateDuration() {
         if let durationInMillis: Int = self.state.queue.state.nowPlayingItem?.attributes?.durationInMillis {
             let durationInSecs: TimeInterval = TimeInterval(durationInMillis / 1000)

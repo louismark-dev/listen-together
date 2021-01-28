@@ -30,4 +30,6 @@ protocol PlayerProtocol {
     
     func setupNotificationCenterObservers()
     
+    func nowPlayingIndexDidChange(to index: Int)
+    
 }

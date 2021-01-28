@@ -50,6 +50,10 @@ class NotificationMonitor {
                                             selector: #selector(didRecieveAppendToQueueEvent),
                                             name: .appendToQueueEvent,
                                             object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveNowPlayingIndexDidChangeEvent),
+                                            name: .nowPlayingIndexDidChangeEvent,
+                                            object: nil)
     }
     
     @objc private func didRecieveStateUpdateEvent(_ notification: NSNotification) {
@@ -131,5 +135,9 @@ class NotificationMonitor {
                 fatalError(error.localizedDescription)
             }
         })
+    }
+    @objc private func didRecieveNowPlayingIndexDidChangeEvent(_ notification: NSNotification) {
+        guard let nowPlayingIndex = notification.object as? Int else { return }
+        self.playerAdapter.nowPlayingIndexDidChange(to: nowPlayingIndex)
     }
 }

@@ -150,6 +150,19 @@ io.sockets.on("connection", function(socket) {
         }
     })
 
+    socket.on(MESSAGES.NOW_PLAYING_INDEX_DID_CHANGE_EVENT, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        console.log(parsedData)
+
+        if (socket.id == sessionData.coordinatorID) { // Previous msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting nowPlayingIndexDidChangeEvent to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.NOW_PLAYING_INDEX_DID_CHANGE_EVENT, data)
+        }
+    })
+
     socket.on(MESSAGES.PREPEND_TO_QUEUE, function(data) {
         const parsedData = JSON.parse(data)
         const roomID = parsedData.roomID
@@ -223,5 +236,6 @@ const MESSAGES = {
     TEST_EVENT: "testEvent",
     ASSIGNING_ID: "assigningID",
     APPEND_TO_QUEUE: "appendToQueue",
-    PREPEND_TO_QUEUE: "prependToQueue"
+    PREPEND_TO_QUEUE: "prependToQueue",
+    NOW_PLAYING_INDEX_DID_CHANGE_EVENT: "nowPlayingIndexDidChangeEvent"
 }

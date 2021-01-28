@@ -16,8 +16,10 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     let socketManager: GMSockets
     let notificationCenter: NotificationCenter
     private let appleMusicManager: GMAppleMusic // TODO: Remove this dependancy. It is only for testing
-    let player: MPMusicPlayerApplicationController
-    let backgroundAudio: BackgroundAudio
+    private let player: MPMusicPlayerApplicationController
+    private let backgroundAudio: BackgroundAudio
+    private var nowPlayingIndexDidChangeTimeout: Timer? = nil
+    private var emitNowPlayingIndexDidChangeEvent: Bool = true
         
     init(musicPlayer: MPMusicPlayerApplicationController = MPMusicPlayerApplicationController.applicationQueuePlayer,
          socketManager: GMSockets = GMSockets.sharedInstance,
@@ -26,7 +28,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
         self.player = musicPlayer
         self.socketManager = socketManager
         self.notificationCenter = notificationCenter
-        self.appleMusicManager = appleMusicManager
+        self.appleMusicManager = appleMusicManager		
         self.backgroundAudio = BackgroundAudio(musicPlayerApplicationController: self.player)
         self.fillQueueWithTestItems()
         self.updatePlaybackTime()
@@ -57,6 +59,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     }
     
     public func playAllSongs() {
+        self.setNowPlayingIndexDidChangeTimeout()
         self.player.setQueue(with: .songs())
         self.player.play()
     }
@@ -98,6 +101,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToNextItem(completion: (() -> Void)?) {
+        self.setNowPlayingIndexDidChangeTimeout()
         self.player.skipToNextItem()
         self.state.queue.skipToNextItem()
         if let completion = completion {
@@ -120,10 +124,18 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager
     public func skipToPreviousItem(completion: (() -> Void)?) {
+        self.setNowPlayingIndexDidChangeTimeout()
         self.player.skipToPreviousItem()
         self.state.queue.skipToPreviousItem()
         if let completion = completion {
             completion()
+        }
+    }
+    
+    private func setNowPlayingIndexDidChangeTimeout() {
+        self.emitNowPlayingIndexDidChangeEvent = false
+        self.nowPlayingIndexDidChangeTimeout = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer: Timer) in
+            self.emitNowPlayingIndexDidChangeEvent = true
         }
     }
     
@@ -134,10 +146,10 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
                                             selector: #selector(self.playbackStateDidChange),
                                             name: .MPMusicPlayerControllerPlaybackStateDidChange,
                                             object: nil)
-//        self.notificationCenter.addObserver(self,
-//                                            selector: #selector(self.nowPlayingItemDidChange),
-//                                            name: .MPMusicPlayerControllerNowPlayingItemDidChange,
-//                                            object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(self.nowPlayingItemDidChange),
+                                            name: .MPMusicPlayerControllerNowPlayingItemDidChange,
+                                            object: nil)
         
         self.player.beginGeneratingPlaybackNotifications()
         
@@ -152,11 +164,15 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
         self.socketManager.updateQueuePlayerState(with: self.state)
     }
     
-//    @objc private func nowPlayingItemDidChange() {
-//        self.state.queue.state.indexOfNowPlayingItem = self.player.indexOfNowPlayingItem
-//        // TODO: Send update with index of new playing item
-//        self.socketManager.updateQueuePlayerState(with: self.state)
-//    }
+    @objc private func nowPlayingItemDidChange() {
+        self.state.queue.state.indexOfNowPlayingItem = self.player.indexOfNowPlayingItem
+        guard (self.emitNowPlayingIndexDidChangeEvent) else { return }
+        do {
+            try self.socketManager.emitNowPlayingDidChangeEvent(withIndex: self.state.queue.state.indexOfNowPlayingItem)
+        } catch {
+            print("ERROR: Could not emit nowPlayingDidChangeEvent: \(error.localizedDescription)")
+        }
+    }
     
     @objc private func playbackStateDidChange() {
         self.state.playbackState = player.playbackState
@@ -244,6 +260,10 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     
     private func emitPrependToQueueEvent(withTracks tracks: [Track]) throws {
         try self.socketManager.emitPrependToQueueEvent(withTracks: tracks)
+    }
+    
+    func nowPlayingIndexDidChange(to index: Int) {
+        print("WARNING: Should not call this function on GMAppleMusicHostController.")
     }
 }
 

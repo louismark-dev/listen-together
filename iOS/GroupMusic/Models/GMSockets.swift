@@ -55,6 +55,8 @@ class GMSockets: ObservableObject {
         
         self.socket.on(Event.prependToQueue.rawValue, callback: self.prependToQueueEventHandler)
         
+        self.socket.on(Event.nowPlayingIndexDidChangeEvent.rawValue, callback: self.nowPlayingIndexDidChangeEventHandler)
+        
 //        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer: Timer) in
 //            print("Execution time remaining: \(UIApplication.shared.backgroundTimeRemaining)")
 //        }
@@ -158,6 +160,16 @@ class GMSockets: ObservableObject {
         }
     }
     
+    private func nowPlayingIndexDidChangeEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("nowPlayingIndexDidChangeEvent recieved")
+        do {
+            let indexOfNowPlayingItem = try self.dataToObject(data: data) as Int
+            self.notificationCenter.post(name: .nowPlayingIndexDidChangeEvent, object: indexOfNowPlayingItem)
+        } catch {
+            fatalError("nowPlayingDidChangeEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
     private func dataToObject<T: Codable>(data: [Any]) throws -> T {
         guard var jsonString = data[0] as? String else {
             throw JSONDecodingErrors.couldNotCastAsString
@@ -220,6 +232,13 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.appendToQueue.rawValue, encodedJSON)
     }
     
+    public func emitNowPlayingDidChangeEvent(withIndex index: Int) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<Int>(roomID: sessionID, data: index)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.nowPlayingIndexDidChangeEvent.rawValue, encodedJSON)
+    }
+    
     private func encodeJSON<T: Codable>(fromObject object: T) throws -> String {
         let encoder = JSONEncoder()
 //        encoder.outputFormatting = .prettyPrinted
@@ -265,7 +284,21 @@ class GMSockets: ObservableObject {
     
     /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID, queueUpdate, appendToQueue, prependToQueue
+        case playEvent
+        case pauseEvent
+        case forwardEvent
+        case previousEvent
+        case startSession
+        case sessionStarted
+        case joinSession
+        case joinFailed
+        case stateUpdate
+        case requestStateUpdate
+        case assigningID
+        case queueUpdate
+        case appendToQueue
+        case prependToQueue
+        case nowPlayingIndexDidChangeEvent
     }
     
     public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicHostController.State) {
@@ -311,6 +344,10 @@ extension Notification.Name {
     
     static var stateUpdateRequested: Notification.Name {
         return .init(rawValue: "GMSockets.stateUpdateRequested")
+    }
+    
+    static var nowPlayingIndexDidChangeEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.nowPlayingIndexDidChangeEvent")
     }
 }
 

@@ -80,4 +80,8 @@ class PlayerAdapter: ObservableObject {
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.appendToQueue(withTracks: tracks, completion: completion)
     }
+    
+    func nowPlayingIndexDidChange(to index: Int) {
+        self.player.nowPlayingIndexDidChange(to: index)
+    }
 }
