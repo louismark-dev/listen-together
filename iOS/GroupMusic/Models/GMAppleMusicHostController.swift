@@ -35,7 +35,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     }
         
     private func fillQueueWithTestItems() {
-        self.appleMusicManager.search(term: "Hip Hop", limit: 25) { (results: SearchResults?, error: Error?) in
+        self.appleMusicManager.search(term: "Rap Life", limit: 25) { (results: SearchResults?, error: Error?) in
             if let error = error {
                 print("ERROR: Could not retrive search results: \(error)")
                 return

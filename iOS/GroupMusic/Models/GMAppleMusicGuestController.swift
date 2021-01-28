@@ -35,6 +35,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     
     func updateState(with state: GMAppleMusicHostController.State) {
         self.state = state
+        self.updateDuration()
         if (self.state.playbackState == .playing) {
             self.playbackTimer.didPlay()
         }
@@ -60,6 +61,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     
     func skipToNextItem(completion: (() -> Void)?) {
         self.state.queue.skipToNextItem()
+        self.updateDuration()
         if let completion = completion {
             completion()
         }
@@ -73,6 +75,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     
     func skipToPreviousItem(completion: (() -> Void)?) {
         self.state.queue.skipToPreviousItem()
+        self.updateDuration()
         if let completion = completion {
             completion()
         }
@@ -92,6 +95,13 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.state.queue.prepend(tracks: tracks)
         print(self.state.queue.state.queue)
+    }
+    
+    private func updateDuration() {
+        if let durationInMillis: Int = self.state.queue.state.nowPlayingItem?.attributes?.durationInMillis {
+            let durationInSecs: TimeInterval = TimeInterval(durationInMillis / 1000)
+            self.state.playbackPosition.playbackDuration = durationInSecs
+        }
     }
     
 }
