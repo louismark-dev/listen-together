@@ -10,7 +10,8 @@ import Foundation
 
 public struct Resource<AttributesType: Codable, RelationshipsType: Codable>: Codable, Hashable, Identifiable {
     
-    public let id: String // TODO: Duplicates of the same track will be identified as the same, becuase they share an id
+    public var id: UUID = UUID()
+    public let storeID: String
     public let type: MediaType
     public let href: String
     public let attributes: AttributesType?
@@ -24,5 +25,13 @@ public struct Resource<AttributesType: Codable, RelationshipsType: Codable>: Cod
     
     public static func == (lhs: Resource<AttributesType, RelationshipsType>, rhs: Resource<AttributesType, RelationshipsType>) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case storeID = "id"
+        case type
+        case href
+        case attributes
+        case relationships
     }
 }

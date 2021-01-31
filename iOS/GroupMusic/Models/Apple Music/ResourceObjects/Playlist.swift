@@ -29,7 +29,7 @@ public struct PlaylistAttributes: Codable {
     public let artwork: Artwork?
     public let curatorName: String?
     public let description: EditorialNotes?
-    public let lastModifiedDate: String
+    public let lastModifiedDate: String?
     public let name: String
     public let playlistType: PlaylistType
     public let playParams: PlayParameters?

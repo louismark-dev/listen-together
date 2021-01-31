@@ -111,7 +111,6 @@ struct PreviewView: View {
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-//        self.playerAdapter.appendToQueue(withTracks: [self.previewTrack], shouldAddToLocalQueue: self.socketManager.state.isCoordinator)
         
         // IF OBSERVER
         if (self.socketManager.state.isCoordinator == false) {

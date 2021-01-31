@@ -31,7 +31,7 @@ struct GMAppleMusicQueue: Codable {
         unsortedTracks.append(contentsOf: tracks)
         let sortedTracks = try mpMediaItems.map { (mediaItem) -> Track in
             let matchedItems = unsortedTracks.filter { (track: Track) -> Bool in
-                track.id == mediaItem.playbackStoreID
+                track.storeID == mediaItem.playbackStoreID
             }
             if (matchedItems.count == 0) { throw QueueUpdateError.failedToSetQueueEqualToMPMusicPlayerControllerQueue }
             return matchedItems[0]
@@ -87,7 +87,27 @@ struct GMAppleMusicQueue: Codable {
     }
     
     struct State: Codable {
-        public var queue: [Track]
+        
+        init(queue: [Track], indexOfNowPlayingItem: Int) {
+            self.indexOfNowPlayingItem = indexOfNowPlayingItem
+            self._queue = queue
+        }
+        
+        public var queue: [Track] {
+            // Setter is used to set UUID value of each track in the queue. This ensures that each UUID is always unique.
+            // Failure to do this could result in issues with Identifiable.
+            
+            get { return self._queue }
+            
+            set {
+                self._queue = newValue.map({ (track: Track) -> Track in
+                    var trackWithUUID = track
+                    trackWithUUID.id = UUID()
+                    return trackWithUUID
+                })
+            }
+        }
+        
         public var indexOfNowPlayingItem: Int
         public var nowPlayingItem: Track? {
             if (queue.indices.contains(indexOfNowPlayingItem)) {
@@ -99,6 +119,7 @@ struct GMAppleMusicQueue: Codable {
         public var itemsToBePlayed: [Track] {
             Array(self.queue[(indexOfNowPlayingItem + 1)..<self.queue.count])
         }
+        private var _queue: [Track]
         
     }
     

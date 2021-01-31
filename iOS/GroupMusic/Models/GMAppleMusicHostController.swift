@@ -50,7 +50,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
                 DispatchQueue.main.async {
                     self.state.queue.append(tracks: songs)
                     self.player.setQueue(with: songs.map({ (song) -> String in
-                        song.id
+                        song.storeID
                     })) // TODO: Come up with a better way to keep the queues in sync
                 }
             }
@@ -208,7 +208,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     private func appendToMPMusicPlayerQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
             let storeIDs = tracks.map({ (song) -> String in
-                song.id
+                song.storeID
             })
             let descriptor = MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs)
             let lastItem = queue.items.last
@@ -232,7 +232,7 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
     private func prependToMPMusicPlayerQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
             let storeIDs = tracks.map({ (song) -> String in
-                song.id
+                song.storeID
             })
             let descriptor = MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs)
             let indexOfNowPlayingItem = self.state.queue.state.indexOfNowPlayingItem
