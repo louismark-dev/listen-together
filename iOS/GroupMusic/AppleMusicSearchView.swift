@@ -7,17 +7,19 @@
 
 import SwiftUI
 
-struct AppleMusicView: View {
+struct AppleMusicSearchView: View {
     let appleMusicManager: GMAppleMusic
     @State var songResults: [Track] = []
     @State private var showPreview: Bool = false
     @State private var previewTrack: Track? // Track to be previews
+    @State private var searchTerm: String = ""
 
     var body: some View {
         ZStack {
-            Button(String("Search for Young Thug")) {
-                self.searchForYoungThug()
-            }
+            TextField("Search...",
+                      text: self.$searchTerm,
+                      onEditingChanged: {_ in },
+                      onCommit: self.search )
             VStack(alignment: .leading) {
                 ForEach(songResults, id: \.self) { songResult in
                     ResultCardView(result: songResult)
@@ -36,14 +38,15 @@ struct AppleMusicView: View {
                 }
             }
         }
+        .padding()
     }
     
     init(appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
         self.appleMusicManager = appleMusicManager
     }
     
-    private func searchForYoungThug() {
-        self.appleMusicManager.search(term: "Young Thug", limit: 10) { (results: SearchResults?, error: Error?) in
+    private func search() {
+        self.appleMusicManager.search(term: self.searchTerm, limit: 10) { (results: SearchResults?, error: Error?) in
             if let error = error {
                 print("ERROR: Could not retrive search results: \(error)")
                 return
@@ -62,6 +65,6 @@ struct AppleMusicView: View {
 
 struct AppleMusicView_Previews: PreviewProvider {
     static var previews: some View {
-        AppleMusicView()
+        AppleMusicSearchView()
     }
 }

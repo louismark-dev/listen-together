@@ -27,7 +27,7 @@ struct BottomBarView: View {
         .sheet(item: self.$activeSheet) { (item: ActiveSheet) in
             switch item {
             case .sessionSettings: SessionSettingsView()
-            case .addToQueue: AppleMusicView()
+            case .addToQueue: AppleMusicSearchView()
             }
         }
     }

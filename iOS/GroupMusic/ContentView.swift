@@ -43,7 +43,7 @@ struct ContentView: View {
         .padding()
         .sheet(isPresented: self.$isShowingSheet) {
             NavigationView {
-                AppleMusicView()
+                AppleMusicSearchView()
                     .navigationBarItems(leading: Button("Dismiss") {
                         isShowingSheet = false
                     })
