@@ -77,13 +77,12 @@ struct PreviewView: View {
                     .padding()
                 }
             }
-            
             .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterialLight))
                             .cornerRadius(self.radius))
         }
         .padding()
     }
-    
+
     private func playPreview() {
         if self.audioPreviewPlayer.ready {
             do {

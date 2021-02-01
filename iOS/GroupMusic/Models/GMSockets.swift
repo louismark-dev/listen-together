@@ -156,7 +156,7 @@ class GMSockets: ObservableObject {
             let tracks = try self.dataToObject(data: data) as [Track]
             self.notificationCenter.post(name: .prependToQueueEvent, object: tracks)
         } catch {
-            fatalError("prependToQueueEventHandler decoding failed \(error.localizedDescription)")
+            print("prependToQueueEventHandler decoding failed \(error.localizedDescription)")
         }
     }
     
@@ -175,7 +175,6 @@ class GMSockets: ObservableObject {
             throw JSONDecodingErrors.couldNotCastAsString
         }
         // URLs in the JSONString will have "\\" before each "/". Remove these.
-        jsonString = jsonString.replacingOccurrences(of: "\\", with: "")
         let jsonData = Data(jsonString.utf8)
         let decoder = JSONDecoder()
         let decodedValue = try decoder.decode(SocketIOArguments<T>.self, from: jsonData)
