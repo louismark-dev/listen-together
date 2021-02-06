@@ -38,6 +38,7 @@ class GMAppleMusic {
         let request = self.createURLRequest(forURL: self.apiEndpoint, andData: requestData)
         
         fetch(request) { (results: ResponseRoot<SearchResults>?, error) in
+            // TODO: Searching "Weston Road Flows" returns no results. This might be an error in Cider
             completion?(results?.results, error)
         }
     }

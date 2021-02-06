@@ -23,6 +23,9 @@
 		257E32B425BA6F4C003BA73F /* PlaybackGuestControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */; };
 		2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */; };
 		259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */; };
+		25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441DF25C9FC7100193129 /* ResultTypeView.swift */; };
+		25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E325C9FD6900193129 /* ResultCarouselView.swift */; };
+		25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E625C9FDF800193129 /* MediaCardView.swift */; };
 		25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CBDA8525C8915700EB552C /* SongResultsView.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
@@ -95,6 +98,9 @@
 		257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackGuestControllerView.swift; sourceTree = "<group>"; };
 		2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView.swift; sourceTree = "<group>"; };
 		259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimer.swift; sourceTree = "<group>"; };
+		25A441DF25C9FC7100193129 /* ResultTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTypeView.swift; sourceTree = "<group>"; };
+		25A441E325C9FD6900193129 /* ResultCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCarouselView.swift; sourceTree = "<group>"; };
+		25A441E625C9FDF800193129 /* MediaCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCardView.swift; sourceTree = "<group>"; };
 		25CBDA8525C8915700EB552C /* SongResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResultsView.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
@@ -183,6 +189,7 @@
 				257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */,
 				2577BCF125B9322C00F65B8F /* Queue */,
 				250E822225B9390D001990E9 /* BottomBar */,
+				25CBDA8225C8911C00EB552C /* Apple Music Browser */,
 				250E821F25B938F2001990E9 /* SessionSettingsView.swift */,
 				2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */,
 			);
@@ -204,6 +211,9 @@
 			children = (
 				BFBF1423259BF5F400F2AB34 /* AppleMusicSearchView.swift */,
 				25CBDA8525C8915700EB552C /* SongResultsView.swift */,
+				25A441DF25C9FC7100193129 /* ResultTypeView.swift */,
+				25A441E325C9FD6900193129 /* ResultCarouselView.swift */,
+				25A441E625C9FDF800193129 /* MediaCardView.swift */,
 			);
 			path = "Apple Music Browser";
 			sourceTree = "<group>";
@@ -266,7 +276,6 @@
 				BFA285C12595B53F00D8B4D6 /* SessionView.swift */,
 				BF266C0C25902A2000029A2D /* PlayerView.swift */,
 				BFA652ED2597E94100BF0FF0 /* MonitorView.swift */,
-				25CBDA8225C8911C00EB552C /* Apple Music Browser */,
 				BF5EE24825A14E0D000C23DD /* AppleMusicQueueView.swift */,
 				BF5EE21E25A0256C000C23DD /* ResultCardView.swift */,
 				BF5EE22225A028A3000C23DD /* PreviewView.swift */,
@@ -439,6 +448,7 @@
 				BF8BEE49259B194400B9DCD3 /* GMAppleMusic.swift in Sources */,
 				BF8BEE76259B1BC500B9DCD3 /* AppleMusicAPIError.swift in Sources */,
 				BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */,
+				25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */,
 				BF99218125A405ED00F8CAC5 /* AppleMusicControllerView.swift in Sources */,
 				BF8BEE69259B1B9100B9DCD3 /* MediaType.swift in Sources */,
 				BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */,
@@ -466,8 +476,10 @@
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
 				BF8BEE64259B1B9100B9DCD3 /* EditorialNotes.swift in Sources */,
 				BF8BEE6B259B1B9100B9DCD3 /* Artwork.swift in Sources */,
+				25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */,
 				2577BCED25B9321100F65B8F /* QueueView.swift in Sources */,
 				BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */,
+				25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */,
 				BF266C1125904B2200029A2D /* CMTime+Extension.swift in Sources */,
 				BF8BEE75259B1BC500B9DCD3 /* Resource.swift in Sources */,
 				BF8BEE65259B1B9100B9DCD3 /* ContentRating.swift in Sources */,
