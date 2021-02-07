@@ -22,6 +22,7 @@ struct AppleMusicSearchView: View {
                           text: self.$searchTerm,
                           onEditingChanged: {_ in },
                           onCommit: self.newSearch )
+                    .disableAutocorrection(true)
                     .padding([.top, .horizontal])
                 Spacer()
                 if (self.searchResults.hasResult == true) {
