@@ -11,6 +11,7 @@ struct ResultCarouselView: View {
     @Binding var albumResults: [Album]?
     @Binding var playlistResults: [Playlist]?
     @Binding var trackResults: [Track]?
+    @State private var cardWidth: CGFloat = 0.0
     
     init(forAlbumResults albumResults: Binding<[Album]?>) {
         self._albumResults = albumResults
@@ -32,12 +33,12 @@ struct ResultCarouselView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(spacing: 20) {
+            LazyHStack(spacing: 20.0) {
                 if (self.albumResults != nil && (self.albumResults?.count ?? 0) > 0) {
                     ForEach(self.albumResults!) { (albumData: Album) in
                         // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                         if let attributes = albumData.attributes {
-                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artworkURL: attributes.artwork.urlForMaxWidth())
+                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth)
                         }
                     }
                 }
@@ -45,22 +46,32 @@ struct ResultCarouselView: View {
                     ForEach(self.playlistResults!) { (playlistData: Playlist) in
                         // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                         if let attributes: PlaylistAttributes = playlistData.attributes {
-                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artworkURL: attributes.artwork?.urlForMaxWidth())
+                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artwork: attributes.artwork, maxWidth: self.cardWidth)
                         }
                     }
                 }
-                if (self.trackResults != nil && (self.trackResults?.count ?? 0) > 0) {
+                else if (self.trackResults != nil && (self.trackResults?.count ?? 0) > 0) {
                     ForEach(self.trackResults!) { (trackData: Track) in
                         // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                         if let attributes = trackData.attributes {
-                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artworkURL: attributes.artwork.urlForMaxWidth(), previewTrackData: trackData)
+                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth, previewTrackData: trackData)
                         }
                     }
                 }
             }
         }
-        .frame(maxHeight: 220)
+        .overlay(GeometryReader { (geometry: GeometryProxy) in
+            Color.clear
+                .onAppear {
+                    self.setCardViewWidth(carouselViewWidth: geometry.size.width)
+                }
+        })
     }
+    
+    private func setCardViewWidth(carouselViewWidth width: CGFloat) {
+        self.cardWidth = width / 2.5
+    }
+        
 }
 
 //struct ResultCarouselView_Previews: PreviewProvider {

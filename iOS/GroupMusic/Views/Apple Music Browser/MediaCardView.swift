@@ -15,30 +15,34 @@ struct MediaCardView: View {
     
     private let headlineText: String?
     private let subheadlineText: String?
-    private let artworkURL: URL?
+    private let artwork: Artwork?
+    private let maxWidth: CGFloat
     
-    init(withHeadline headline: String?, subheadline: String?, artworkURL: URL?, previewTrackData: Track) {
+    init(withHeadline headline: String?, subheadline: String?, artwork: Artwork?, maxWidth: CGFloat, previewTrackData: Track) {
         self.headlineText = headline
         self.subheadlineText = subheadline
-        self.artworkURL = artworkURL
+        self.artwork = artwork
         self._previewTrackData = State(initialValue: previewTrackData)
+        self.maxWidth = maxWidth
     }
     
-    init(withHeadline headline: String?, subheadline: String?, artworkURL: URL?) {
+    init(withHeadline headline: String?, subheadline: String?, artwork: Artwork?, maxWidth: CGFloat) {
         self.headlineText = headline
         self.subheadlineText = subheadline
-        self.artworkURL = artworkURL
+        self.artwork = artwork
+        self.maxWidth = maxWidth
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            if let artworkURL = self.artworkURL {
+            if let artworkURL = self.artwork?.urlForMaxWidth() {
                 URLImage(url: artworkURL, content: { (image: Image) in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
 
                 })
+                .aspectRatio(contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
             }
             if let headlineText = self.headlineText {
@@ -46,6 +50,7 @@ struct MediaCardView: View {
                     Text(headlineText)
                         .lineLimit(1)
                         .font(.headline)
+                    Spacer()
                 }
             }
             if let subheadlineText = self.subheadlineText {
@@ -54,10 +59,13 @@ struct MediaCardView: View {
                         .lineLimit(1)
                         .font(.subheadline)
                         .opacity(0.8)
+                    Spacer()
+
                 }
             }
         }
-        .aspectRatio(1.0, contentMode: .fill)
+        .frame(width: self.maxWidth)
+        .background(Color.red)
         .onTapGesture {
             if let previewTrackData = self.previewTrackData {
                 self.previewTrack.openTrackPreview(withTrack: previewTrackData)
