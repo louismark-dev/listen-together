@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SongResultsView: View {
     @Binding var searchResults: AppleMusicSearchResults
+    @State var viewOpacity = 0.0
     
     var body: some View {
         ScrollView {
@@ -16,6 +17,12 @@ struct SongResultsView: View {
                 ResultTypeView(forTrackResults: self.$searchResults.trackResults)
                 ResultTypeView(forPlaylistResults: self.$searchResults.playlistResults)
                 ResultTypeView(forAlbumResults: self.$searchResults.albumResults)
+            }
+            .opacity(self.viewOpacity)
+            .onAppear {
+                withAnimation(.linear(duration: 0.3)) {
+                    self.viewOpacity = 1.0
+                }
             }
         }
     }
