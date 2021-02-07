@@ -13,23 +13,16 @@ struct ArtworkImageView: View {
     let height: CGFloat
     @State private var imageOpacity: Double = 0.0
     @State private var isCached: Bool = false
-    @State private var isFirstLoad: Bool = false // Set to true if image is being loaded from network or cache
     
     var body: some View {
         URLImage(url: self.artworkURL,
                  empty: {
                     Rectangle()
                         .foregroundColor(Color("RedactedColor"))
-                        .onAppear {
-                            self.isFirstLoad = true
-                        }
                  },
                  inProgress: { _ in
                      Rectangle()
                         .foregroundColor(Color("RedactedColor"))
-                        .onAppear {
-                            self.isFirstLoad = true
-                        }
                  },
                  failure: {_,_ in
                     Rectangle()
@@ -47,11 +40,7 @@ struct ArtworkImageView: View {
                             .aspectRatio(contentMode: .fit)
                             .opacity(self.imageOpacity)
                             .onAppear {
-                                if (self.isFirstLoad) {
-                                    withAnimation {
-                                        self.imageOpacity = 1.0
-                                    }
-                                } else {
+                                withAnimation {
                                     self.imageOpacity = 1.0
                                 }
                             }
