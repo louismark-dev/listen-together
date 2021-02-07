@@ -65,10 +65,12 @@ struct AppleMusicSearchResults {
     var playlistResults: [Playlist]?
     var trackResults: [Track]?
     var hasResult: Bool {
-        return ((self.albumResults?.count ?? 0) > 0 && (self.playlistResults?.count ?? 0) > 0 && (self.trackResults?.count ?? 0) > 0)
+        return ((self.albumResults?.count ?? 0) > 0 || (self.playlistResults?.count ?? 0) > 0 || (self.trackResults?.count ?? 0) > 0)
     }
     
     public mutating func updateWithSearchResults(_ results: SearchResults) {
+        self.invalidateResults()
+        
         if let albumsResponse = results.albums {
             if let errors = albumsResponse.errors {
                 print("ERROR: There was a problem with the search result for albums: \(errors)")
@@ -92,6 +94,12 @@ struct AppleMusicSearchResults {
                 self.trackResults = tracksResponse.data
             }
         }
+    }
+    
+    private mutating func invalidateResults() {
+        self.albumResults = nil
+        self.playlistResults = nil
+        self.trackResults = nil
     }
 }
 
