@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 import URLImage
 
 struct MediaCardView: View {
@@ -35,7 +36,7 @@ struct MediaCardView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            if let artworkURL = self.artwork?.urlForMaxWidth() {
+            if let artworkURL = self.artwork?.url(forWidth: Int(self.maxWidth * UIScreen.main.scale)) {
                 ArtworkImageView(artworkURL: artworkURL, height: self.maxWidth)
             }
             if let headlineText = self.headlineText {
