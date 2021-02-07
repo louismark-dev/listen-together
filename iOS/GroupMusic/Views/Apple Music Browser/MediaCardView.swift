@@ -42,7 +42,7 @@ struct MediaCardView: View {
                         .aspectRatio(contentMode: .fit)
 
                 })
-                .aspectRatio(contentMode: .fit)
+                .frame(height: self.maxWidth)
                 .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
             }
             if let headlineText = self.headlineText {
