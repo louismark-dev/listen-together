@@ -38,6 +38,7 @@ struct ResultTypeView: View {
                     HStack {
                         Text("Songs")
                             .font(.custom("Arial Rounded MT Bold", size: 30, relativeTo: .largeTitle))
+                            .padding(.horizontal, 10)
                         Spacer()
                     }
                     ResultCarouselView(forTrackResults: self.$trackResults)
@@ -50,6 +51,7 @@ struct ResultTypeView: View {
                     HStack {
                         Text("Albums")
                             .font(.custom("Arial Rounded MT Bold", size: 30, relativeTo: .largeTitle))
+                            .padding(.horizontal, 10)
                         Spacer()
                     }
                     ResultCarouselView(forAlbumResults: self.$albumResults)
@@ -62,6 +64,7 @@ struct ResultTypeView: View {
                     HStack {
                         Text("Playlists")
                             .font(.custom("Arial Rounded MT Bold", size: 30, relativeTo: .largeTitle))
+                            .padding(.horizontal, 10)
                         Spacer()
                     }
                     ResultCarouselView(forPlaylistResults: self.$playlistResults)

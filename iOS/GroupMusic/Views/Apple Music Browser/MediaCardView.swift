@@ -36,14 +36,7 @@ struct MediaCardView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let artworkURL = self.artwork?.urlForMaxWidth() {
-                URLImage(url: artworkURL, content: { (image: Image) in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-
-                })
-                .frame(height: self.maxWidth)
-                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+                ArtworkImageView(artworkURL: artworkURL, height: self.maxWidth)
             }
             if let headlineText = self.headlineText {
                 HStack {
@@ -65,7 +58,6 @@ struct MediaCardView: View {
             }
         }
         .frame(width: self.maxWidth)
-        .background(Color.red)
         .onTapGesture {
             if let previewTrackData = self.previewTrackData {
                 self.previewTrack.openTrackPreview(withTrack: previewTrackData)

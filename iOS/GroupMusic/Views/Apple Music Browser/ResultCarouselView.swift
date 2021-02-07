@@ -33,12 +33,13 @@ struct ResultCarouselView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(spacing: 20.0) {
+            LazyHStack(spacing: 0.0) {
                 if (self.albumResults != nil && (self.albumResults?.count ?? 0) > 0) {
                     ForEach(self.albumResults!) { (albumData: Album) in
                         // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                         if let attributes = albumData.attributes {
                             MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth)
+                                .padding(.horizontal, 10)
                         }
                     }
                 }
@@ -47,6 +48,7 @@ struct ResultCarouselView: View {
                         // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                         if let attributes: PlaylistAttributes = playlistData.attributes {
                             MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artwork: attributes.artwork, maxWidth: self.cardWidth)
+                                .padding(.horizontal, 10)
                         }
                     }
                 }
@@ -55,6 +57,7 @@ struct ResultCarouselView: View {
                         // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                         if let attributes = trackData.attributes {
                             MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth, previewTrackData: trackData)
+                                .padding(.horizontal, 10)
                         }
                     }
                 }
