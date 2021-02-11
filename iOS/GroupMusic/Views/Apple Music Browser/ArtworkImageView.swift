@@ -10,7 +10,7 @@ import URLImage
 
 struct ArtworkImageView: View {
     let artworkURL: URL
-    let height: CGFloat
+    let cornerRadius: CGFloat
     @State private var imageOpacity: Double = 0.0
     @State private var isCached: Bool = false
     
@@ -46,8 +46,7 @@ struct ArtworkImageView: View {
                             }
                     }
                  })
-            .frame(height: self.height)
-            .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: self.cornerRadius, style: .continuous))
     }
 }
 

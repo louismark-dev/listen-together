@@ -37,7 +37,8 @@ struct MediaCardView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let artworkURL = self.artwork?.url(forWidth: Int(self.maxWidth * UIScreen.main.scale)) {
-                ArtworkImageView(artworkURL: artworkURL, height: self.maxWidth)
+                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
+                    .frame(width: self.maxWidth, height: self.maxWidth)
             }
             if let headlineText = self.headlineText {
                 HStack {

@@ -12,10 +12,10 @@ struct TrackCellView: View {
     
     var body: some View {
         HStack {
-            Image("DaBaby")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: 44)
+            if let artworkURL = self.track.attributes?.artwork.url(forWidth: Int(44 * UIScreen.main.scale)) {
+                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 4)
+                    .frame(width: 44, height: 44)
+            }
             VStack {
                 HStack {
                     Text(self.track.attributes?.name ?? "")

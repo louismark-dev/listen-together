@@ -29,9 +29,10 @@ struct MediaDetailView: View {
     var body: some View {
         VStack {
             HStack {
-                Image("DaBaby")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                if let artworkURL = self.album?.attributes?.artwork?.url(forWidth: Int(200 * UIScreen.main.scale)) {
+                    ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
+                        .aspectRatio(contentMode: .fit)
+                }
                 VStack {
                     HStack {
                         Text(self.album?.attributes?.name ?? "")
