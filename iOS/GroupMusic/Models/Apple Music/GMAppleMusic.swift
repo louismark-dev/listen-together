@@ -28,6 +28,23 @@ class GMAppleMusic {
         return URLSession(configuration: URLSessionConfiguration.default)
     }
     
+    public func fetch(album: Album, completion: @escaping (([Album]?, Error?) -> Void)) {
+        guard let appleMusicURL: URL = urlBuilder.relationshipRequest(path: album.href, limit: nil, offset: nil).url else {
+            print("ERROR: Could not generate URL for Album.")
+            return
+        }
+        guard let requestData = self.encodeRequestJSON(forRequestURL: appleMusicURL) else {
+            print("Could not encode JSON for Apple Music Album request.")
+            return
+        }
+                
+        let request: URLRequest = self.createURLRequest(withData: requestData)
+        
+        self.fetch(request) { (results: ResponseRoot<Album>?, error) in
+            completion(results?.data, error)
+        }
+    }
+    
     public func search(term: String, limit: Int? = nil, offset: Int? = nil, types: [MediaType]? = nil, completion: ((SearchResults?, Error?) -> Void)?) {
         guard let applemusicURL: URL = urlBuilder.searchRequest(term: term, limit: limit, offset: offset, types: types).url else {
             print("ERROR: Could not generate Apple Music URL")
@@ -35,7 +52,7 @@ class GMAppleMusic {
         }
         guard let requestData = encodeRequestJSON(forRequestURL: applemusicURL) else { fatalError("Could not encode JSON for Apple Music API request") }
         
-        let request = self.createURLRequest(forURL: self.apiEndpoint, andData: requestData)
+        let request = self.createURLRequest(withData: requestData)
         
         fetch(request) { (results: ResponseRoot<SearchResults>?, error) in
             // TODO: Searching "Weston Road Flows" returns no results. This might be an error in Cider
@@ -66,7 +83,7 @@ class GMAppleMusic {
         }
     }
     
-    private func createURLRequest(forURL url: URL, andData data: Data) -> URLRequest {
+    private func createURLRequest(withData data: Data) -> URLRequest {
         var request = URLRequest(url: self.apiEndpoint)
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")  // the request is JSON
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")        // the expected response is also JSON

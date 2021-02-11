@@ -59,11 +59,11 @@ struct MediaCardView: View {
             }
         }
         .frame(width: self.maxWidth)
-        .onTapGesture {
-            if let previewTrackData = self.previewTrackData {
-                self.previewTrack.openTrackPreview(withTrack: previewTrackData)
-            }
-        }
+//        .onTapGesture {
+//            if let previewTrackData = self.previewTrackData {
+//                self.previewTrack.openTrackPreview(withTrack: previewTrackData)
+//            }
+//        }
     }
 }
 

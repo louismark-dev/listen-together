@@ -27,6 +27,8 @@
 		25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E325C9FD6900193129 /* ResultCarouselView.swift */; };
 		25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E625C9FDF800193129 /* MediaCardView.swift */; };
 		25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CBDA8525C8915700EB552C /* SongResultsView.swift */; };
+		25DB5CA425D06466008033BB /* MediaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB5CA325D06466008033BB /* MediaDetailView.swift */; };
+		25DB5CA725D064D0008033BB /* TrackCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB5CA625D064D0008033BB /* TrackCellView.swift */; };
 		25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F8896625CF96FF00267617 /* ArtworkImageView.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
@@ -103,6 +105,8 @@
 		25A441E325C9FD6900193129 /* ResultCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCarouselView.swift; sourceTree = "<group>"; };
 		25A441E625C9FDF800193129 /* MediaCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCardView.swift; sourceTree = "<group>"; };
 		25CBDA8525C8915700EB552C /* SongResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResultsView.swift; sourceTree = "<group>"; };
+		25DB5CA325D06466008033BB /* MediaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView.swift; sourceTree = "<group>"; };
+		25DB5CA625D064D0008033BB /* TrackCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackCellView.swift; sourceTree = "<group>"; };
 		25F8896625CF96FF00267617 /* ArtworkImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkImageView.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
@@ -217,6 +221,8 @@
 				25A441E325C9FD6900193129 /* ResultCarouselView.swift */,
 				25A441E625C9FDF800193129 /* MediaCardView.swift */,
 				25F8896625CF96FF00267617 /* ArtworkImageView.swift */,
+				25DB5CA325D06466008033BB /* MediaDetailView.swift */,
+				25DB5CA625D064D0008033BB /* TrackCellView.swift */,
 			);
 			path = "Apple Music Browser";
 			sourceTree = "<group>";
@@ -477,6 +483,7 @@
 				BF8BEE82259B1C1B00B9DCD3 /* CiderClient.swift in Sources */,
 				BF8BEE62259B1B9100B9DCD3 /* PlayParameters.swift in Sources */,
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
+				25DB5CA425D06466008033BB /* MediaDetailView.swift in Sources */,
 				BF8BEE64259B1B9100B9DCD3 /* EditorialNotes.swift in Sources */,
 				BF8BEE6B259B1B9100B9DCD3 /* Artwork.swift in Sources */,
 				25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */,
@@ -489,6 +496,7 @@
 				BF5EE24625A14683000C23DD /* GMAppleMusicQueue.swift in Sources */,
 				259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */,
 				BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */,
+				25DB5CA725D064D0008033BB /* TrackCellView.swift in Sources */,
 				BF8BEE78259B1BC500B9DCD3 /* SearchResults.swift in Sources */,
 				BF8BEE61259B1B9100B9DCD3 /* Track.swift in Sources */,
 				BF49D37725B5F67200CAFAC9 /* NotificationMonitor.swift in Sources */,

@@ -16,27 +16,30 @@ struct AppleMusicSearchView: View {
     @ObservedObject var previewTrack: TrackPreviewController = TrackPreviewController() // TODO: Change variable name
 
     var body: some View {
-        ZStack {
-            VStack {
-                TextField("Search...",
-                          text: self.$searchTerm,
-                          onEditingChanged: {_ in },
-                          onCommit: self.newSearch )
-                    .disableAutocorrection(true)
-                    .padding([.top, .horizontal])
-                Spacer()
-                if (self.searchResults.hasResult == true) {
-                    SongResultsView(searchResults: self.$searchResults)
-                        .environmentObject(previewTrack)
+        NavigationView {
+            ZStack {
+                VStack {
+                    TextField("Search...",
+                              text: self.$searchTerm,
+                              onEditingChanged: {_ in },
+                              onCommit: self.newSearch )
+                        .disableAutocorrection(true)
+                        .padding([.top, .horizontal])
+                    Spacer()
+                    if (self.searchResults.hasResult == true) {
+                        SongResultsView(searchResults: self.$searchResults)
+                            .environmentObject(previewTrack)
+                    }
                 }
-            }
-            if (previewTrack.track != nil) {
-                if let previewTrack = self.previewTrack.track {
-                    PreviewView(previewTrack: previewTrack)
-                        .transition(.move(edge: .bottom))
+                if (previewTrack.track != nil) {
+                    if let previewTrack = self.previewTrack.track {
+                        PreviewView(previewTrack: previewTrack)
+                            .transition(.move(edge: .bottom))
 
+                    }
                 }
             }
+            .navigationBarHidden(true)
         }
     }
     

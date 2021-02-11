@@ -61,8 +61,10 @@ struct ResultCarouselView: View {
             ForEach(self.albumResults) { (albumData: Album) in
                 // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
                 if let attributes = albumData.attributes {
-                    MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth)
-                        .padding(.horizontal, 10)
+                    NavigationLink(destination: MediaDetailView(withAlbum: albumData)) {
+                        MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth)
+                            .padding(.horizontal, 10)
+                    }
                 }
             }
         }
