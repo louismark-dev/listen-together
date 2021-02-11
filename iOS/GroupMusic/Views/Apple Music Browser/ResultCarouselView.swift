@@ -35,31 +35,13 @@ struct ResultCarouselView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0.0) {
                 if (self.albumResults != nil && (self.albumResults?.count ?? 0) > 0) {
-                    ForEach(self.albumResults!) { (albumData: Album) in
-                        // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
-                        if let attributes = albumData.attributes {
-                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth)
-                                .padding(.horizontal, 10)
-                        }
-                    }
+                    AlbumsCarouselView(albumResults: self.albumResults!, cardWidth: self.$cardWidth)
                 }
                 else if (self.playlistResults != nil && (self.playlistResults?.count ?? 0) > 0) {
-                    ForEach(self.playlistResults!) { (playlistData: Playlist) in
-                        // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
-                        if let attributes: PlaylistAttributes = playlistData.attributes {
-                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artwork: attributes.artwork, maxWidth: self.cardWidth)
-                                .padding(.horizontal, 10)
-                        }
-                    }
+                    PlaylistsCarouselView(playlistResults: self.playlistResults!, cardWidth: self.$cardWidth)
                 }
                 else if (self.trackResults != nil && (self.trackResults?.count ?? 0) > 0) {
-                    ForEach(self.trackResults!) { (trackData: Track) in
-                        // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
-                        if let attributes = trackData.attributes {
-                            MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth, previewTrackData: trackData)
-                                .padding(.horizontal, 10)
-                        }
-                    }
+                    TracksCarouselView(trackResults: self.trackResults!, cardWidth: self.$cardWidth)
                 }
             }
         }
@@ -69,6 +51,49 @@ struct ResultCarouselView: View {
                     self.setCardViewWidth(carouselViewWidth: geometry.size.width)
                 }
         })
+    }
+    
+    struct AlbumsCarouselView: View {
+        let albumResults: [Album]
+        @Binding var cardWidth: CGFloat
+        
+        var body: some View {
+            ForEach(self.albumResults) { (albumData: Album) in
+                // TODO: Result type label (in ResultTypeView) will still appear even if none of the resutls have any attributes
+                if let attributes = albumData.attributes {
+                    MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth)
+                        .padding(.horizontal, 10)
+                }
+            }
+        }
+    }
+    
+    struct PlaylistsCarouselView: View {
+        let playlistResults: [Playlist]
+        @Binding var cardWidth: CGFloat
+        
+        var body: some View {
+            ForEach(self.playlistResults) { (playlistData: Playlist) in
+                if let attributes: PlaylistAttributes = playlistData.attributes {
+                    MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artwork: attributes.artwork, maxWidth: self.cardWidth)
+                        .padding(.horizontal, 10)
+                }
+            }
+        }
+    }
+    
+    struct TracksCarouselView: View {
+        let trackResults: [Track]
+        @Binding var cardWidth: CGFloat
+        
+        var body: some View {
+            ForEach(self.trackResults) { (trackData: Track) in
+                if let attributes = trackData.attributes {
+                    MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth, previewTrackData: trackData)
+                        .padding(.horizontal, 10)
+                }
+            }
+        }
     }
     
     private func setCardViewWidth(carouselViewWidth width: CGFloat) {
