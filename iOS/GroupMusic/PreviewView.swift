@@ -13,6 +13,7 @@ struct PreviewView: View {
     var previewTrack: Track
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @ObservedObject private var socketManager: GMSockets
+    @EnvironmentObject var trackPreviewController: TrackPreviewController
     
     init(previewTrack: Track,
          audioPreviewPlayer: AudioPreview = AudioPreview(),
@@ -27,60 +28,68 @@ struct PreviewView: View {
     
     private let radius: CGFloat = CGFloat(6.0)
     var body: some View {
-        VStack {
-            Spacer()
-            HStack {
-                if let artworkURL = self.previewTrack.attributes?.artwork.urlForMaxWidth() {
-                    URLImage(url: artworkURL, content: { (image: Image) in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    })
-                        .frame(maxWidth: 100)
-                        .cornerRadius(self.radius)
+        ZStack {
+            Color.clear
+                .ignoresSafeArea()
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    self.trackPreviewController.closeTrackPreview()
                 }
-                VStack(alignment: .leading) {
-                    Text(self.previewTrack.attributes?.name ?? "---")
-                        .font(.headline)
-                    Text(self.previewTrack.attributes?.artistName ?? "---")
-                        .font(.subheadline)
-                        .opacity(0.8)
-                }
+            VStack {
                 Spacer()
-                Button(action: { self.playPreview() }) {
-                    Image(systemName: "play.circle.fill")
-                        .font(.system(size: 40, weight: .thin))
+                HStack {
+                    if let artworkURL = self.previewTrack.attributes?.artwork.urlForMaxWidth() {
+                        URLImage(url: artworkURL, content: { (image: Image) in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        })
+                            .frame(maxWidth: 100)
+                            .cornerRadius(self.radius)
+                    }
+                    VStack(alignment: .leading) {
+                        Text(self.previewTrack.attributes?.name ?? "---")
+                            .font(.headline)
+                        Text(self.previewTrack.attributes?.artistName ?? "---")
+                            .font(.subheadline)
+                            .opacity(0.8)
+                    }
+                    Spacer()
+                    Button(action: { self.playPreview() }) {
+                        Image(systemName: "play.circle.fill")
+                            .font(.system(size: 40, weight: .thin))
+                    }
                 }
+                .padding()
+                .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterialLight))
+                                .cornerRadius(self.radius))
+                VStack {
+                    Button(action: self.prependToQueue) {
+                        HStack {
+                            Text("Play Next")
+                            Spacer()
+                            Image(systemName: "text.insert")
+                        }
+                        .font(.headline)
+                        .padding()
+                    }
+
+                    Divider()
+                    Button(action: self.appendToQueue) {
+                        HStack {
+                            Text("Play Later")
+                            Spacer()
+                            Image(systemName: "text.append")
+                        }
+                        .font(.headline)
+                        .padding()
+                    }
+                }
+                .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterialLight))
+                                .cornerRadius(self.radius))
             }
             .padding()
-            .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterialLight))
-                            .cornerRadius(self.radius))
-            VStack {
-                Button(action: self.prependToQueue) {
-                    HStack {
-                        Text("Play Next")
-                        Spacer()
-                        Image(systemName: "text.insert")
-                    }
-                    .font(.headline)
-                    .padding()
-                }
-
-                Divider()
-                Button(action: self.appendToQueue) {
-                    HStack {
-                        Text("Play Later")
-                        Spacer()
-                        Image(systemName: "text.append")
-                    }
-                    .font(.headline)
-                    .padding()
-                }
-            }
-            .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterialLight))
-                            .cornerRadius(self.radius))
         }
-        .padding()
     }
 
     private func playPreview() {

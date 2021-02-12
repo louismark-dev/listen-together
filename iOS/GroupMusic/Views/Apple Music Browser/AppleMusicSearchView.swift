@@ -8,20 +8,22 @@
 import SwiftUI
 
 struct AppleMusicSearchView: View {
-    @ObservedObject var previewTrack: TrackPreviewController = TrackPreviewController() // TODO: Change variable name
+    @ObservedObject var trackPreviewController: TrackPreviewController = TrackPreviewController()
 
     var body: some View {
         ZStack {
             InnerView()
-                .environmentObject(self.previewTrack)
-            if (previewTrack.track != nil) {
-                if let previewTrack = self.previewTrack.track {
+                .zIndex(0)
+            if (self.trackPreviewController.track != nil) {
+                if let previewTrack = self.trackPreviewController.track {
                     PreviewView(previewTrack: previewTrack)
+                        .zIndex(1) // zIndex necessary for removal animation
                         .transition(.move(edge: .bottom))
 
                 }
             }
         }
+        .environmentObject(self.trackPreviewController)
     }
     
     struct InnerView: View {
@@ -124,6 +126,12 @@ class TrackPreviewController: ObservableObject {
     public func openTrackPreview(withTrack track: Track) {
         withAnimation {
             self.track = track
+        }
+    }
+    
+    public func closeTrackPreview() {
+        withAnimation {
+            self.track = nil
         }
     }
 }
