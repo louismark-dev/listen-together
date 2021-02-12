@@ -10,6 +10,7 @@ import SwiftUI
 struct MediaDetailView: View {
     @State private var album: Album?
     @State private var playlist: Playlist?
+    @EnvironmentObject var trackPreviewController: TrackPreviewController
     private let appleMusicManager: GMAppleMusic
     
     init(withAlbum album: Album,
@@ -56,6 +57,9 @@ struct MediaDetailView: View {
                     if let albumTracks = self.album?.relationships?.tracks.data {
                         ForEach(albumTracks) { (track: Track) in
                             TrackCellView(track: track)
+                                .onTapGesture {
+                                    self.trackPreviewController.openTrackPreview(withTrack: track)
+                                }
                         }
                     }
                 }

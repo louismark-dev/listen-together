@@ -8,58 +8,69 @@
 import SwiftUI
 
 struct AppleMusicSearchView: View {
-    let appleMusicManager: GMAppleMusic
-    @State var songResults: [Track] = []
-    @State private var searchTerm: String = ""
-    @State private var results: SearchResults? = nil
-    @State private var searchResults: AppleMusicSearchResults = AppleMusicSearchResults()
     @ObservedObject var previewTrack: TrackPreviewController = TrackPreviewController() // TODO: Change variable name
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                VStack {
-                    TextField("Search...",
-                              text: self.$searchTerm,
-                              onEditingChanged: {_ in },
-                              onCommit: self.newSearch )
-                        .disableAutocorrection(true)
-                        .padding([.top, .horizontal])
-                    Spacer()
-                    if (self.searchResults.hasResult == true) {
-                        SongResultsView(searchResults: self.$searchResults)
-                            .environmentObject(previewTrack)
-                    }
-                }
-                if (previewTrack.track != nil) {
-                    if let previewTrack = self.previewTrack.track {
-                        PreviewView(previewTrack: previewTrack)
-                            .transition(.move(edge: .bottom))
+        ZStack {
+            InnerView()
+                .environmentObject(self.previewTrack)
+            if (previewTrack.track != nil) {
+                if let previewTrack = self.previewTrack.track {
+                    PreviewView(previewTrack: previewTrack)
+                        .transition(.move(edge: .bottom))
 
-                    }
                 }
             }
-            .navigationBarHidden(true)
         }
     }
     
-    init(appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
-        self.appleMusicManager = appleMusicManager
-    }
-    
-    private func newSearch() {
-        self.appleMusicManager.search(term: self.searchTerm, limit: 10) { (results: SearchResults?, error: Error?) in
-            if let error = error {
-                print("ERROR: Could not retrive search results: \(error)")
-                // TODO: Show error in UI
-                return
+    struct InnerView: View {
+        @State private var searchTerm: String = ""
+        @State var songResults: [Track] = []
+        @State private var results: SearchResults? = nil
+        @State private var searchResults: AppleMusicSearchResults = AppleMusicSearchResults()
+        @EnvironmentObject var previewTrack: TrackPreviewController
+        let appleMusicManager: GMAppleMusic
+        
+        init(appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
+            self.appleMusicManager = appleMusicManager
+        }
+        
+        var body: some View {
+            NavigationView {
+                ZStack {
+                    VStack {
+                        TextField("Search...",
+                                  text: self.$searchTerm,
+                                  onEditingChanged: {_ in },
+                                  onCommit: self.newSearch )
+                            .disableAutocorrection(true)
+                            .padding([.top, .horizontal])
+                        Spacer()
+                        if (self.searchResults.hasResult == true) {
+                            SongResultsView(searchResults: self.$searchResults)
+                                .environmentObject(previewTrack)
+                        }
+                    }
+                }
+                .navigationBarHidden(true)
             }
-            guard let results: SearchResults = results else {
-                print("ERROR: Could not retrive search results")
-                // TODO: Show error in UI
-                return
+        }
+        
+        private func newSearch() {
+            self.appleMusicManager.search(term: self.searchTerm, limit: 10) { (results: SearchResults?, error: Error?) in
+                if let error = error {
+                    print("ERROR: Could not retrive search results: \(error)")
+                    // TODO: Show error in UI
+                    return
+                }
+                guard let results: SearchResults = results else {
+                    print("ERROR: Could not retrive search results")
+                    // TODO: Show error in UI
+                    return
+                }
+                self.searchResults.updateWithSearchResults(results)
             }
-            self.searchResults.updateWithSearchResults(results)
         }
     }
 }
