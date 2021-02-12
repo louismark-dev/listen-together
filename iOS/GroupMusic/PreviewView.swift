@@ -105,6 +105,7 @@ struct PreviewView: View {
     
     /// Inserts the media item defined into the current queue immediately after the currently playing media item.
     private func prependToQueue() {
+        self.trackPreviewController.closeTrackPreview()
         // IF OBSERVER
         if (self.socketManager.state.isCoordinator == false) {
             self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
@@ -120,7 +121,7 @@ struct PreviewView: View {
     
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     private func appendToQueue() {
-        
+        self.trackPreviewController.closeTrackPreview()
         // IF OBSERVER
         if (self.socketManager.state.isCoordinator == false) {
             self.emitAppendToQueueEvent(withTracks: [self.previewTrack])
