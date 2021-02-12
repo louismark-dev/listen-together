@@ -57,6 +57,7 @@ struct MediaDetailView: View {
                     if let albumTracks = self.album?.relationships?.tracks.data {
                         ForEach(albumTracks) { (track: Track) in
                             TrackCellView(track: track)
+                                .contentShape(Rectangle())
                                 .onTapGesture {
                                     self.trackPreviewController.openTrackPreview(withTrack: track)
                                 }
