@@ -29,10 +29,10 @@ struct PreviewView: View {
     private let radius: CGFloat = CGFloat(6.0)
     var body: some View {
         ZStack {
-            Color.clear
+            Color.gray
+                .opacity(0.001) // Appears transparent, but also accepts touch events
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
-                .allowsHitTesting(true) // Stop touch events from being passed to underlying views
                 .onTapGesture {
                     self.trackPreviewController.closeTrackPreview()
                 }
