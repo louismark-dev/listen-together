@@ -123,7 +123,14 @@ struct GMAppleMusicQueue: Codable {
         
     }
     
-    enum QueueUpdateError: Error {
+    enum QueueUpdateError: Error, LocalizedError {
         case failedToSetQueueEqualToMPMusicPlayerControllerQueue
+        
+        public var errorDescription: String {
+                switch self {
+                case .failedToSetQueueEqualToMPMusicPlayerControllerQueue:
+                    return "Faield to set queue equal to MPMusicPlayerControllerQueue."
+                }
+            }
     }
 }
