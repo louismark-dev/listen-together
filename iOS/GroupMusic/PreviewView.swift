@@ -32,6 +32,7 @@ struct PreviewView: View {
             Color.clear
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
+                .allowsHitTesting(true) // Stop touch events from being passed to underlying views
                 .onTapGesture {
                     self.trackPreviewController.closeTrackPreview()
                 }
