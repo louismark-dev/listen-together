@@ -224,7 +224,23 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
                     completion!()
                 }
             } catch {
-                fatalError(error.localizedDescription)
+                print("Could not add item(s) to playback queue")
+                // TODO: 
+                // This error will be thrown when trying to add Bruno Mars, "Just the way you are" to the playback queue.
+                // This error happens becuase the playbackStoreID of the MPMediaItems do not match the storeID
+                // you used to add the track to the queue in MPMusicPlayerStoreQueueDescriptor(storeIDs: storeIDs).
+                
+                // IDs of Bruno Mars, Just the way you are:
+                // storeID passed to MPMusicPlayerStoreQueueDescriptor: 576655095
+                // playbackStoreID of the MPMediaItem: 576670459
+                
+                // However, a HTTP GET using the playbackStoreID of the MPMediaItem will still return the metadata
+                // for Just the Way you are:
+                // https://api.music.apple.com/v1/catalog/us/songs/576670459
+                
+                // FIX: When the playback IDs don't match, make an HTTP GET reqeust to get the song metadata
+                // using the playbackStoreID of the MPMediaItem. Replace Track object in the queue with the
+                // new metadata.
             }
         }
     }
@@ -249,7 +265,8 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
                     completion!()
                 }
             } catch {
-                fatalError(error.localizedDescription)
+                print("Could not add item(s) to playback queue")
+                // See notes in appendToMPMusicPlayerQueue()
             }
         }
     }
