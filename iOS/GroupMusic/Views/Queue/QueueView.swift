@@ -13,7 +13,7 @@ struct QueueView: View {
     @EnvironmentObject var bannerController: BannerController
     @State private var nowPlayingIndicatorTimeout: Timer? = nil
     @State private var scrollViewReader: ScrollViewProxy?
-    @State private var bannerDisable: Bool = false
+    @State private var disableBanner: Bool = false
     private let queueCellHeight: QueueCell.Height = QueueCell.Height(expanded: 120, collapsed: 80)
     private let queueSpacing: CGFloat = 20
     
@@ -42,14 +42,14 @@ struct QueueView: View {
                 }
             }
             .onChange(of: self.playerAdapter.state.queue.state.indexOfNowPlayingItem) { (indexOfNowPlayingItem: Int) in
-                self.disableBannerForDuration()
+                self.disableReturnToNowPlayingBanner(forDuration: 0.5)
                 withAnimation {
                     scrollView.scrollTo(self.playerAdapter.state.queue.state.queue[indexOfNowPlayingItem], anchor: .top)
                 }
             }
             .onChange(of: self.bannerController.scrollToTopOfQueue) { (shouldScrollToTopOfQueue: Bool) in
                 guard (shouldScrollToTopOfQueue) else { return }
-                self.disableBannerForDuration()
+                self.disableReturnToNowPlayingBanner(forDuration: 0.5)
                 withAnimation {
                     scrollView.scrollTo(self.playerAdapter.state.queue.state.nowPlayingItem, anchor: .top)
                 }
@@ -73,7 +73,7 @@ struct QueueView: View {
             let showReturnToNowPlayingIndicator = (difference > tolerance)
 
             withAnimation {
-                if (showReturnToNowPlayingIndicator && !self.bannerDisable) {
+                if (showReturnToNowPlayingIndicator && !self.disableBanner) {
                     self.bannerController.state.bannerState = .showReturnToNowPlayingBanner
                 } else {
                     self.bannerController.state.bannerState = .none
@@ -82,10 +82,11 @@ struct QueueView: View {
         }
     }
     
-    private func disableBannerForDuration() {
-        self.bannerDisable = true
-        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer: Timer) in
-            self.bannerDisable = false
+    /// Use this to prevent the banner from appearing when skipping songs, or when "Return to Now Playing" is tapped
+    private func disableReturnToNowPlayingBanner(forDuration duration: TimeInterval) {
+        self.disableBanner = true
+        Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { (timer: Timer) in
+            self.disableBanner = false
         }
     }
 }
