@@ -14,6 +14,7 @@ struct QueueView: View {
     @State private var nowPlayingIndicatorTimeout: Timer? = nil
     @State private var scrollViewReader: ScrollViewProxy?
     @State private var disableBanner: Bool = false
+    @State private var disableBannerTimer: Timer? = nil
     private let queueCellHeight: QueueCell.Height = QueueCell.Height(expanded: 120, collapsed: 80)
     private let queueSpacing: CGFloat = 20
     
@@ -85,7 +86,8 @@ struct QueueView: View {
     /// Use this to prevent the banner from appearing when skipping songs, or when "Return to Now Playing" is tapped
     private func disableReturnToNowPlayingBanner(forDuration duration: TimeInterval) {
         self.disableBanner = true
-        Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { (timer: Timer) in
+        self.disableBannerTimer?.invalidate()
+        self.disableBannerTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { (timer: Timer) in
             self.disableBanner = false
         }
     }
