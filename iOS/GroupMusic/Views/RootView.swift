@@ -67,7 +67,8 @@ struct RootView: View {
         var body: some View {
             VStack {
                 ReturnToNowPlayingView()
-                    .frame(width: 300, height: 44)
+                    .frame(maxWidth: 300, maxHeight: 30)
+                    .padding(4)
                 Spacer()
             }
             .offset(x: 0.0, y: (self.bannerController.state.bannerState == .showReturnToNowPlayingBanner) ? 0 : -120)

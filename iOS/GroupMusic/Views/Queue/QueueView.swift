@@ -13,6 +13,7 @@ struct QueueView: View {
     @EnvironmentObject var bannerController: BannerController
     @State private var nowPlayingIndicatorTimeout: Timer? = nil
     @State private var scrollViewReader: ScrollViewProxy?
+    @State private var bannerDisable: Bool = false
     private let queueCellHeight: QueueCell.Height = QueueCell.Height(expanded: 120, collapsed: 80)
     private let queueSpacing: CGFloat = 20
     
@@ -41,12 +42,14 @@ struct QueueView: View {
                 }
             }
             .onChange(of: self.playerAdapter.state.queue.state.indexOfNowPlayingItem) { (indexOfNowPlayingItem: Int) in
+                self.disableBannerForDuration()
                 withAnimation {
                     scrollView.scrollTo(self.playerAdapter.state.queue.state.queue[indexOfNowPlayingItem], anchor: .top)
                 }
             }
             .onChange(of: self.bannerController.scrollToTopOfQueue) { (shouldScrollToTopOfQueue: Bool) in
                 guard (shouldScrollToTopOfQueue) else { return }
+                self.disableBannerForDuration()
                 withAnimation {
                     scrollView.scrollTo(self.playerAdapter.state.queue.state.nowPlayingItem, anchor: .top)
                 }
@@ -59,7 +62,7 @@ struct QueueView: View {
     }
     
     private func setShowReturnToNowPlayingIndicator(withScrollOffset scrollOffset:CGPoint, andTolerance tolerance: CGFloat) {
-        self.nowPlayingIndicatorTimeout = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer: Timer) in
+        self.nowPlayingIndicatorTimeout = Timer.scheduledTimer(withTimeInterval: 0.0, repeats: false) { (timer: Timer) in
             // Offset of now playing = (playedItems * queueCellHeight.collapsed) + (playedItems * queueSpacing)
             let itemsPlayedCount: CGFloat = CGFloat(self.playerAdapter.state.queue.state.indexOfNowPlayingItem)
             let nowPlayingOffset = ((itemsPlayedCount * self.queueCellHeight.collapsed) + (itemsPlayedCount * self.queueSpacing))
@@ -69,18 +72,20 @@ struct QueueView: View {
             let difference: CGFloat = abs(scrollViewYOffset - nowPlayingOffset)
             let showReturnToNowPlayingIndicator = (difference > tolerance)
 
-            print("Now playing offset: \(nowPlayingOffset)")
-            print("ScrollView Y offset: \(scrollViewYOffset)")
-            print("Difference: \(difference)")
-            print(showReturnToNowPlayingIndicator ? "Show return to now playing indicator" : "Don't show return to now playing indicator")
-
             withAnimation {
-                if (showReturnToNowPlayingIndicator) {
+                if (showReturnToNowPlayingIndicator && !self.bannerDisable) {
                     self.bannerController.state.bannerState = .showReturnToNowPlayingBanner
                 } else {
                     self.bannerController.state.bannerState = .none
                 }
             }
+        }
+    }
+    
+    private func disableBannerForDuration() {
+        self.bannerDisable = true
+        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer: Timer) in
+            self.bannerDisable = false
         }
     }
 }

@@ -29,7 +29,7 @@ struct ReturnToNowPlayingView: View {
                             .opacity(0.6)
                     }
                 }
-                .font(.system(.callout, design: .rounded))
+                .font(.system(.footnote, design: .rounded))
                 .foregroundColor(.black)
             }
             .padding(EdgeInsets(top: 12, leading: 15, bottom: 12, trailing: 15))
