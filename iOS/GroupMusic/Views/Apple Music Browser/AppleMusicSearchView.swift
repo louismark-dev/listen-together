@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AppleMusicSearchView: View {
     @ObservedObject var trackPreviewController: TrackPreviewController = TrackPreviewController()
+    @EnvironmentObject var playerAdapter: PlayerAdapter
 
     var body: some View {
         ZStack {
@@ -17,6 +18,7 @@ struct AppleMusicSearchView: View {
             if (self.trackPreviewController.track != nil) {
                 if let previewTrack = self.trackPreviewController.track {
                     PreviewView(previewTrack: previewTrack)
+                        .environmentObject(self.playerAdapter)
                         .zIndex(1) // zIndex necessary for removal animation
                         .transition(.move(edge: .bottom))
 

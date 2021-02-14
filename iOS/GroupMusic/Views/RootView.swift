@@ -9,19 +9,19 @@ import SwiftUI
 
 struct RootView: View {
     @State var isShowingSheet: Bool = false
+    @State var showReturnToNowPlayingBanner: Bool = false
     @ObservedObject private var socketManager: GMSockets
     let notificationMonitor: NotificationMonitor
     let playerAdapter: PlayerAdapter
-//    let backgroundAudio: BackgroundAudio
+    let bannerController: BannerController
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
-         playerAdapter: PlayerAdapter = PlayerAdapter()) {
+         playerAdapter: PlayerAdapter = PlayerAdapter()){
         self.socketManager = socketManager
         self.playerAdapter = playerAdapter
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
         self.notificationMonitor.startListeningForNotifications()
-        
-//        self.backgroundAudio = BackgroundAudio()
+        self.bannerController = BannerController(playerAdapter: playerAdapter)
     }
     
     let sampleData = [
@@ -39,6 +39,7 @@ struct RootView: View {
                 .ignoresSafeArea()
             VStack {
                 QueueView()
+                    .environmentObject(self.bannerController)
                 Spacer()
                 PlaybackProgressView()
                 Group {
@@ -48,14 +49,35 @@ struct RootView: View {
                         PlaybackGuestControllerView()
                     }
                 }
-                    .scaleEffect()
-                    .padding()
-                BottomBarView()
-                
-            }
+                .scaleEffect()
                 .padding()
+                BottomBarView()
+            }
+            .padding()
         }
+        .overlay(BannerView()
+                    .environmentObject(self.bannerController))
         .environmentObject(self.playerAdapter)
+        
+    }
+    
+    private struct BannerView: View {
+        @EnvironmentObject var bannerController: BannerController
+        
+        var body: some View {
+            VStack {
+                ReturnToNowPlayingView()
+                    .frame(width: 300, height: 44)
+                Spacer()
+            }
+            .offset(x: 0.0, y: (self.bannerController.state.bannerState == .showReturnToNowPlayingBanner) ? 0 : -120)
+            .opacity((self.bannerController.state.bannerState == .showReturnToNowPlayingBanner) ? 1 : 0)
+            .animation(.spring())
+            .onTapGesture {
+                self.bannerController.returnToNowPlayingTapped()
+                self.bannerController.state.bannerState = .none
+            }
+        }
     }
 }
 

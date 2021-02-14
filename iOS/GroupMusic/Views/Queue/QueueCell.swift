@@ -13,6 +13,7 @@ struct QueueCell: View {
     var artistName: String
     var artworkURL: URL?
     let indexInQueue: Int
+    let height: Height
     @State var expanded: Bool = false
     @EnvironmentObject var playerAdapter: PlayerAdapter
     
@@ -46,7 +47,7 @@ struct QueueCell: View {
             }
         }
         .padding()
-        .frame(height: expanded ? 140 : 80)
+        .frame(height: expanded ? self.height.expanded : self.height.collapsed)
         .background(QueueCellBackground(artworkURL: self.artworkURL, expanded: $expanded))
         .onChange(of: self.playerAdapter.state.queue.state.indexOfNowPlayingItem) { (indexOfNowPlayingItem: Int) in
             withAnimation {
@@ -56,6 +57,11 @@ struct QueueCell: View {
         .onAppear {
             self.expanded = (self.playerAdapter.state.queue.state.indexOfNowPlayingItem == indexInQueue)
         }
+    }
+    
+    struct Height {
+        let expanded: CGFloat
+        let collapsed: CGFloat
     }
 }
 

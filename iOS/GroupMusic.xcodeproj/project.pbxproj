@@ -11,6 +11,8 @@
 		250E821425B93861001990E9 /* PlaybackHostControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821325B93861001990E9 /* PlaybackHostControllerView.swift */; };
 		250E821825B93894001990E9 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821725B93894001990E9 /* BottomBarView.swift */; };
 		250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821F25B938F2001990E9 /* SessionSettingsView.swift */; };
+		25272FB225D9185D00E690BE /* ReturnToNowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */; };
+		25272FB825D994F200E690BE /* BannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB725D994F200E690BE /* BannerController.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
 		2550D0AC25BFC2FF0030E17E /* BackgroundAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */; };
 		2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0AE25BFC34D0030E17E /* sample-1.mp3 */; };
@@ -91,6 +93,8 @@
 		250E821325B93861001990E9 /* PlaybackHostControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackHostControllerView.swift; sourceTree = "<group>"; };
 		250E821725B93894001990E9 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BottomBarView.swift; path = GroupMusic/Views/BottomBar/BottomBarView.swift; sourceTree = SOURCE_ROOT; };
 		250E821F25B938F2001990E9 /* SessionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSettingsView.swift; sourceTree = "<group>"; };
+		25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnToNowPlayingView.swift; sourceTree = "<group>"; };
+		25272FB725D994F200E690BE /* BannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerController.swift; sourceTree = "<group>"; };
 		2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudio.swift; sourceTree = "<group>"; };
 		2550D0AE25BFC34D0030E17E /* sample-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sample-1.mp3"; sourceTree = "<group>"; };
 		2550D0BA25BFCEE50030E17E /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
@@ -209,6 +213,7 @@
 				250E821F25B938F2001990E9 /* SessionSettingsView.swift */,
 				2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */,
 				25461F3225D7B95700456752 /* BackgroundBlur */,
+				25272FB725D994F200E690BE /* BannerController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -219,6 +224,7 @@
 				2577BCEA25B9321100F65B8F /* QueueCell.swift */,
 				2577BCE825B9321000F65B8F /* QueueCellBackground.swift */,
 				2577BCE925B9321000F65B8F /* QueueView.swift */,
+				25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */,
 			);
 			path = Queue;
 			sourceTree = "<group>";
@@ -470,6 +476,7 @@
 				BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */,
 				25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */,
 				BF99218125A405ED00F8CAC5 /* AppleMusicControllerView.swift in Sources */,
+				25272FB225D9185D00E690BE /* ReturnToNowPlayingView.swift in Sources */,
 				BF8BEE69259B1B9100B9DCD3 /* MediaType.swift in Sources */,
 				BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */,
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
@@ -522,6 +529,7 @@
 				BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */,
 				25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */,
 				BF8BEE77259B1BC500B9DCD3 /* Relationship.swift in Sources */,
+				25272FB825D994F200E690BE /* BannerController.swift in Sources */,
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
 				2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */,
 				BF8BEE80259B1C1B00B9DCD3 /* UrlFetcher.swift in Sources */,
