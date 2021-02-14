@@ -113,7 +113,7 @@ struct PreviewView: View {
         
         // IF COORDINATOR
         if (self.socketManager.state.isCoordinator == true) {
-            self.playerAdapter.prependToQueue(withTracks: [self.previewTrack], completion: {
+            self.playerAdapter.prependToQueue(withTracks: [self.previewTrack], completion: { // TODO: No Instances of player adapter?
                 self.emitPrependToQueueEvent(withTracks: [self.previewTrack])
             })
         }

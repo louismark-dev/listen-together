@@ -48,7 +48,7 @@ struct PlaybackGuestControllerView: View {
             Button(action: { self.togglePlayback() }) {
                 ZStack {
                     Circle()
-                        .foregroundColor(Color("TiffanyBlue"))
+                        .foregroundColor(.clear)
                     Image(systemName: (self.playerAdapter.state.playbackState != .playing) ? "play.fill" : "pause.fill")
                 }
                 .frame(maxHeight: 60)

@@ -34,9 +34,9 @@ struct RootView: View {
     
     var body: some View {
         ZStack {
-            Color("RussianViolet")
-                .ignoresSafeArea(.all, edges: .all)
-//            BackgroundBlurView(selectedCell: self.$selectedCell, queueItems: sampleData)
+            BackgroundBlurView()
+                .frame(maxWidth: UIScreen.main.bounds.size.width, maxHeight: UIScreen.main.bounds.size.height)
+                .ignoresSafeArea()
             VStack {
                 QueueView()
                 Spacer()
