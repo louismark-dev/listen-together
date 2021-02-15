@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AppleMusicSearchView: View {
-    @ObservedObject var trackPreviewController: TrackPreviewController = TrackPreviewController()
+    @StateObject var trackPreviewController: TrackPreviewController = TrackPreviewController()
     @EnvironmentObject var playerAdapter: PlayerAdapter
 
     var body: some View {
@@ -21,7 +21,6 @@ struct AppleMusicSearchView: View {
                         .environmentObject(self.playerAdapter)
                         .zIndex(1) // zIndex necessary for removal animation
                         .transition(.move(edge: .bottom))
-
                 }
             }
         }

@@ -10,6 +10,7 @@ import SwiftUI
 struct BottomBarView: View {
     @State var showSessionSettings: Bool = false
     @State var activeSheet: ActiveSheet?
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     
     var body: some View {
         HStack {
@@ -28,6 +29,7 @@ struct BottomBarView: View {
             switch item {
             case .sessionSettings: SessionSettingsView()
             case .addToQueue: AppleMusicSearchView()
+                .environmentObject(self.playerAdapter)
             }
         }
     }
@@ -92,7 +94,7 @@ struct BottomBarView_Previews: PreviewProvider {
             Color("RussianViolet")
                 .ignoresSafeArea(.all, edges: .all)
             BottomBarView()
-
+            
         }
     }
 }

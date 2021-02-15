@@ -9,7 +9,7 @@ import SwiftUI
 import URLImage
 
 struct PreviewView: View {
-    let audioPreviewPlayer: AudioPreview
+    @StateObject var audioPreviewPlayer: AudioPreview = AudioPreview()
     var previewTrack: Track
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @ObservedObject private var socketManager: GMSockets
@@ -19,10 +19,6 @@ struct PreviewView: View {
          audioPreviewPlayer: AudioPreview = AudioPreview(),
          socketManager: GMSockets = GMSockets.sharedInstance) {
         self.previewTrack = previewTrack
-        self.audioPreviewPlayer = audioPreviewPlayer
-        if let previewURL = self.previewTrack.attributes?.previews.first?.url {
-            self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
-        }
         self.socketManager = socketManager
     }
     
@@ -90,6 +86,11 @@ struct PreviewView: View {
                                 .cornerRadius(self.radius))
             }
             .padding()
+        }
+        .onAppear {
+            if let previewURL = self.previewTrack.attributes?.previews.first?.url {
+                self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
+            }
         }
     }
 
