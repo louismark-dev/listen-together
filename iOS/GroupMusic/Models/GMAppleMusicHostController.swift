@@ -52,6 +52,8 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
                     self.player.setQueue(with: songs.map({ (song) -> String in
                         song.storeID
                     })) // TODO: Come up with a better way to keep the queues in sync
+                    self.player.shuffleMode = .off
+                    self.player.prepareToPlay()
                 }
             }
         }
