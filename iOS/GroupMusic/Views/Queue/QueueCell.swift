@@ -21,11 +21,12 @@ struct QueueCell: View {
         VStack {
             HStack(spacing: 10) {
                 if let artworkURL = self.artworkURL {
-                    URLImage(url: artworkURL, content: { (image: Image) in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    })
+                    AsyncImage(
+                        url: artworkURL,
+                        placeholder:{ Color.clear },
+                        image: { Image(uiImage: $0).resizable() }
+                    )
+                    .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
                 }
                 VStack(alignment: .leading, spacing: 2) {

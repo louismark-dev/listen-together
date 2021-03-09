@@ -14,19 +14,6 @@ struct QueueCellBackground: View {
     
     var body: some View {
         ZStack {
-            HStack {
-                if let artworkURL = self.artworkURL {
-                    URLImage(url: artworkURL, content: { (image: Image) in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    })
-                    .scaleEffect(2)
-                    .blur(radius: 50)
-                    .opacity(0.60)
-                }
-                Spacer()
-            }.clipShape(RoundedRectangle(cornerRadius: 25.0, style: .continuous))
             RoundedRectangle(cornerRadius: 25.0, style: .continuous)
                 .fill(Color(self.expanded ? "BlackChocolateLight" : "BlackChocolate"))
                 .opacity(0.55)
