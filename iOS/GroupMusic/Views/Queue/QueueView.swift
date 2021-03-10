@@ -27,7 +27,7 @@ struct QueueView: View {
                     self.setShowReturnToNowPlayingIndicator(withScrollOffset: $0, andTolerance: 20)
                 }
             ) {
-                VStack(spacing: self.queueSpacing) {
+                LazyVStack(spacing: self.queueSpacing) {
                     ForEach(self.playerAdapter.state.queue.state.queue, id: \.id) { (track: Track) in
                         // TODO: Handle case where attributes is null
                         if let attributes = track.attributes {
