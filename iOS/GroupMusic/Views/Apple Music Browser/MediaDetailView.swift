@@ -11,20 +11,26 @@ struct MediaDetailView: View {
     @State private var album: Album?
     @State private var playlist: Playlist?
     @EnvironmentObject var trackPreviewController: TrackPreviewController
+    @EnvironmentObject var playerAdapter: PlayerAdapter
+    @ObservedObject private var socketManager: GMSockets
     private let appleMusicManager: GMAppleMusic
     
     init(withAlbum album: Album,
-         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
+         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada),
+         socketManager: GMSockets = GMSockets.sharedInstance) {
         self.appleMusicManager = appleMusicManager
         self._album = State(initialValue: album)
         self._playlist = State(initialValue: nil)
+        self.socketManager = socketManager
     }
     
     init(withPlaylist playlist: Playlist,
-         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
+         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada),
+         socketManager: GMSockets = GMSockets.sharedInstance) {
         self.appleMusicManager = appleMusicManager
         self._album = State(initialValue: nil)
         self._playlist = State(initialValue: playlist)
+        self.socketManager = socketManager
     }
     
     var body: some View {
@@ -47,6 +53,10 @@ struct MediaDetailView: View {
             }
             .frame(height: 200)
             .padding()
+            HStack {
+                Button("Prepend", action: self.prependToQueue)
+                Button("Append", action: self.appendToQueue)
+            }
             ScrollView {
                 VStack {
                     if let playlistTracks = self.playlist?.relationships?.tracks.data {
@@ -70,6 +80,70 @@ struct MediaDetailView: View {
         .navigationBarTitle("", displayMode: .inline)
         .onAppear {
             self.fetchTracks()
+        }
+    }
+    
+    private func prependToQueue() {
+        let tracks: [Track]? = {
+            if let albumTracks = self.album?.relationships?.tracks.data {
+                return albumTracks
+            }
+            if let playlistTracks = self.playlist?.relationships?.tracks.data {
+                return playlistTracks
+            }
+            return nil
+        }()
+        
+        if let tracks = tracks {
+            if (self.socketManager.state.isCoordinator == false) {
+                self.emitPrependToQueueEvent(withTracks: tracks)
+            }
+            
+            if (self.socketManager.state.isCoordinator == true) {
+                self.playerAdapter.prependToQueue(withTracks: tracks, completion: {
+                    self.emitPrependToQueueEvent(withTracks: tracks)
+                })
+            }
+        }
+    }
+    
+    private func appendToQueue() {
+        let tracks: [Track]? = {
+            if let albumTracks = self.album?.relationships?.tracks.data {
+                return albumTracks
+            }
+            if let playlistTracks = self.playlist?.relationships?.tracks.data {
+                return playlistTracks
+            }
+            return nil
+        }()
+        
+        if let tracks = tracks {
+            if (self.socketManager.state.isCoordinator == false) {
+                self.emitAppendToQueueEvent(withTracks: tracks)
+            }
+            
+            if (self.socketManager.state.isCoordinator == true) {
+                self.playerAdapter.appendToQueue(withTracks: tracks, completion: {
+                    self.emitAppendToQueueEvent(withTracks: tracks)
+                })
+            }
+        }
+    }
+    
+    private func emitPrependToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitPrependToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func emitAppendToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitAppendToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
         }
     }
     
