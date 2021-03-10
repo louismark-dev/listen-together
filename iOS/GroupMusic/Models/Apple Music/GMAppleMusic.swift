@@ -45,6 +45,29 @@ class GMAppleMusic {
         }
     }
     
+    public func fetch(playlist: Playlist, completion: @escaping (([Playlist]?, Error?) -> Void)) {
+        guard let appleMusicURL: URL = urlBuilder.relationshipRequest(path: playlist.href, limit: nil, offset: nil).url else {
+            print("ERROR: Could not generate URL for Album.")
+            return
+        }
+        guard let requestData = self.encodeRequestJSON(forRequestURL: appleMusicURL) else {
+            print("Could not encode JSON for Apple Music Album request.")
+            return
+        }
+                
+        let request: URLRequest = self.createURLRequest(withData: requestData)
+        
+        self.fetch(request) { (results: ResponseRoot<Playlist>?, error) in
+            completion(results?.data, error)
+        }
+    }
+    
+    public func fetchTracksFor(playlist: Playlist, completion: @escaping (([Track]?, Error?) -> Void)) {
+        self.fetch(playlist: playlist) { (playlist: [Playlist]?, error: Error?) in
+            completion(playlist?[0].relationships?.tracks.data, error)
+        }
+    }
+    
     public func search(term: String, limit: Int? = nil, offset: Int? = nil, types: [MediaType]? = nil, completion: ((SearchResults?, Error?) -> Void)?) {
         guard let applemusicURL: URL = urlBuilder.searchRequest(term: term, limit: limit, offset: offset, types: types).url else {
             print("ERROR: Could not generate Apple Music URL")

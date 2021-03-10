@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct MediaDetailView: View {
+    @State private var loadingError: Bool = false
     @State private var album: Album?
     @State private var playlist: Playlist?
     @EnvironmentObject var trackPreviewController: TrackPreviewController
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @ObservedObject private var socketManager: GMSockets
     private let appleMusicManager: GMAppleMusic
-
+    
     private var artworkURL: URL? {
         if let album = self.album {
             return album.attributes?.artwork?.url(forWidth: Int(200 * UIScreen.main.scale))
@@ -54,7 +55,18 @@ struct MediaDetailView: View {
         }
         
         if let playlist = self.playlist {
-            return playlist.relationships?.tracks.data
+            if let tracks = playlist.relationships?.tracks.data {
+                return tracks
+            } else {
+                if (loadingError == false) {
+                    self.appleMusicManager.fetch(playlist: playlist) { (playlist: [Playlist]?, error: Error?) in
+                        if ((playlist?[0] == nil) || (error != nil)) {
+                            self.loadingError = true
+                        }
+                        self.playlist = playlist?[0]
+                    }
+                }
+            }
         }
         return nil
     }
