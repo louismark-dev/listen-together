@@ -29,14 +29,21 @@ struct GMAppleMusicQueue: Codable {
     public mutating func setQueueTo(mpMediaItems: [MPMediaItem], withNewTracks tracks: [Track]) throws {
         var unsortedTracks = self.state.queue
         unsortedTracks.append(contentsOf: tracks)
-        let sortedTracks = try mpMediaItems.map { (mediaItem) -> Track in
+        let sortedTracks: [Track?] = mpMediaItems.map { (mediaItem) -> Track? in
             let matchedItems = unsortedTracks.filter { (track: Track) -> Bool in
                 track.storeID == mediaItem.playbackStoreID
             }
-            if (matchedItems.count == 0) { throw QueueUpdateError.failedToSetQueueEqualToMPMusicPlayerControllerQueue }
-            return matchedItems[0]
+            if (matchedItems.count == 0) {
+                print("COULD NOT SET ITEM. NOTIFY USER: \(mediaItem.title ?? "")")
+                return nil
+            } else {
+                return matchedItems[0]
+            }
         }
-        self.state.queue = sortedTracks
+        let filteredTracks: [Track] = sortedTracks.filter({ (track: Track?) -> Bool in
+            return track != nil
+        }) as! [Track]
+        self.state.queue = filteredTracks
     }
     
     /// Inserts the media item  after the last media item in the current queue.
