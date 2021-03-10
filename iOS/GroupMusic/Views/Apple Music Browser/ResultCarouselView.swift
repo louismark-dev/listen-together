@@ -77,8 +77,10 @@ struct ResultCarouselView: View {
         var body: some View {
             ForEach(self.playlistResults) { (playlistData: Playlist) in
                 if let attributes: PlaylistAttributes = playlistData.attributes {
-                    MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artwork: attributes.artwork, maxWidth: self.cardWidth)
-                        .padding(.horizontal, 10)
+                    NavigationLink(destination: MediaDetailView(withPlaylist: playlistData)) {
+                        MediaCardView(withHeadline: attributes.name, subheadline: attributes.curatorName, artwork: attributes.artwork, maxWidth: self.cardWidth)
+                            .padding(.horizontal, 10)
+                    }
                 }
             }
         }

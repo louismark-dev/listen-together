@@ -14,39 +14,79 @@ struct MediaDetailView: View {
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @ObservedObject private var socketManager: GMSockets
     private let appleMusicManager: GMAppleMusic
-    
-    init(withAlbum album: Album,
-         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada),
-         socketManager: GMSockets = GMSockets.sharedInstance) {
-        self.appleMusicManager = appleMusicManager
-        self._album = State(initialValue: album)
-        self._playlist = State(initialValue: nil)
-        self.socketManager = socketManager
+
+    private var artworkURL: URL? {
+        if let album = self.album {
+            return album.attributes?.artwork?.url(forWidth: Int(200 * UIScreen.main.scale))
+        }
+        
+        if let playlist = self.playlist {
+            return playlist.attributes?.artwork?.url(forWidth: Int(200 * UIScreen.main.scale))
+        }
+        return nil
     }
     
-    init(withPlaylist playlist: Playlist,
-         appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada),
-         socketManager: GMSockets = GMSockets.sharedInstance) {
-        self.appleMusicManager = appleMusicManager
+    private var name: String? {
+        if let album = self.album {
+            return album.attributes?.name
+        }
+        
+        if let playlist = self.playlist {
+            return playlist.attributes?.name
+        }
+        return nil
+    }
+    
+    private var creatorName: String? {
+        if let album = self.album {
+            return album.attributes?.artistName
+        }
+        
+        if let playlist = self.playlist {
+            return playlist.attributes?.curatorName
+        }
+        return nil
+    }
+    
+    private var tracks: [Track]? {
+        if let album = self.album {
+            return album.relationships?.tracks.data
+        }
+        
+        if let playlist = self.playlist {
+            return playlist.relationships?.tracks.data
+        }
+        return nil
+    }
+    
+    init(withAlbum album: Album) {
+        self.appleMusicManager = GMAppleMusic(storefront: .canada)
+        self._album = State(initialValue: album)
+        self._playlist = State(initialValue: nil)
+        self.socketManager = GMSockets.sharedInstance
+    }
+    
+    init(withPlaylist playlist: Playlist) {
+        self.appleMusicManager = GMAppleMusic(storefront: .canada)
         self._album = State(initialValue: nil)
         self._playlist = State(initialValue: playlist)
-        self.socketManager = socketManager
+        self.socketManager = GMSockets.sharedInstance
     }
     
     var body: some View {
         VStack {
             HStack {
-                if let artworkURL = self.album?.attributes?.artwork?.url(forWidth: Int(200 * UIScreen.main.scale)) {
+                if let artworkURL = self.artworkURL {
                     ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
                         .aspectRatio(contentMode: .fit)
                 }
                 VStack {
                     HStack {
-                        Text(self.album?.attributes?.name ?? "")
+                        Text(self.name ?? "")
                         Spacer()
                     }
                     HStack {
-                        Text(self.album?.attributes?.artistName ?? "")
+                        Text(self.creatorName ?? "")
                         Spacer()
                     }
                 }
@@ -59,13 +99,8 @@ struct MediaDetailView: View {
             }
             ScrollView {
                 VStack {
-                    if let playlistTracks = self.playlist?.relationships?.tracks.data {
-                        ForEach(playlistTracks) { (track: Track) in
-                            TrackCellView(track: track)
-                        }
-                    }
-                    if let albumTracks = self.album?.relationships?.tracks.data {
-                        ForEach(albumTracks) { (track: Track) in
+                    if let tracks = self.tracks {
+                        ForEach(tracks) { (track: Track) in
                             TrackCellView(track: track)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
