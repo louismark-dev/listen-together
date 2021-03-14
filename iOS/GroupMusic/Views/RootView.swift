@@ -14,6 +14,7 @@ struct RootView: View {
     let notificationMonitor: NotificationMonitor
     let playerAdapter: PlayerAdapter
     let bannerController: BannerController
+    let bottomSheetViewController: BottomSheetViewController
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
          playerAdapter: PlayerAdapter = PlayerAdapter()){
@@ -22,6 +23,7 @@ struct RootView: View {
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
         self.notificationMonitor.startListeningForNotifications()
         self.bannerController = BannerController(playerAdapter: playerAdapter)
+        self.bottomSheetViewController = BottomSheetViewController()
     }
     
     let sampleData = [
@@ -54,11 +56,9 @@ struct RootView: View {
                 BottomBarView()
             }
             .padding()
-            BottomSheetView(isOpen: .constant(true), maxHeight: 500) {
-                Color.blue
-                    .padding(.horizontal)
-            }
-            .ignoresSafeArea(.all)
+            BottomSheetAnchorView()
+                .ignoresSafeArea(.all)
+                .environmentObject(self.bottomSheetViewController)
         }
         .overlay(BannerView()
                     .environmentObject(self.bannerController))
