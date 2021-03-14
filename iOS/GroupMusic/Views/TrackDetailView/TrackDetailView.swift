@@ -7,10 +7,35 @@
 
 import SwiftUI
 
-struct TrackDetailModalView: View {
+struct TrackDetailView: View {
+    
+    var artwork: some View {
+        HStack {
+            Spacer()
+            Image("DaBaby")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: 150)
+                .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            Spacer()
+        }
+    }
+    
+    var labels: some View {
+        HStack {
+            Spacer()
+            VStack(alignment: .center) {
+                Text("Song Title")
+                Text("Artist")
+            }
+            Spacer()
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
-            ArtworkView()
+            self.artwork
+            self.labels
             VStack(alignment: .leading, spacing: 20) {
                 Cell(label: "Play Next", systemImage: "text.insert")
                 Cell(label: "Delete from Queue", systemImage: "xmark")
@@ -20,25 +45,6 @@ struct TrackDetailModalView: View {
             .font(.system(.body, design: .rounded))
         }
         .padding()
-        .background(
-            Color.green
-                .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            
-        )
-    }
-    
-    struct ArtworkView: View {
-        var body: some View {
-            HStack {
-                Spacer()
-                Image("DaBaby")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 150)
-                    .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                Spacer()
-            }
-        }
     }
     
     struct Cell: View {
@@ -55,14 +61,14 @@ struct TrackDetailModalView: View {
     }
 }
 
-struct TrackDetailModalView_Previews: PreviewProvider {
+struct TrackDetailView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             Color.purple
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             VStack {
                 Spacer()
-                TrackDetailModalView()
+                TrackDetailView()
             }
         }
     }

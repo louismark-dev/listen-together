@@ -14,6 +14,7 @@ struct RootView: View {
     let notificationMonitor: NotificationMonitor
     let playerAdapter: PlayerAdapter
     let bannerController: BannerController
+    let trackDetailModalViewManager: TrackDetailModalViewManager
     
     init(socketManager: GMSockets = GMSockets.sharedInstance,
          playerAdapter: PlayerAdapter = PlayerAdapter()){
@@ -22,6 +23,7 @@ struct RootView: View {
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
         self.notificationMonitor.startListeningForNotifications()
         self.bannerController = BannerController(playerAdapter: playerAdapter)
+        self.trackDetailModalViewManager = TrackDetailModalViewManager()
     }
     
     let sampleData = [
@@ -40,6 +42,7 @@ struct RootView: View {
             VStack {
                 QueueView()
                     .environmentObject(self.bannerController)
+                    .environmentObject(self.trackDetailModalViewManager)
                 Spacer()
                 PlaybackProgressView()
                 Group {
@@ -54,6 +57,9 @@ struct RootView: View {
                 BottomBarView()
             }
             .padding()
+            TrackDetailModalView()
+                .environmentObject(self.trackDetailModalViewManager)
+                .edgesIgnoringSafeArea(.all)
         }
         .overlay(BannerView()
                     .environmentObject(self.bannerController))

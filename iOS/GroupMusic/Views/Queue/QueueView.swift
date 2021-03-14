@@ -11,6 +11,7 @@ import Combine
 struct QueueView: View {
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @EnvironmentObject var bannerController: BannerController
+    @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     @State private var nowPlayingIndicatorTimeout: Timer? = nil
     @State private var scrollViewReader: ScrollViewProxy?
     @State private var disableBanner: Bool = false
@@ -38,6 +39,9 @@ struct QueueView: View {
                                       height: queueCellHeight,
                                       expanded: false)
                                 .id(track)
+                                .onTapGesture {
+                                    self.trackDetailModalViewManager.open(withTrack: track)
+                                }
                         }
                     }
                 }

@@ -29,8 +29,11 @@
 		25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441DF25C9FC7100193129 /* ResultTypeView.swift */; };
 		25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E325C9FD6900193129 /* ResultCarouselView.swift */; };
 		25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E625C9FDF800193129 /* MediaCardView.swift */; };
+		25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */; };
+		25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */; };
+		25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */; };
 		25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CBDA8525C8915700EB552C /* SongResultsView.swift */; };
-		25CFFCEB25FDC85500133C1C /* TrackDetailModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CFFCEA25FDC85500133C1C /* TrackDetailModalView.swift */; };
+		25CFFCEB25FDC85500133C1C /* TrackDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */; };
 		25D3207725F7EC3D00DD4970 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3207325F7EC3D00DD4970 /* ImageCache.swift */; };
 		25D3207825F7EC3D00DD4970 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3207425F7EC3D00DD4970 /* ImageLoader.swift */; };
 		25D3207925F7EC3D00DD4970 /* EnvironmentValues+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3207525F7EC3D00DD4970 /* EnvironmentValues+ImageCache.swift */; };
@@ -115,8 +118,11 @@
 		25A441DF25C9FC7100193129 /* ResultTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTypeView.swift; sourceTree = "<group>"; };
 		25A441E325C9FD6900193129 /* ResultCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCarouselView.swift; sourceTree = "<group>"; };
 		25A441E625C9FDF800193129 /* MediaCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCardView.swift; sourceTree = "<group>"; };
+		25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
+		25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalView.swift; sourceTree = "<group>"; };
+		25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalViewManager.swift; sourceTree = "<group>"; };
 		25CBDA8525C8915700EB552C /* SongResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResultsView.swift; sourceTree = "<group>"; };
-		25CFFCEA25FDC85500133C1C /* TrackDetailModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalView.swift; sourceTree = "<group>"; };
+		25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailView.swift; sourceTree = "<group>"; };
 		25D3207325F7EC3D00DD4970 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		25D3207425F7EC3D00DD4970 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		25D3207525F7EC3D00DD4970 /* EnvironmentValues+ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+ImageCache.swift"; sourceTree = "<group>"; };
@@ -225,7 +231,7 @@
 				25461F3225D7B95700456752 /* BackgroundBlur */,
 				25D3207225F7EC3D00DD4970 /* AsyncImage */,
 				25272FB725D994F200E690BE /* BannerController.swift */,
-				25CFFCEA25FDC85500133C1C /* TrackDetailModalView.swift */,
+				25B2B51725FEA96500C47023 /* TrackDetailView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -239,6 +245,17 @@
 				25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */,
 			);
 			path = Queue;
+			sourceTree = "<group>";
+		};
+		25B2B51725FEA96500C47023 /* TrackDetailView */ = {
+			isa = PBXGroup;
+			children = (
+				25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */,
+				25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */,
+				25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */,
+				25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */,
+			);
+			path = TrackDetailView;
 			sourceTree = "<group>";
 		};
 		25CBDA8225C8911C00EB552C /* Apple Music Browser */ = {
@@ -547,12 +564,13 @@
 				BF5EE21F25A0256C000C23DD /* ResultCardView.swift in Sources */,
 				BF5D5DDE25915B1F00EF6C37 /* GMSockets.swift in Sources */,
 				BF5EE22325A028A3000C23DD /* PreviewView.swift in Sources */,
-				25CFFCEB25FDC85500133C1C /* TrackDetailModalView.swift in Sources */,
+				25CFFCEB25FDC85500133C1C /* TrackDetailView.swift in Sources */,
 				BF8BEE68259B1B9100B9DCD3 /* Curator.swift in Sources */,
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
 				BF5EE22B25A03353000C23DD /* AudioPreview.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
 				25D3207825F7EC3D00DD4970 /* ImageLoader.swift in Sources */,
+				25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */,
 				BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */,
 				25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */,
 				BF8BEE77259B1BC500B9DCD3 /* Relationship.swift in Sources */,
@@ -560,6 +578,8 @@
 				25272FB825D994F200E690BE /* BannerController.swift in Sources */,
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
 				2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */,
+				25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */,
+				25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */,
 				BF8BEE80259B1C1B00B9DCD3 /* UrlFetcher.swift in Sources */,
 				BF5EE24125A13E06000C23DD /* GMAppleMusicHostController.swift in Sources */,
 			);
