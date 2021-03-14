@@ -54,6 +54,11 @@ struct RootView: View {
                 BottomBarView()
             }
             .padding()
+            BottomSheetView(isOpen: .constant(true), maxHeight: 500) {
+                Color.blue
+                    .padding(.horizontal)
+            }
+            .ignoresSafeArea(.all)
         }
         .overlay(BannerView()
                     .environmentObject(self.bannerController))
