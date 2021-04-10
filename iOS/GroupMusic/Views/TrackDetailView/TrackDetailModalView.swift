@@ -39,10 +39,12 @@ struct TrackDetailModalView: View {
                 isOpen: self.$trackDetailModalViewManager.isOpen,
                 maxHeight: self.$contentHeight
             ) {
-                TrackDetailView()
-                    .background(
-                        self.geometryReader
-                    )
+                if let track = self.trackDetailModalViewManager.track {
+                    TrackDetailView(withTrack: self.trackDetailModalViewManager.track!)
+                        .background(
+                            self.geometryReader
+                        )
+                }
             }
         }
     }

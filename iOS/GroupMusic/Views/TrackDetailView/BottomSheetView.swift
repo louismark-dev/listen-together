@@ -33,8 +33,8 @@ struct BottomSheetView<Content: View>: View {
                 self.content
             }
             .frame(width: geometry.size.width, height: self.maxHeight, alignment: .top)
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(40)
+            .background(VisualEffectView(effect: UIBlurEffect(style: .systemThickMaterialLight)))
+            .clipShape(RoundedRectangle(cornerRadius: 25.0, style: .continuous))
             .frame(height: geometry.size.height, alignment: .bottom)
             .offset(y: self.offset)
             .animation(.interactiveSpring(), value: isOpen)
