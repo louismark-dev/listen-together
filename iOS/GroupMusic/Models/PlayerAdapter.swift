@@ -81,6 +81,14 @@ class PlayerAdapter: ObservableObject {
         self.player.appendToQueue(withTracks: tracks, completion: completion)
     }
     
+    func moveToStartOfQueue(track: Track, atIndex index: Int, completion: (() -> Void)?) {
+        self.player.moveToStartOfQueue(track: track, atIndex: index, completion: completion)
+    }
+    
+    func remove(atIndex index: Int, completion: (() -> Void)?) {
+        self.player.remove(atIndex: index, completion: completion)
+    }
+    
     func nowPlayingIndexDidChange(to index: Int) {
         self.player.nowPlayingIndexDidChange(to: index)
     }

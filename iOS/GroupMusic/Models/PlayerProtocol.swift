@@ -28,6 +28,10 @@ protocol PlayerProtocol {
     
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
     
+    func moveToStartOfQueue(track: Track, atIndex index: Int, completion: (() -> Void)?)
+    
+    func remove(atIndex index: Int, completion: (() -> Void)?)
+    
     func setupNotificationCenterObservers()
     
     func nowPlayingIndexDidChange(to index: Int)

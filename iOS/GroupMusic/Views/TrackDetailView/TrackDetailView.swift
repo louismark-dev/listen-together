@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct TrackDetailView: View {
+    @EnvironmentObject var playerAdapter: PlayerAdapter
     
     let track: Track
+    let socketManager: GMSockets
     
-    init(withTrack track: Track) {
+    init(withTrack track: Track, socketManager: GMSockets = GMSockets.sharedInstance) {
         self.track = track
+        self.socketManager = socketManager
     }
     
     var artwork: some View {
@@ -43,7 +46,15 @@ struct TrackDetailView: View {
                 .frame(height: 16)
             VStack(alignment: .leading, spacing: 30) {
                 Cell(label: "Play Next", systemImage: "text.insert")
+                    .onTapGesture {
+                        self.playerAdapter.moveToStartOfQueue(track: track, atIndex: 0) {
+                            print("Complete")
+                        }
+                    }
                 Cell(label: "Remove from Queue", systemImage: "xmark")
+                    .onTapGesture {
+                        self.removeFromQueue()
+                    }
                 Cell(label: "Add to Apple Music Library", systemImage: "plus")
                 Cell(label: "View Details", systemImage: "info.circle")
             }
@@ -52,6 +63,28 @@ struct TrackDetailView: View {
         .foregroundColor(Color.black)
         .opacity(0.9)
         .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
+    }
+    
+    private func removeFromQueue() {
+        let index = self.playerAdapter.state.queue.state.queue.firstIndex(of: self.track)
+        guard let index = index else { return }
+        if (self.socketManager.state.isCoordinator == true) {
+            // IS COORDINATOR
+            self.playerAdapter.remove(atIndex: index) {
+                do {
+                    try self.socketManager.emitRemoveEvent(atIndex: index)
+                } catch {
+                    print("Could not emit remove event.")
+                }
+            }
+        } else {
+            // IS NOT COORDINATOR
+            do {
+                try self.socketManager.emitRemoveEvent(atIndex: index)
+            } catch {
+                print("Could not emit removeEvent")
+            }
+        }
     }
     
     struct Cell: View {

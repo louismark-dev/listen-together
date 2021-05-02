@@ -82,6 +82,14 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         self.playbackTimer.didSkip()
     }
     
+    func moveToStartOfQueue(track: Track, atIndex index: Int, completion: (() -> Void)?) {
+        // Do nothing
+    }
+    
+    func remove(atIndex index: Int, completion: (() -> Void)?) {
+        self.state.queue.state.queue.remove(at: index)
+    }
+    
     // MARK: Notification Center
     func setupNotificationCenterObservers() {
         

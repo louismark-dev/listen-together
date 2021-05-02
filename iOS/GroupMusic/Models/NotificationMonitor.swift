@@ -54,6 +54,10 @@ class NotificationMonitor {
                                             selector: #selector(didRecieveNowPlayingIndexDidChangeEvent),
                                             name: .nowPlayingIndexDidChangeEvent,
                                             object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveRemoveFromQueueEvent),
+                                            name: .removeFromQueueEvent,
+                                            object: nil)
     }
     
     @objc private func didRecieveStateUpdateEvent(_ notification: NSNotification) {
@@ -136,8 +140,22 @@ class NotificationMonitor {
             }
         })
     }
+    
     @objc private func didRecieveNowPlayingIndexDidChangeEvent(_ notification: NSNotification) {
         guard let nowPlayingIndex = notification.object as? Int else { return }
         self.playerAdapter.nowPlayingIndexDidChange(to: nowPlayingIndex)
+    }
+    
+    @objc func didRecieveRemoveFromQueueEvent(_ notification: NSNotification) {
+        guard let removalIndex = notification.object as? Int else { return }
+        self.playerAdapter.remove(atIndex: removalIndex, completion: {
+            // Emit event only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitRemoveEvent(atIndex: removalIndex)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        })
     }
 }

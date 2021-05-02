@@ -190,6 +190,20 @@ io.sockets.on("connection", function(socket) {
             socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.APPEND_TO_QUEUE, data)
         }
     })
+
+    socket.on(MESSAGES.REMOVE_FROM_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+        
+        if (socket.id == sessionData.coordinatorID) { // REMOVE_FROM_QUEUE msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting removeFromQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.REMOVE_FROM_QUEUE, data)
+        } else { // Append msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending removeFromQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.REMOVE_FROM_QUEUE, data)
+        }
+    })
 })
 
 // HELPER FUNCTIONS
@@ -237,5 +251,6 @@ const MESSAGES = {
     ASSIGNING_ID: "assigningID",
     APPEND_TO_QUEUE: "appendToQueue",
     PREPEND_TO_QUEUE: "prependToQueue",
-    NOW_PLAYING_INDEX_DID_CHANGE_EVENT: "nowPlayingIndexDidChangeEvent"
+    NOW_PLAYING_INDEX_DID_CHANGE_EVENT: "nowPlayingIndexDidChangeEvent",
+    REMOVE_FROM_QUEUE: "removeFromQueue"
 }

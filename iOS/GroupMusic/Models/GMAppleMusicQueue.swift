@@ -64,6 +64,11 @@ struct GMAppleMusicQueue: Codable {
         self.state.queue.insert(track, at: self.state.indexOfNowPlayingItem + 1)
     }
     
+    public mutating func remove(atIndex index: Int, completion: (() -> Void)? = nil) {
+        self.state.queue.remove(at: index)
+        completion?()
+    }
+    
     /// Inserts the media items defined into the current queue immediately after the currently playing media item.
     /// - Parameters:
     ///     - shouldEmitEvent: (defualt: true) If true, will emit event though the SocketManager

@@ -207,6 +207,28 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
         self.prependToMPMusicPlayerQueue(withTracks: tracks, completion: completion)
     }
     
+    public func moveToStartOfQueue(track: Track, atIndex index: Int, completion: (() -> Void)?) {
+        // TODO: Complete
+        self.prependToQueue(withTracks: [track]) {
+            print("Copied to start of queue")
+        }
+    }
+    
+    func remove(atIndex index: Int, completion: (() -> Void)?) {
+        self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
+            let item = queue.items[index]
+            queue.remove(item)
+        } completionHandler: { (newQueue: MPMusicPlayerControllerQueue, error: Error?) in
+            if let error = error {
+                print(error)
+                return
+            }
+            self.state.queue.remove(atIndex: index)
+            completion?()
+        }
+
+    }
+    
     private func appendToMPMusicPlayerQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.player.perform { (queue: MPMusicPlayerControllerMutableQueue) in
             let storeIDs = tracks.map({ (song) -> String in
