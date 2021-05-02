@@ -59,6 +59,8 @@ class GMSockets: ObservableObject {
         
         self.socket.on(Event.removeFromQueue.rawValue, callback: self.removeFromQueueEventHandler)
         
+        self.socket.on(Event.moveToStartOfQueue.rawValue, callback: self.moveToStartOfQueueEventHandler)
+        
 //        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer: Timer) in
 //            print("Execution time remaining: \(UIApplication.shared.backgroundTimeRemaining)")
 //        }
@@ -172,6 +174,16 @@ class GMSockets: ObservableObject {
         }
     }
     
+    private func moveToStartOfQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("moveToStartOfQueueEvent recieved")
+        do {
+            let trackIndex = try self.dataToObject(data: data) as Int
+            self.notificationCenter.post(name: .moveToStartOfQueueEvent, object: trackIndex)
+        } catch {
+            print("mvoeToStartOfQueue decoding failed \(error.localizedDescription)")
+        }
+    }
+    
     private func nowPlayingIndexDidChangeEventHandler(data: [Any], ack: SocketAckEmitter) {
         print("nowPlayingIndexDidChangeEvent recieved")
         do {
@@ -250,6 +262,13 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.removeFromQueue.rawValue, encodedJSON)
     }
     
+    public func emitMoveToStartOfQueue(fromIndex: Int) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<Int>(roomID: sessionID, data: fromIndex)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.moveToStartOfQueue.rawValue, encodedJSON)
+    }
+    
     public func emitNowPlayingDidChangeEvent(withIndex index: Int) throws {
         guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
         let arguments = SocketIOArguments<Int>(roomID: sessionID, data: index)
@@ -318,6 +337,7 @@ class GMSockets: ObservableObject {
         case prependToQueue
         case nowPlayingIndexDidChangeEvent
         case removeFromQueue
+        case moveToStartOfQueue
     }
     
     public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicHostController.State) {
@@ -371,6 +391,10 @@ extension Notification.Name {
     
     static var removeFromQueueEvent: Notification.Name {
         return .init(rawValue: "GMSockets.removeFromQueueEvent")
+    }
+    
+    static var moveToStartOfQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.moveToStartOfQueueEvent")
     }
 }
 

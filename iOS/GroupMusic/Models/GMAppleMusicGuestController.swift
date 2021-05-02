@@ -82,8 +82,13 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
         self.playbackTimer.didSkip()
     }
     
-    func moveToStartOfQueue(track: Track, atIndex index: Int, completion: (() -> Void)?) {
-        // Do nothing
+    func moveToStartOfQueue(fromIndex index: Int, completion: (() -> Void)?) {
+        let track = self.state.queue.state.queue[index]
+        self.prependToQueue(withTracks: [track]) {
+            self.remove(atIndex: index + 1) {
+                completion?()
+            }
+        }
     }
     
     func remove(atIndex index: Int, completion: (() -> Void)?) {
@@ -98,11 +103,13 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.state.queue.append(tracks: tracks)
         print(self.state.queue.state.queue)
+        completion?()
     }
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
         self.state.queue.prepend(tracks: tracks)
         print(self.state.queue.state.queue)
+        completion?()
     }
     
     func nowPlayingIndexDidChange(to index: Int) {

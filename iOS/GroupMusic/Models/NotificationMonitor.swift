@@ -58,6 +58,10 @@ class NotificationMonitor {
                                             selector: #selector(didRecieveRemoveFromQueueEvent),
                                             name: .removeFromQueueEvent,
                                             object: nil)
+        self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveMoveToStartOfQueueEvent),
+                                            name: .moveToStartOfQueueEvent,
+                                            object: nil)
     }
     
     @objc private func didRecieveStateUpdateEvent(_ notification: NSNotification) {
@@ -153,6 +157,19 @@ class NotificationMonitor {
             guard (self.socketManager.state.isCoordinator) else { return }
             do {
                 try self.socketManager.emitRemoveEvent(atIndex: removalIndex)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        })
+    }
+    
+    @objc func didRecieveMoveToStartOfQueueEvent(_ notification: NSNotification) {
+        guard let index = notification.object as? Int else { return }
+        self.playerAdapter.moveToStartOfQueue(fromIndex: index, completion: {
+            // Emit event only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitMoveToStartOfQueue(fromIndex: index)
             } catch {
                 fatalError(error.localizedDescription)
             }

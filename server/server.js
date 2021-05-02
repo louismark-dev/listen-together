@@ -204,6 +204,20 @@ io.sockets.on("connection", function(socket) {
             socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.REMOVE_FROM_QUEUE, data)
         }
     })
+
+    socket.on(MESSAGES.MOVE_TO_START_OF_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+        
+        if (socket.id == sessionData.coordinatorID) { // MOVE_TO_START_OF_QUEUE msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting moveToStartOfQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.MOVE_TO_START_OF_QUEUE, data)
+        } else { // MOVE_TO_START_OF_QUEUE msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending moveToStartOfQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.MOVE_TO_START_OF_QUEUE, data)
+        }
+    })
 })
 
 // HELPER FUNCTIONS
@@ -252,5 +266,6 @@ const MESSAGES = {
     APPEND_TO_QUEUE: "appendToQueue",
     PREPEND_TO_QUEUE: "prependToQueue",
     NOW_PLAYING_INDEX_DID_CHANGE_EVENT: "nowPlayingIndexDidChangeEvent",
-    REMOVE_FROM_QUEUE: "removeFromQueue"
+    REMOVE_FROM_QUEUE: "removeFromQueue",
+    MOVE_TO_START_OF_QUEUE: "moveToStartOfQueue"
 }

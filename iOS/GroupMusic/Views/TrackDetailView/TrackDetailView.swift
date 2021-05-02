@@ -47,9 +47,7 @@ struct TrackDetailView: View {
             VStack(alignment: .leading, spacing: 30) {
                 Cell(label: "Play Next", systemImage: "text.insert")
                     .onTapGesture {
-                        self.playerAdapter.moveToStartOfQueue(track: track, atIndex: 0) {
-                            print("Complete")
-                        }
+                        self.moveToStartOfQueue()
                     }
                 Cell(label: "Remove from Queue", systemImage: "xmark")
                     .onTapGesture {
@@ -63,6 +61,27 @@ struct TrackDetailView: View {
         .foregroundColor(Color.black)
         .opacity(0.9)
         .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
+    }
+    
+    private func moveToStartOfQueue() {
+        let index = self.playerAdapter.state.queue.state.queue.firstIndex(of: self.track)
+        guard let index = index else { return }
+        if (self.socketManager.state.isCoordinator == true) {
+            // IS COORDINATOR
+            self.playerAdapter.moveToStartOfQueue(fromIndex: index) {
+                do {
+                    try self.socketManager.emitMoveToStartOfQueue(fromIndex: index)
+                } catch {
+                    print("Could not emit moveToStartOfQueue event.")
+                }
+            }
+        } else {
+            do {
+                try self.socketManager.emitMoveToStartOfQueue(fromIndex: index)
+            } catch {
+                print("Could not emit moveToStartOfQueue event")
+            }
+        }
     }
     
     private func removeFromQueue() {
