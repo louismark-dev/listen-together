@@ -43,6 +43,8 @@ struct BottomBarView: View {
                     HStack {
                         Image(systemName: "plus")
                         Text("Add to Queue")
+                            .lineLimit(1)
+                            .fixedSize()
                     }
                     .padding()
                 }

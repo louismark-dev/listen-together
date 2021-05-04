@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TrackDetailView: View {
     @EnvironmentObject var playerAdapter: PlayerAdapter
+    @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     
     let track: Track
     let socketManager: GMSockets
@@ -18,52 +19,51 @@ struct TrackDetailView: View {
         self.socketManager = socketManager
     }
     
-    var artwork: some View {
-        HStack {
-            Spacer()
-            if let artworkURL = self.track.attributes?.artwork.urlForMaxWidth() {
-                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 20)
-                    .frame(maxWidth: 150, maxHeight: 150)
-            }
-            Spacer()
-        }
-    }
-    
     var labels: some View {
-        VStack(alignment: .center) {
-            Text(self.track.attributes?.name ?? "")
-                .fontWeight(.semibold)
-            Text(self.track.attributes?.artistName ?? "")
+        VStack(alignment: .leading) {
+            HStack {
+                Text(self.track.attributes?.name ?? "")
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            HStack {
+                Text(self.track.attributes?.artistName ?? "")
+                Spacer()
+            }
         }
         .frame(maxWidth: .infinity)
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            self.artwork
-            self.labels
-            Spacer()
-                .frame(height: 16)
-            VStack(alignment: .leading, spacing: 30) {
-                Cell(label: "Play Next", systemImage: "text.insert")
-                    .onTapGesture {
-                        self.moveToStartOfQueue()
-                    }
-                Cell(label: "Remove from Queue", systemImage: "xmark")
-                    .onTapGesture {
-                        self.removeFromQueue()
-                    }
-                Cell(label: "Add to Apple Music Library", systemImage: "plus")
-                Cell(label: "View Details", systemImage: "info.circle")
+            HStack {
+                if let artworkURL = self.track.attributes?.artwork.urlForMaxWidth() {
+                    ArtworkImageView(artworkURL: artworkURL, cornerRadius: 20)
+                        .frame(maxWidth: 120, maxHeight: 120)
+                }
+                self.labels
             }
-            .font(.system(.body, design: .rounded))
+            Spacer()
+                .frame(maxHeight: 32)
+            HStack {
+                Button(action: self.moveToStartOfQueue, label: {
+                    ButtonBackground(label: "Play Next",
+                           imageSystemName: "text.insert",
+                           foregroundColor: Color("Emerald"))
+                })
+                Button(action: self.removeFromQueue, label: {
+                    ButtonBackground(label: "Remove",
+                           imageSystemName: "xmark",
+                           foregroundColor: Color("Amaranth"))
+                })
+            }
         }
         .foregroundColor(Color.black)
-        .opacity(0.9)
-        .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
+        .padding(EdgeInsets(top: 25, leading: 25, bottom: 0, trailing: 25))
     }
     
     private func moveToStartOfQueue() {
+        self.trackDetailModalViewManager.close()
         let index = self.playerAdapter.state.queue.state.queue.firstIndex(of: self.track)
         guard let index = index else { return }
         if (self.socketManager.state.isCoordinator == true) {
@@ -85,6 +85,7 @@ struct TrackDetailView: View {
     }
     
     private func removeFromQueue() {
+        self.trackDetailModalViewManager.close()
         let index = self.playerAdapter.state.queue.state.queue.firstIndex(of: self.track)
         guard let index = index else { return }
         if (self.socketManager.state.isCoordinator == true) {
@@ -106,29 +107,26 @@ struct TrackDetailView: View {
         }
     }
     
-    struct Cell: View {
+    struct ButtonBackground: View {
         let label: String
-        let systemImage: String
-        
+        let imageSystemName: String
+        let foregroundColor: Color
+
         var body: some View {
             HStack {
-                Image(systemName: self.systemImage)
+                Spacer()
+                Image(systemName: self.imageSystemName)
                 Text(self.label)
-                    .fontWeight(.semibold)
+                    .lineLimit(1)
+                    .fixedSize()
+                Spacer()
             }
+            .foregroundColor(Color.white)
+            .opacity(0.9)
+            .font(Font.system(.headline, design: .rounded).weight(.semibold))
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 100, style: .continuous)
+                            .foregroundColor(self.foregroundColor))
         }
     }
 }
-
-//struct TrackDetailView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ZStack {
-//            Color.purple
-//                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
-//            VStack {
-//                Spacer()
-//                TrackDetailView()
-//            }
-//        }
-//    }
-//}
