@@ -76,6 +76,28 @@ struct GMAppleMusicQueue: Codable {
         self.state.queue.insert(contentsOf: tracks, at: self.state.indexOfNowPlayingItem + 1)
     }
     
+    public func playbackStatusFor(track: Track) -> PlaybackStatus {
+        let index = self.state.queue.firstIndex(of: track)
+        guard let index = index else { return .inQueue }
+        if (index < self.state.indexOfNowPlayingItem) {
+            return .played
+        } else if (index > self.state.indexOfNowPlayingItem) {
+            return .inQueue
+        } else {
+            return .playing
+        }
+    }
+    
+    public func indexFor(track: Track) -> Int? {
+        return self.state.queue.firstIndex(of: track)
+    }
+    
+    enum PlaybackStatus {
+        case played
+        case playing
+        case inQueue
+    }
+    
     // MARK: Play State Management
     
     /// Marks the currently playing item as the next media item in the playback queue

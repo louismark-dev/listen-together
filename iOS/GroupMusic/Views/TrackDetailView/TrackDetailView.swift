@@ -24,13 +24,17 @@ struct TrackDetailView: View {
             HStack {
                 Text(self.track.attributes?.name ?? "")
                     .fontWeight(.semibold)
+                    .opacity(0.8)
                 Spacer()
             }
             HStack {
                 Text(self.track.attributes?.artistName ?? "")
+                    .fontWeight(.semibold)
+                    .opacity(0.6)
                 Spacer()
             }
         }
+        .font(.system(.headline, design: .rounded))
         .frame(maxWidth: .infinity)
     }
     
@@ -46,25 +50,59 @@ struct TrackDetailView: View {
             Spacer()
                 .frame(maxHeight: 32)
             HStack {
-                Button(action: self.moveToStartOfQueue, label: {
-                    ButtonBackground(label: "Play Next",
-                           imageSystemName: "text.insert",
-                           foregroundColor: Color("Emerald"))
+                Button(action: {
+                    if (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) == .playing) {
+                        self.playAgain()
+                    } else {
+                        self.moveToStartOfQueue()
+                    }
+                },
+                label: {
+                    ButtonBackground(label: (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) != .playing) ? "Play Next" : "Play Again",
+                                     imageSystemName: (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) != .playing) ? "text.insert" : "repeat",
+                                     foregroundColor: Color("Emerald"))
                 })
-                Button(action: self.removeFromQueue, label: {
-                    ButtonBackground(label: "Remove",
-                           imageSystemName: "xmark",
-                           foregroundColor: Color("Amaranth"))
-                })
+                if (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) == .inQueue) {
+                    Button(action: self.removeFromQueue, label: {
+                        ButtonBackground(label: "Remove",
+                                         imageSystemName: "xmark",
+                                         foregroundColor: Color("Amaranth"))
+                    })
+                    
+                }
             }
         }
         .foregroundColor(Color.black)
         .padding(EdgeInsets(top: 25, leading: 25, bottom: 0, trailing: 25))
     }
     
+    private func playAgain() {
+        self.trackDetailModalViewManager.close()
+        let track = [self.track]
+        // IF OBSERVER
+        if (self.socketManager.state.isCoordinator == false) {
+            do {
+                try self.socketManager.emitPrependToQueueEvent(withTracks: track)
+            } catch {
+                print("Emit failed \(error.localizedDescription)")
+            }
+        }
+        
+        // IF COORDINATOR
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.prependToQueue(withTracks: track) {
+                do {
+                    try self.socketManager.emitPrependToQueueEvent(withTracks: track)
+                } catch {
+                    print("Emit failed \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
     private func moveToStartOfQueue() {
         self.trackDetailModalViewManager.close()
-        let index = self.playerAdapter.state.queue.state.queue.firstIndex(of: self.track)
+        let index = self.playerAdapter.state.queue.indexFor(track: self.track)
         guard let index = index else { return }
         if (self.socketManager.state.isCoordinator == true) {
             // IS COORDINATOR
@@ -86,7 +124,7 @@ struct TrackDetailView: View {
     
     private func removeFromQueue() {
         self.trackDetailModalViewManager.close()
-        let index = self.playerAdapter.state.queue.state.queue.firstIndex(of: self.track)
+        let index =  self.playerAdapter.state.queue.indexFor(track: self.track)
         guard let index = index else { return }
         if (self.socketManager.state.isCoordinator == true) {
             // IS COORDINATOR
@@ -111,7 +149,7 @@ struct TrackDetailView: View {
         let label: String
         let imageSystemName: String
         let foregroundColor: Color
-
+        
         var body: some View {
             HStack {
                 Spacer()
