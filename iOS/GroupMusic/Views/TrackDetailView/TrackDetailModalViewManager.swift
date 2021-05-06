@@ -10,13 +10,30 @@ import Foundation
 class TrackDetailModalViewManager: ObservableObject {
     @Published var isOpen: Bool = false
     @Published var track: Track?
+    var audioPreviewPlayer: AudioPreview = AudioPreview()
     
-    func open(withTrack track: Track) {
+    public func open(withTrack track: Track) {
         self.track = track
         self.isOpen = true
+        
+        if let previewURL = self.track?.attributes?.previews.first?.url {
+            self.audioPreviewPlayer.setAudioStreamURL(audioStreamURL: previewURL)
+        }
     }
     
-    func close() {
+    public func close() {
         self.isOpen = false
+        
+        try? self.audioPreviewPlayer.stop()
+    }
+    
+    public func playTrackPreview() {
+        if self.audioPreviewPlayer.ready {
+            do {
+                try self.audioPreviewPlayer.play()
+            } catch {
+                print("Could not play audio preview: \(error)")
+            }
+        }
     }
 }

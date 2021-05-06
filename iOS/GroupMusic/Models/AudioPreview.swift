@@ -28,6 +28,12 @@ class AudioPreview: ObservableObject {
         audioPlayer.pause()
     }
     
+    public func stop() throws {
+        guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
+        audioPlayer.seek(to: .zero)
+        audioPlayer.pause()
+    }
+    
     public func restartPlayback() throws {
         guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
         audioPlayer.seek(to: .zero)

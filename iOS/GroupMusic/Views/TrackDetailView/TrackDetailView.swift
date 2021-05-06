@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TrackDetailView: View {
+    @StateObject var audioPreviewPlayer: AudioPreview = AudioPreview()
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     
@@ -43,9 +44,17 @@ struct TrackDetailView: View {
             HStack {
                 if let artworkURL = self.track.attributes?.artwork.urlForMaxWidth() {
                     ArtworkImageView(artworkURL: artworkURL, cornerRadius: 20)
-                        .frame(maxWidth: 120, maxHeight: 120)
+                        .aspectRatio(1.0, contentMode: .fit)
                 }
-                self.labels
+                VStack {
+                    self.labels
+                    HStack {
+                        Button(action: self.playPreview, label: {
+                            PreviewButton()
+                        })
+                        Spacer()
+                    }
+                }
             }
             Spacer()
                 .frame(maxHeight: 32)
@@ -74,6 +83,10 @@ struct TrackDetailView: View {
         }
         .foregroundColor(Color.black)
         .padding(EdgeInsets(top: 25, leading: 25, bottom: 0, trailing: 25))
+    }
+    
+    private func playPreview() {
+        self.trackDetailModalViewManager.playTrackPreview()
     }
     
     private func playAgain() {
@@ -142,6 +155,32 @@ struct TrackDetailView: View {
             } catch {
                 print("Could not emit removeEvent")
             }
+        }
+    }
+    
+    struct PreviewButton: View {
+        var body: some View {
+            HStack {
+                Image(systemName: "play.fill")
+                    .foregroundColor(.blue)
+                    .opacity(0.9)
+                    .padding(5)
+                    .background(Color.white)
+                    .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                    .font(Font.system(.footnote, design: .rounded).weight(.regular))
+                Spacer()
+                    .frame(maxWidth: 10)
+                Text("Preview")
+                    .foregroundColor(.white)
+                    .opacity(0.9)
+                    .font(Font.system(.footnote, design: .rounded).weight(.semibold))
+                Spacer()
+                    .frame(maxWidth: 10)
+            }
+            .padding(4)
+            .background(Color.blue)
+            .clipShape(RoundedRectangle(cornerRadius: 100, style: .continuous))
+            
         }
     }
     
