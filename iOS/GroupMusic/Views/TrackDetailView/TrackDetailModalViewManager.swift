@@ -26,14 +26,4 @@ class TrackDetailModalViewManager: ObservableObject {
         
         try? self.audioPreviewPlayer.stop()
     }
-    
-    public func playTrackPreview() {
-        if self.audioPreviewPlayer.ready {
-            do {
-                try self.audioPreviewPlayer.play()
-            } catch {
-                print("Could not play audio preview: \(error)")
-            }
-        }
-    }
 }

@@ -11,6 +11,7 @@ class AudioPreview: ObservableObject {
     private var audioPlayer: AVPlayer?
     private var audioStreamURL: URL?
     @Published var ready: Bool = false // Indicates if ready to play
+    @Published var playbackStatus: PlaybackStatus = .stopped
     
     public func setAudioStreamURL(audioStreamURL: String) {
         self.audioStreamURL = URL(string: audioStreamURL)!
@@ -21,26 +22,22 @@ class AudioPreview: ObservableObject {
     public func play() throws {
         guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
         audioPlayer.play()
-    }
-    
-    public func pause() throws {
-        guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
-        audioPlayer.pause()
+        self.playbackStatus = .playing
     }
     
     public func stop() throws {
         guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
         audioPlayer.seek(to: .zero)
         audioPlayer.pause()
-    }
-    
-    public func restartPlayback() throws {
-        guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
-        audioPlayer.seek(to: .zero)
-        audioPlayer.play()
+        self.playbackStatus = .stopped
     }
     
     enum AudioPreviewError: Error {
         case streamURLNotSet
+    }
+    
+    enum PlaybackStatus {
+        case playing
+        case stopped
     }
 }

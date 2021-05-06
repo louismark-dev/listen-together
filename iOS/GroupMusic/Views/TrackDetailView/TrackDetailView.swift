@@ -49,8 +49,8 @@ struct TrackDetailView: View {
                 VStack {
                     self.labels
                     HStack {
-                        Button(action: self.playPreview, label: {
-                            PreviewButton()
+                        Button(action: self.previewTapped, label: {
+                            PreviewButton(audioPreviewPlaybackStatus: self.$trackDetailModalViewManager.audioPreviewPlayer.playbackStatus)
                         })
                         Spacer()
                     }
@@ -85,8 +85,12 @@ struct TrackDetailView: View {
         .padding(EdgeInsets(top: 25, leading: 25, bottom: 0, trailing: 25))
     }
     
-    private func playPreview() {
-        self.trackDetailModalViewManager.playTrackPreview()
+    private func previewTapped() {
+        if (self.trackDetailModalViewManager.audioPreviewPlayer.playbackStatus == .stopped) {
+            try? self.trackDetailModalViewManager.audioPreviewPlayer.play()
+        } else {
+            try? self.trackDetailModalViewManager.audioPreviewPlayer.stop()
+        }
     }
     
     private func playAgain() {
@@ -159,9 +163,11 @@ struct TrackDetailView: View {
     }
     
     struct PreviewButton: View {
+        @Binding var audioPreviewPlaybackStatus: AudioPreview.PlaybackStatus
+        
         var body: some View {
             HStack {
-                Image(systemName: "play.fill")
+                Image(systemName: (self.audioPreviewPlaybackStatus == .stopped) ? "play.fill" : "stop.fill")
                     .foregroundColor(.blue)
                     .opacity(0.9)
                     .padding(5)
@@ -180,7 +186,6 @@ struct TrackDetailView: View {
             .padding(4)
             .background(Color.blue)
             .clipShape(RoundedRectangle(cornerRadius: 100, style: .continuous))
-            
         }
     }
     
