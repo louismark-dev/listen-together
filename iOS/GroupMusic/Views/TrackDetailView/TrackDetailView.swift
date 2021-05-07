@@ -11,7 +11,7 @@ struct TrackDetailView: View {
     @StateObject var audioPreviewPlayer: AudioPreview = AudioPreview()
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
-    
+    @State var showPreviewConfirmationAlert: Bool = false
     let track: Track
     let socketManager: GMSockets
     
@@ -50,7 +50,16 @@ struct TrackDetailView: View {
                     self.labels
                     HStack {
                         Button(action: self.previewTapped, label: {
-                            PreviewButton(audioPreviewPlaybackStatus: self.$trackDetailModalViewManager.audioPreviewPlayer.playbackStatus)
+                            PreviewButton(audioPreviewPlaybackStatus: self.$trackDetailModalViewManager.audioPreviewPlayer.playbackStatus,
+                                          audioPreviewPlaybackPosition: self.$trackDetailModalViewManager.audioPreviewPlayer.playbackPosition)
+                        })
+                        .alert(isPresented: self.$showPreviewConfirmationAlert, content: {
+                            Alert(title: Text("Previewing this song will pause music playback."),
+                                  message: nil,
+                                  primaryButton: .cancel(),
+                                  secondaryButton: .default(Text("Continue")) {
+                                    self.playPreview(andPausePlayback: true)
+                                  })
                         })
                         Spacer()
                     }
@@ -87,9 +96,24 @@ struct TrackDetailView: View {
     
     private func previewTapped() {
         if (self.trackDetailModalViewManager.audioPreviewPlayer.playbackStatus == .stopped) {
-            try? self.trackDetailModalViewManager.audioPreviewPlayer.play()
+            // Play preview
+            self.showPreviewConfirmationAlert = (self.socketManager.state.isCoordinator == true && self.playerAdapter.state.playbackState == .playing)
+            if (self.showPreviewConfirmationAlert == false) {
+                self.playPreview()
+            }
         } else {
+            // Stop preview
             try? self.trackDetailModalViewManager.audioPreviewPlayer.stop()
+        }
+    }
+    
+    private func playPreview(andPausePlayback shouldPausePlayback: Bool = false) {
+        if(shouldPausePlayback) {
+            self.playerAdapter.pause {
+                try? self.trackDetailModalViewManager.audioPreviewPlayer.play()
+            }
+        } else {
+            try? self.trackDetailModalViewManager.audioPreviewPlayer.play()
         }
     }
     
@@ -164,6 +188,7 @@ struct TrackDetailView: View {
     
     struct PreviewButton: View {
         @Binding var audioPreviewPlaybackStatus: AudioPreview.PlaybackStatus
+        @Binding var audioPreviewPlaybackPosition: PlaybackPosition
         
         var body: some View {
             HStack {
@@ -171,7 +196,8 @@ struct TrackDetailView: View {
                     .foregroundColor(.blue)
                     .opacity(0.9)
                     .padding(5)
-                    .background(Color.white)
+                    .background(ProgressBar(audioPreviewPlaybackPosition: self.$audioPreviewPlaybackPosition)
+                                    .background(Color.white))
                     .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
                     .font(Font.system(.footnote, design: .rounded).weight(.regular))
                 Spacer()
@@ -186,6 +212,28 @@ struct TrackDetailView: View {
             .padding(4)
             .background(Color.blue)
             .clipShape(RoundedRectangle(cornerRadius: 100, style: .continuous))
+        }
+        
+        struct ProgressBar: View {
+            @Binding var audioPreviewPlaybackPosition: PlaybackPosition
+            @State var playbackFraction: Double = 0.0
+            let lineWidth: CGFloat = CGFloat(4.0)
+            
+            var body: some View {
+                ZStack {
+                    Circle()
+                        .stroke(lineWidth: self.lineWidth)
+                        .foregroundColor(Color.clear)
+                    Circle()
+                        .trim(from: 0.0, to: CGFloat(min(self.playbackFraction, 1.0)))
+                        .stroke(style: StrokeStyle(lineWidth: self.lineWidth, lineCap: .square, lineJoin: .round))
+                        .foregroundColor(Color.blue)
+                        .rotationEffect(Angle(degrees: 270.0))
+                }
+                .onChange(of: self.audioPreviewPlaybackPosition.playbackFraction, perform: { value in
+                    self.playbackFraction = value
+                })
+            }
         }
     }
     
