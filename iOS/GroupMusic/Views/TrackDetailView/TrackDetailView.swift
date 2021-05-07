@@ -7,11 +7,15 @@
 
 import SwiftUI
 
-struct TrackDetailView: View {
+struct TrackDetailView: View, AudioPreviewDelegate {
     @StateObject var audioPreviewPlayer: AudioPreview = AudioPreview()
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     @State var showPreviewConfirmationAlert: Bool = false
+    
+    @State var previewPlaybackStatus: AudioPreview.PlaybackStatus = .stopped
+    @State var previewPlaybackPosition: PlaybackPosition = PlaybackPosition()
+    @State var shouldResumePlaybackAfterPreviewCompletion: Bool = false
     let track: Track
     let socketManager: GMSockets
     
@@ -50,8 +54,8 @@ struct TrackDetailView: View {
                     self.labels
                     HStack {
                         Button(action: self.previewTapped, label: {
-                            PreviewButton(audioPreviewPlaybackStatus: self.$trackDetailModalViewManager.audioPreviewPlayer.playbackStatus,
-                                          audioPreviewPlaybackPosition: self.$trackDetailModalViewManager.audioPreviewPlayer.playbackPosition)
+                            PreviewButton(audioPreviewPlaybackStatus: self.$previewPlaybackStatus,
+                                          audioPreviewPlaybackPosition: self.$previewPlaybackPosition)
                         })
                         .alert(isPresented: self.$showPreviewConfirmationAlert, content: {
                             Alert(title: Text("Previewing this song will pause music playback."),
@@ -92,7 +96,12 @@ struct TrackDetailView: View {
         }
         .foregroundColor(Color.black)
         .padding(EdgeInsets(top: 25, leading: 25, bottom: 0, trailing: 25))
+        .onAppear {
+            self.trackDetailModalViewManager.audioPreviewPlayer.delegate = self
+        }
     }
+    
+    // MARK: Button Actions
     
     private func previewTapped() {
         if (self.trackDetailModalViewManager.audioPreviewPlayer.playbackStatus == .stopped) {
@@ -112,8 +121,10 @@ struct TrackDetailView: View {
             self.playerAdapter.pause {
                 try? self.trackDetailModalViewManager.audioPreviewPlayer.play()
             }
+            self.shouldResumePlaybackAfterPreviewCompletion = true
         } else {
             try? self.trackDetailModalViewManager.audioPreviewPlayer.play()
+            self.shouldResumePlaybackAfterPreviewCompletion = false
         }
     }
     
@@ -185,6 +196,22 @@ struct TrackDetailView: View {
             }
         }
     }
+    
+    // MARK: AudioPreviewDelegate
+    
+    func playbackStatusDidChange(to playbackStatus: AudioPreview.PlaybackStatus) {
+        self.previewPlaybackStatus = playbackStatus
+        
+        if (self.previewPlaybackStatus == .stopped && self.shouldResumePlaybackAfterPreviewCompletion) {
+            self.playerAdapter.play(completion: nil)
+        }
+    }
+    
+    func playbackPositionDidChange(to playbackPosition: PlaybackPosition) {
+        self.previewPlaybackPosition = playbackPosition
+    }
+    
+    // MARK: Subviews
     
     struct PreviewButton: View {
         @Binding var audioPreviewPlaybackStatus: AudioPreview.PlaybackStatus

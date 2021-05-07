@@ -15,6 +15,8 @@ class AudioPreview: ObservableObject {
     @Published var playbackStatus: PlaybackStatus = .stopped
     @Published var playbackPosition: PlaybackPosition = PlaybackPosition()
     
+    public var delegate: AudioPreviewDelegate?
+    
     public func setAudioStreamURL(audioStreamURL: String) {
         self.audioStreamURL = URL(string: audioStreamURL)!
         self.audioPlayer = AVPlayer(url: self.audioStreamURL!)
@@ -25,6 +27,7 @@ class AudioPreview: ObservableObject {
         guard let audioPlayer = self.audioPlayer else { throw AudioPreviewError.streamURLNotSet }
         audioPlayer.play()
         self.playbackStatus = .playing
+        self.delegate?.playbackStatusDidChange(to: self.playbackStatus)
         
         self.startTimer()
     }
@@ -36,6 +39,7 @@ class AudioPreview: ObservableObject {
         self.playbackStatus = .stopped
         
         self.resetTimer()
+        self.delegate?.playbackStatusDidChange(to: self.playbackStatus)
     }
     
     private func startTimer() {
@@ -49,12 +53,14 @@ class AudioPreview: ObservableObject {
             if (self.playbackPosition.playbackFraction >= 1.0) {
                 try? self.stop()
             }
+            self.delegate?.playbackPositionDidChange(to: self.playbackPosition)
         }
     }
     
     private func resetTimer() {
         self.timer?.invalidate()
         self.playbackPosition.currentPlaybackTime = 0.0
+        self.delegate?.playbackPositionDidChange(to: self.playbackPosition)
     }
     
     enum AudioPreviewError: Error {
@@ -65,4 +71,9 @@ class AudioPreview: ObservableObject {
         case playing
         case stopped
     }
+}
+
+protocol AudioPreviewDelegate {
+    func playbackStatusDidChange(to: AudioPreview.PlaybackStatus)
+    func playbackPositionDidChange(to: PlaybackPosition)
 }
