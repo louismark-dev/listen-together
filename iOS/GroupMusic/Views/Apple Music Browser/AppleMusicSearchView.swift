@@ -8,23 +8,18 @@
 import SwiftUI
 
 struct AppleMusicSearchView: View {
-    @StateObject var trackPreviewController: TrackPreviewController = TrackPreviewController()
     @EnvironmentObject var playerAdapter: PlayerAdapter
+    @StateObject var trackDetailModalViewManager: TrackDetailModalViewManager = TrackDetailModalViewManager()
+     
 
     var body: some View {
         ZStack {
             InnerView()
                 .zIndex(0)
-            if (self.trackPreviewController.track != nil) {
-                if let previewTrack = self.trackPreviewController.track {
-                    PreviewView(previewTrack: previewTrack)
-                        .environmentObject(self.playerAdapter)
-                        .zIndex(1) // zIndex necessary for removal animation
-                        .transition(.move(edge: .bottom))
-                }
-            }
+            TrackDetailModalView()
+                .edgesIgnoringSafeArea(.all)
         }
-        .environmentObject(self.trackPreviewController)
+        .environmentObject(self.trackDetailModalViewManager)
     }
     
     struct InnerView: View {
@@ -32,7 +27,6 @@ struct AppleMusicSearchView: View {
         @State var songResults: [Track] = []
         @State private var results: SearchResults? = nil
         @State private var searchResults: AppleMusicSearchResults = AppleMusicSearchResults()
-        @EnvironmentObject var previewTrack: TrackPreviewController
         let appleMusicManager: GMAppleMusic
         
         init(appleMusicManager: GMAppleMusic = GMAppleMusic(storefront: .canada)) {
@@ -52,7 +46,6 @@ struct AppleMusicSearchView: View {
                         Spacer()
                         if (self.searchResults.hasResult == true) {
                             SongResultsView(searchResults: self.$searchResults)
-                                .environmentObject(previewTrack)
                         }
                     }
                 }
@@ -118,22 +111,6 @@ struct AppleMusicSearchResults {
         self.albumResults = nil
         self.playlistResults = nil
         self.trackResults = nil
-    }
-}
-
-class TrackPreviewController: ObservableObject {
-    @Published var track: Track? = nil
-    
-    public func openTrackPreview(withTrack track: Track) {
-        withAnimation {
-            self.track = track
-        }
-    }
-    
-    public func closeTrackPreview() {
-        withAnimation {
-            self.track = nil
-        }
     }
 }
 

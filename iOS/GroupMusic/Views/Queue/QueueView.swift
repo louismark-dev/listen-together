@@ -40,7 +40,7 @@ struct QueueView: View {
                                       expanded: false)
                                 .id(track)
                                 .onTapGesture {
-                                    self.trackDetailModalViewManager.open(withTrack: track)
+                                    self.trackDetailModalViewManager.open(withTrack: track, trackIsInQueue: true)
                                 }
                         }
                     }

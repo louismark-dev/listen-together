@@ -11,7 +11,7 @@ struct MediaDetailView: View {
     @State private var loadingError: Bool = false
     @State private var album: Album?
     @State private var playlist: Playlist?
-    @EnvironmentObject var trackPreviewController: TrackPreviewController
+    @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @ObservedObject private var socketManager: GMSockets
     private let appleMusicManager: GMAppleMusic
@@ -116,7 +116,7 @@ struct MediaDetailView: View {
                             TrackCellView(track: track)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    self.trackPreviewController.openTrackPreview(withTrack: track)
+                                    self.trackDetailModalViewManager.open(withTrack: track, trackIsInQueue: false)
                                 }
                         }
                     }

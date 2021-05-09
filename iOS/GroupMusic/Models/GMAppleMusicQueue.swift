@@ -83,8 +83,10 @@ struct GMAppleMusicQueue: Codable {
             return .played
         } else if (index > self.state.indexOfNowPlayingItem) {
             return .inQueue
-        } else {
+        } else if (index == self.state.indexOfNowPlayingItem) {
             return .playing
+        } else {
+            return .notInQueue
         }
     }
     
@@ -96,6 +98,7 @@ struct GMAppleMusicQueue: Codable {
         case played
         case playing
         case inQueue
+        case notInQueue
     }
     
     // MARK: Play State Management

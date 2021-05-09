@@ -73,10 +73,10 @@ struct TrackDetailView: View, AudioPreviewDelegate {
                 .frame(maxHeight: 32)
             HStack {
                 Button(action: {
-                    if (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) == .playing) {
-                        self.playAgain()
+                    if (self.trackDetailModalViewManager.trackIsInQueue) {
+                        (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) == .playing) ? self.playAgain() : self.prependToQueue()
                     } else {
-                        self.moveToStartOfQueue()
+                        self.prependToQueue()
                     }
                 },
                 label: {
@@ -148,6 +148,27 @@ struct TrackDetailView: View, AudioPreviewDelegate {
                 } catch {
                     print("Emit failed \(error.localizedDescription)")
                 }
+            }
+        }
+    }
+    
+    private func prependToQueue() {
+        self.trackDetailModalViewManager.close()
+        if (self.socketManager.state.isCoordinator == true) {
+            // IS COORDINATOR
+            self.playerAdapter.prependToQueue(withTracks: [self.track]) {
+                do {
+                    try self.socketManager.emitPrependToQueueEvent(withTracks: [self.track])
+                } catch {
+                    print("Could not emit PrependToQueueEvent event.")
+                }
+            }
+        } else {
+            // NOT COORDINATOR
+            do {
+                try self.socketManager.emitPrependToQueueEvent(withTracks: [self.track])
+            } catch {
+                print("Could not emit PrependToQueueEvent event.")
             }
         }
     }

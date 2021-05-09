@@ -12,7 +12,6 @@ import URLImage
 struct MediaCardView: View {
     @State private var showPreview: Bool = false
     @State private var previewTrackData: Track?
-    @EnvironmentObject var previewTrack: TrackPreviewController
     
     private let headlineText: String?
     private let subheadlineText: String?
@@ -60,11 +59,6 @@ struct MediaCardView: View {
             }
         }
         .frame(width: self.maxWidth)
-//        .onTapGesture {
-//            if let previewTrackData = self.previewTrackData {
-//                self.previewTrack.openTrackPreview(withTrack: previewTrackData)
-//            }
-//        }
     }
 }
 

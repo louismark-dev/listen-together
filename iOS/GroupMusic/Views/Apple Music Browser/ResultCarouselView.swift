@@ -89,7 +89,7 @@ struct ResultCarouselView: View {
     struct TracksCarouselView: View {
         let trackResults: [Track]
         @Binding var cardWidth: CGFloat
-        @EnvironmentObject var trackPreviewController: TrackPreviewController
+        @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
         
         var body: some View {
             ForEach(self.trackResults) { (trackData: Track) in
@@ -97,7 +97,7 @@ struct ResultCarouselView: View {
                     MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth, previewTrackData: trackData)
                         .padding(.horizontal, 10)
                         .onTapGesture {
-                            self.trackPreviewController.openTrackPreview(withTrack: trackData)
+                            self.trackDetailModalViewManager.open(withTrack: trackData, trackIsInQueue: false)
                         }
                 }
             }
