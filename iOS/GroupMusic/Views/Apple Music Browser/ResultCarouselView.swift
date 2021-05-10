@@ -97,7 +97,9 @@ struct ResultCarouselView: View {
                     MediaCardView(withHeadline: attributes.name, subheadline: attributes.artistName, artwork: attributes.artwork, maxWidth: self.cardWidth, previewTrackData: trackData)
                         .padding(.horizontal, 10)
                         .onTapGesture {
-                            self.trackDetailModalViewManager.open(withTrack: trackData, trackIsInQueue: false)
+                            self.trackDetailModalViewManager.open(withConfiguration: TrackDetailModalViewConfiguration(track: trackData,
+                                                                                                                       trackIsInQueue: false,
+                                                                                                                       buttonConfiguration: ButtonConfigurationNotInQueue()))
                         }
                 }
             }
@@ -107,7 +109,7 @@ struct ResultCarouselView: View {
     private func setCardViewWidth(carouselViewWidth width: CGFloat) {
         self.cardWidth = width / 2.5
     }
-        
+    
 }
 
 //struct ResultCarouselView_Previews: PreviewProvider {

@@ -43,6 +43,31 @@ struct TrackDetailView: View, AudioPreviewDelegate {
         .frame(maxWidth: .infinity)
     }
     
+    @ViewBuilder func getButton(forConfiguration configuration: TrackDetailModalViewButtonConfiguration) -> some View {
+        Group {
+            switch configuration {
+            case .playNext(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+                Button(action: self.prependToQueue) {
+                    ButtonBackground(label: "Play Next", imageSystemName: "text.insert", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                }
+            case .playAgain(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+                Button(action: self.playAgain) {
+                    ButtonBackground(label: "Play Again", imageSystemName: "repeat", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                }
+            case .playLast(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+                Button(action: self.appendToQueue) {
+                    ButtonBackground(label: "Play Last", imageSystemName: "text.append", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                }
+            case .remove(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+                Button(action: self.removeFromQueue) {
+                    ButtonBackground(label: "Play Again", imageSystemName: "xmark", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                }
+            case .none:
+                EmptyView()
+            }
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -72,25 +97,9 @@ struct TrackDetailView: View, AudioPreviewDelegate {
             Spacer()
                 .frame(maxHeight: 32)
             HStack {
-                Button(action: {
-                    if (self.trackDetailModalViewManager.trackIsInQueue) {
-                        (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) == .playing) ? self.playAgain() : self.prependToQueue()
-                    } else {
-                        self.prependToQueue()
-                    }
-                },
-                label: {
-                    ButtonBackground(label: (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) != .playing) ? "Play Next" : "Play Again",
-                                     imageSystemName: (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) != .playing) ? "text.insert" : "repeat",
-                                     foregroundColor: Color("Emerald"))
-                })
-                if (self.playerAdapter.state.queue.playbackStatusFor(track: self.track) == .inQueue) {
-                    Button(action: self.removeFromQueue, label: {
-                        ButtonBackground(label: "Remove",
-                                         imageSystemName: "xmark",
-                                         foregroundColor: Color("Amaranth"))
-                    })
-                    
+                if let configuration = self.trackDetailModalViewManager.configuration {
+                    self.getButton(forConfiguration: configuration.buttonConfiguration.leading)
+                    self.getButton(forConfiguration: configuration.buttonConfiguration.trailing)
                 }
             }
         }
@@ -171,6 +180,10 @@ struct TrackDetailView: View, AudioPreviewDelegate {
                 print("Could not emit PrependToQueueEvent event.")
             }
         }
+    }
+    
+    private func appendToQueue() {
+        print("Append to queue tapped!")
     }
     
     private func moveToStartOfQueue() {
@@ -288,6 +301,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
     struct ButtonBackground: View {
         let label: String
         let imageSystemName: String
+        let backgroundColor: Color
         let foregroundColor: Color
         
         var body: some View {
@@ -297,6 +311,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
                 Text(self.label)
                     .lineLimit(1)
                     .fixedSize()
+                    .foregroundColor(self.foregroundColor)
                 Spacer()
             }
             .foregroundColor(Color.white)
@@ -304,7 +319,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
             .font(Font.system(.headline, design: .rounded).weight(.semibold))
             .padding()
             .background(RoundedRectangle(cornerRadius: 100, style: .continuous)
-                            .foregroundColor(self.foregroundColor))
+                            .foregroundColor(self.backgroundColor))
         }
     }
 }

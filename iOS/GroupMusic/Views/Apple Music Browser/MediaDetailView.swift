@@ -116,7 +116,9 @@ struct MediaDetailView: View {
                             TrackCellView(track: track)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    self.trackDetailModalViewManager.open(withTrack: track, trackIsInQueue: false)
+                                    self.trackDetailModalViewManager.open(withConfiguration: TrackDetailModalViewConfiguration(track: track,
+                                                                                                                               trackIsInQueue: false,
+                                                                                                                               buttonConfiguration: ButtonConfigurationNotInQueue()))
                                 }
                         }
                     }

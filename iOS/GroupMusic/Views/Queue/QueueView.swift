@@ -40,7 +40,17 @@ struct QueueView: View {
                                       expanded: false)
                                 .id(track)
                                 .onTapGesture {
-                                    self.trackDetailModalViewManager.open(withTrack: track, trackIsInQueue: true)
+                                    let buttonConfiguration: ButtonConfiguration = {
+                                        switch self.playerAdapter.state.queue.playbackStatusFor(track: track) {
+                                        case .played: return ButtonConfigurationPlayedTrack()
+                                        case .playing: return ButtonConfigurationPlayingTrack()
+                                        case .inQueue: return ButtonConfigurationInQueueTrack()
+                                        case .notInQueue: return ButtonConfigurationPlayedTrack()
+                                        }
+                                    }()
+                                    self.trackDetailModalViewManager.open(withConfiguration: TrackDetailModalViewConfiguration(track: track,
+                                                                                                                               trackIsInQueue: true,
+                                                                                                                               buttonConfiguration: buttonConfiguration))
                                 }
                         }
                     }
@@ -71,12 +81,12 @@ struct QueueView: View {
             // Offset of now playing = (playedItems * queueCellHeight.collapsed) + (playedItems * queueSpacing)
             let itemsPlayedCount: CGFloat = CGFloat(self.playerAdapter.state.queue.state.indexOfNowPlayingItem)
             let nowPlayingOffset = ((itemsPlayedCount * self.queueCellHeight.collapsed) + (itemsPlayedCount * self.queueSpacing))
-
+            
             let scrollViewYOffset = -1 * scrollOffset.y
-
+            
             let difference: CGFloat = abs(scrollViewYOffset - nowPlayingOffset)
             let showReturnToNowPlayingIndicator = (difference > tolerance)
-
+            
             withAnimation {
                 if (showReturnToNowPlayingIndicator && !self.disableBanner) {
                     self.bannerController.state.bannerState = .showReturnToNowPlayingBanner
