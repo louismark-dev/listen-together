@@ -43,7 +43,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
         .frame(maxWidth: .infinity)
     }
     
-    @ViewBuilder func getButton(forConfiguration configuration: TrackDetailModalViewButtonConfiguration) -> some View {
+    @ViewBuilder func button(forConfiguration configuration: TrackDetailModalViewButtonConfiguration) -> some View {
         Group {
             switch configuration {
             case .playNext(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
@@ -98,8 +98,8 @@ struct TrackDetailView: View, AudioPreviewDelegate {
                 .frame(maxHeight: 32)
             HStack {
                 if let configuration = self.trackDetailModalViewManager.configuration {
-                    self.getButton(forConfiguration: configuration.buttonConfiguration.leading)
-                    self.getButton(forConfiguration: configuration.buttonConfiguration.trailing)
+                    self.button(forConfiguration: configuration.buttonConfiguration.leading)
+                    self.button(forConfiguration: configuration.buttonConfiguration.trailing)
                 }
             }
         }
@@ -183,7 +183,24 @@ struct TrackDetailView: View, AudioPreviewDelegate {
     }
     
     private func appendToQueue() {
-        print("Append to queue tapped!")
+        self.trackDetailModalViewManager.close()
+        if (self.socketManager.state.isCoordinator == true) {
+            // IS COORDINATOR
+            self.playerAdapter.appendToQueue(withTracks: [self.track]) {
+                do {
+                    try self.socketManager.emitAppendToQueueEvent(withTracks: [self.track])
+                } catch {
+                    print("Could not emit apendToQueue event.")
+                }
+            }
+        } else {
+            // NOT COORDINATOR
+            do {
+                try self.socketManager.emitAppendToQueueEvent(withTracks: [self.track])
+            } catch {
+                print("Could not emit apendToQueue event.")
+            }
+        }
     }
     
     private func moveToStartOfQueue() {

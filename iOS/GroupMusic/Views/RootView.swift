@@ -39,12 +39,14 @@ struct RootView: View {
             BackgroundBlurView()
                 .frame(maxWidth: UIScreen.main.bounds.size.width, maxHeight: UIScreen.main.bounds.size.height)
                 .ignoresSafeArea()
+                .zIndex(0)
             VStack {
                 QueueView()
                     .environmentObject(self.bannerController)
                     .environmentObject(self.trackDetailModalViewManager)
                 Spacer()
-                PlaybackProgressView()
+                PlaybackProgressView2()
+                    .frame(minHeight: 44)
                 Group {
                     if (socketManager.state.isCoordinator) {
                         PlaybackHostControllerView()
