@@ -39,7 +39,13 @@ class PlaybackProgressMonitor: ObservableObject {
         self.acceptPlayerStateUpdates = false
     }
     
-    public func userScrubbingEnded() {
+    public func userScrubbingEnded(withPlaybackFraction playbackFraction: Double) {
+        guard let playbackDuration = self.playerAdapter?.state.playbackPosition.playbackDuration else {
+            return
+        }
+        let seekTime = playbackDuration * (playbackFraction / 100)
+        self.playerAdapter?.seek(toPlaybackTime: seekTime)
+        
         self.acceptPlayerStateUpdates = true
     }
     

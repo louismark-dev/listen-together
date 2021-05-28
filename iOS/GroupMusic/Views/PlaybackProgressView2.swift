@@ -133,7 +133,7 @@ struct CustomSlider: View {
                                                 self.playbackProgressMonitor.setTimestamp(forPlaybackFraction: self.playbackFraction)
                                             }
                                             .onEnded({ _ in
-                                                self.playbackProgressMonitor.userScrubbingEnded()
+                                                self.playbackProgressMonitor.userScrubbingEnded(withPlaybackFraction: self.playbackFraction)
                                                 self.setKnobScale(to: .normal)
                                             })
                                             

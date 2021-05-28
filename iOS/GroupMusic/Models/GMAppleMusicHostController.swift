@@ -134,6 +134,10 @@ class GMAppleMusicHostController: ObservableObject, PlayerProtocol {
         }
     }
     
+    public func seek(toPlaybackTime playbackTime: TimeInterval) {
+        self.player.currentPlaybackTime = playbackTime
+    }
+    
     private func setNowPlayingIndexDidChangeTimeout() {
         self.emitNowPlayingIndexDidChangeEvent = false
         self.nowPlayingIndexDidChangeTimeout = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer: Timer) in

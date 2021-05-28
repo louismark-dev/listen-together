@@ -9,6 +9,10 @@ import Foundation
 import Combine
 
 class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
+    func seek(toPlaybackTime playbackTime: TimeInterval) {
+        // TODO: Complete
+    }
+    
         
     @Published var state: GMAppleMusicHostController.State = GMAppleMusicHostController.State()
     var statePublisher: Published<GMAppleMusicHostController.State>.Publisher { $state }
