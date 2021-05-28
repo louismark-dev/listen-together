@@ -14,7 +14,7 @@ class PlaybackProgressMonitor: ObservableObject {
     private let notificationCenter: NotificationCenter
     private let enteringBackgroundPublisher: NotificationCenter.Publisher
     private let enteringForegroundPublisher: NotificationCenter.Publisher
-    private var acceptStateUpdates: Bool = true
+    private var acceptPlayerStateUpdates: Bool = true
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -35,18 +35,35 @@ class PlaybackProgressMonitor: ObservableObject {
         self.subscibeToPlayerAdapterPublisher()
     }
     
+    public func userScrubbingStarted() {
+        self.acceptPlayerStateUpdates = false
+    }
+    
+    public func userScrubbingEnded() {
+        self.acceptPlayerStateUpdates = true
+    }
+    
+    public func setTimestamp(forPlaybackFraction playbackFraction: Double) {
+        guard let playbackDuration = self.playerAdapter?.state.playbackPosition.playbackDuration else {
+            return
+        }
+        let scrubberPositionInSeconds = playbackDuration * (playbackFraction / 100)
+        let timestamp = self.convertToTimestamp(time: scrubberPositionInSeconds)
+        self.playbackProgressTimestamp = timestamp
+    }
+    
     private func susbcribeToApplicationStateMonitor() {
         self.enteringBackgroundPublisher
             .receive(on: RunLoop.main)
             .sink { _ in
-                self.acceptStateUpdates = false
+                self.acceptPlayerStateUpdates = false
             }
             .store(in: &cancellables)
         
         self.enteringForegroundPublisher
             .receive(on: RunLoop.main)
             .sink { _ in
-                self.acceptStateUpdates = true
+                self.acceptPlayerStateUpdates = true
             }
             .store(in: &cancellables)
     }
@@ -55,7 +72,7 @@ class PlaybackProgressMonitor: ObservableObject {
         self.playerAdapter?.$state
             .receive(on: RunLoop.main)
             .sink { (newState: GMAppleMusicHostController.State) in
-                if (self.acceptStateUpdates == false) { return }
+                if (self.acceptPlayerStateUpdates == false) { return }
                 self.playbackFraction = newState.playbackPosition.playbackFraction * 100
                 self.playbackProgressTimestamp = self.convertToTimestamp(time: newState.playbackPosition.currentPlaybackTime)
                 self.playbackDurationTimestamp = self.convertToTimestamp(time: newState.playbackPosition.playbackDuration)

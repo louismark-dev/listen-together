@@ -15,6 +15,7 @@ struct PlaybackProgressView2: View {
       var body: some View {
         VStack {
             CustomSlider(config: self.$config, playbackFraction: self.$playbackProgressMonitor.playbackFraction, range: 0...100)
+                .environmentObject(self.playbackProgressMonitor)
             TimestampView(config: self.$config,
                           playbackFraction: self.$playbackProgressMonitor.playbackFraction,
                           playbackProgressTimestamp: self.$playbackProgressMonitor.playbackProgressTimestamp,
@@ -80,6 +81,8 @@ struct TimestampView: View {
 }
 
 struct CustomSlider: View {
+    @EnvironmentObject var playbackProgressMonitor: PlaybackProgressMonitor
+    
     @Binding var config: PlaybackProgressView2.Configuration
     @Binding var playbackFraction: Double
     
@@ -125,9 +128,12 @@ struct CustomSlider: View {
                                                 let sliderPos = max(0 + self.leadingOffset, min(self.lastOffset + value.translation.width, geometry.size.width - self.knobSize.width - self.trailingOffset))
                                                 let sliderVal = sliderPos.map(from: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset), to: self.range)
                                                 
+                                                self.playbackProgressMonitor.userScrubbingStarted()
                                                 self.playbackFraction = Double(sliderVal)
+                                                self.playbackProgressMonitor.setTimestamp(forPlaybackFraction: self.playbackFraction)
                                             }
                                             .onEnded({ _ in
+                                                self.playbackProgressMonitor.userScrubbingEnded()
                                                 self.setKnobScale(to: .normal)
                                             })
                                             
