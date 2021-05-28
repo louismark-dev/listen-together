@@ -9,18 +9,24 @@ import SwiftUI
 
 struct PlaybackProgressView2: View {
     @State var config: Configuration = Configuration()
-      
+    @EnvironmentObject var playerAdapter: PlayerAdapter
+    @StateObject var playbackProgressMonitor: PlaybackProgressMonitor = PlaybackProgressMonitor()
+    
       var body: some View {
         VStack {
-            CustomSlider(config: self.$config, range: 0...100)
-            TimestampView(config: self.$config)
+            CustomSlider(config: self.$config, playbackFraction: self.$playbackProgressMonitor.playbackFraction, range: 0...100)
+            TimestampView(config: self.$config,
+                          playbackFraction: self.$playbackProgressMonitor.playbackFraction,
+                          playbackProgressTimestamp: self.$playbackProgressMonitor.playbackProgressTimestamp,
+                          playbackDurationTimestamp: self.$playbackProgressMonitor.playbackDurationTimestamp)
                 .padding(.top, 4)
-//            Text("\(self.config.value)")
+        }
+        .onAppear {
+            self.playbackProgressMonitor.startMonitoring(withPlayerAdapter: self.playerAdapter)
         }
       }
     
     struct Configuration {
-        var value: CGFloat = 50
         var knobScale: CustomSlider.KnobScale = .normal
         var animationDuration: Double = 0.15
         var foregroundColor: Color = Color.white.opacity(0.7)
@@ -29,25 +35,28 @@ struct PlaybackProgressView2: View {
 
 struct TimestampView: View {
     @Binding var config: PlaybackProgressView2.Configuration
+    @Binding var playbackFraction: Double
+    @Binding var playbackProgressTimestamp: String
+    @Binding var playbackDurationTimestamp: String
     @State private var offsetConfig: OffsetConfiguration = .none
     
     private let yOffset: CGFloat = 20.0
     
     var body: some View {
         HStack {
-            Text("0:00")
+            Text(self.playbackProgressTimestamp)
                 .offset(x: 0, y: (self.offsetConfig == .leading) ? self.yOffset : 0)
             Spacer()
-            Text("4:00")
+            Text(self.playbackDurationTimestamp)
                 .offset(x: 0, y: (self.offsetConfig == .trailing) ? self.yOffset : 0)
         }
         .foregroundColor(self.config.foregroundColor)
         .font(Font.system(.subheadline, design: .rounded).weight(.semibold))
-        .onChange(of: self.config.value, perform: { (value: CGFloat) in
-            self.setOffset(forSliderValue: config.value)
+        .onChange(of: self.playbackFraction, perform: { (value: Double) in
+            self.setOffset(forSliderValue: CGFloat(self.playbackFraction))
         })
         .onChange(of: self.config.knobScale, perform: { _ in
-            self.setOffset(forSliderValue: config.value)
+            self.setOffset(forSliderValue: CGFloat(self.playbackFraction))
         })
     }
     
@@ -72,6 +81,7 @@ struct TimestampView: View {
 
 struct CustomSlider: View {
     @Binding var config: PlaybackProgressView2.Configuration
+    @Binding var playbackFraction: Double
     
     @State var lastOffset: CGFloat = 0
     
@@ -99,23 +109,23 @@ struct CustomSlider: View {
                         .contentShape(Rectangle())
                         .scaleEffect(self.config.knobScale.rawValue)
                         .foregroundColor(self.config.foregroundColor)
-                        .offset(x: self.config.value.map(from: self.range, to: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset)))
+                        .offset(x: CGFloat(self.playbackFraction).map(from: self.range, to: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset)))
                         .overlay(Rectangle()
                                     .frame(width: 44, height: 44)
                                     .opacity(0.0001)
-                                    .offset(x: self.config.value.map(from: self.range, to: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset)))
+                                    .offset(x: CGFloat(self.playbackFraction).map(from: self.range, to: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset)))
                                     .gesture(
                                         DragGesture(minimumDistance: 0)
                                             .onChanged { value in
                                                 self.setKnobScale(to: .large)
                                                 if abs(value.translation.width) < 0.1 {
-                                                    self.lastOffset = self.config.value.map(from: self.range, to: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset))
+                                                    self.lastOffset = CGFloat(self.playbackFraction).map(from: self.range, to: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset))
                                                 }
                                                 
                                                 let sliderPos = max(0 + self.leadingOffset, min(self.lastOffset + value.translation.width, geometry.size.width - self.knobSize.width - self.trailingOffset))
                                                 let sliderVal = sliderPos.map(from: self.leadingOffset...(geometry.size.width - self.knobSize.width - self.trailingOffset), to: self.range)
                                                 
-                                                self.config.value = sliderVal
+                                                self.playbackFraction = Double(sliderVal)
                                             }
                                             .onEnded({ _ in
                                                 self.setKnobScale(to: .normal)
@@ -149,8 +159,8 @@ extension CGFloat {
         return result
     }
 }
-struct PlaybackProgressView2_Previews: PreviewProvider {
-    static var previews: some View {
-        PlaybackProgressView2()
-    }
-}
+//struct PlaybackProgressView2_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PlaybackProgressView2()
+//    }
+//}
