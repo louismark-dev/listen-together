@@ -51,6 +51,8 @@ class GMSockets: ObservableObject {
         
         self.socket.on(Event.previousEvent.rawValue, callback: self.previousEventHandler)
         
+        self.socket.on(Event.seekEvent.rawValue, callback: self.seekEventHandler)
+        
         self.socket.on(Event.appendToQueue.rawValue, callback: self.appendToQueueEventHandler)
         
         self.socket.on(Event.prependToQueue.rawValue, callback: self.prependToQueueEventHandler)
@@ -142,6 +144,16 @@ class GMSockets: ObservableObject {
     private func previousEventHandler(data: [Any], ack: SocketAckEmitter) {
         print("previousEvent recieved")
         self.notificationCenter.post(name: .previousEvent, object: nil)
+    }
+    
+    private func seekEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("seekEvent recieved")
+        do {
+            let timeInterval = try self.dataToObject(data: data) as TimeInterval
+            self.notificationCenter.post(name: .seekEvent, object: timeInterval)
+        } catch {
+            fatalError("seekEvent decoding failed \(error.localizedDescription)")
+        }
     }
     
     private func appendToQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
@@ -241,6 +253,13 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.previousEvent.rawValue,  "{ \"roomID\": \"\(sessionID)\" }")
     }
     
+    public func emitSeekEvent(withTimeInterval timeInterval: TimeInterval) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<TimeInterval>(roomID: sessionID, data: timeInterval)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.seekEvent.rawValue, encodedJSON)
+    }
+    
     public func emitPrependToQueueEvent(withTracks tracks: [Track]) throws {
         guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
         let arguments = SocketIOArguments<[Track]>(roomID: sessionID, data: tracks)
@@ -334,6 +353,7 @@ class GMSockets: ObservableObject {
         case assigningID
         case queueUpdate
         case appendToQueue
+        case seekEvent
         case prependToQueue
         case nowPlayingIndexDidChangeEvent
         case removeFromQueue
@@ -371,6 +391,10 @@ extension Notification.Name {
     
     static var previousEvent: Notification.Name {
         return .init(rawValue: "GMSockets.previousEvent")
+    }
+    
+    static var seekEvent: Notification.Name {
+        return .init("GMSockets.seekEvent")
     }
     
     static var appendToQueueEvent: Notification.Name {

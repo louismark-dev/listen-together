@@ -9,11 +9,6 @@ import Foundation
 import Combine
 
 class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
-    func seek(toPlaybackTime playbackTime: TimeInterval) {
-        // TODO: Complete
-    }
-    
-        
     @Published var state: GMAppleMusicHostController.State = GMAppleMusicHostController.State()
     var statePublisher: Published<GMAppleMusicHostController.State>.Publisher { $state }
     
@@ -84,6 +79,13 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
             completion()
         }
         self.playbackTimer.didSkip()
+    }
+    
+    func seek(toPlaybackTime playbackTime: TimeInterval, completion: (() -> Void)?) {
+        self.playbackTimer.setPlaybackTime(to: playbackTime)
+        if let completion = completion {
+            completion()
+        }
     }
     
     func moveToStartOfQueue(fromIndex index: Int, completion: (() -> Void)?) {

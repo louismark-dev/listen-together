@@ -24,7 +24,7 @@ protocol PlayerProtocol {
     
     func skipToPreviousItem(completion: (() -> Void)?)
     
-    func seek(toPlaybackTime playbackTime: TimeInterval)
+    func seek(toPlaybackTime playbackTime: TimeInterval, completion: (() -> Void)?)
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?)
     

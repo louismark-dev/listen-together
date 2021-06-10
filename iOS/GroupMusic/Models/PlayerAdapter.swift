@@ -73,8 +73,8 @@ class PlayerAdapter: ObservableObject {
         self.player.skipToPreviousItem(completion: completion)
     }
     
-    func seek(toPlaybackTime playbackTime: TimeInterval) {
-        self.player.seek(toPlaybackTime: playbackTime)
+    func seek(toPlaybackTime playbackTime: TimeInterval, completion: (() -> Void)?) {
+        self.player.seek(toPlaybackTime: playbackTime, completion: completion)
     }
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {

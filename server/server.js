@@ -218,6 +218,20 @@ io.sockets.on("connection", function(socket) {
             socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.MOVE_TO_START_OF_QUEUE, data)
         }
     })
+
+    socket.on(MESSAGES.SEEK_EVENT, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+        
+        if (socket.id == sessionData.coordinatorID) { // SEEK_EVENT msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting seekEvent to room ${roomID}, ${data}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.SEEK_EVENT, data)
+        } else { // SEEK_EVENT msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending seekEvent to coordinator ${sessionData.coordinatorID}, ${data}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.SEEK_EVENT, data)
+        }
+    })
 })
 
 // HELPER FUNCTIONS
@@ -267,5 +281,6 @@ const MESSAGES = {
     PREPEND_TO_QUEUE: "prependToQueue",
     NOW_PLAYING_INDEX_DID_CHANGE_EVENT: "nowPlayingIndexDidChangeEvent",
     REMOVE_FROM_QUEUE: "removeFromQueue",
-    MOVE_TO_START_OF_QUEUE: "moveToStartOfQueue"
+    MOVE_TO_START_OF_QUEUE: "moveToStartOfQueue",
+    SEEK_EVENT: "seekEvent"
 }

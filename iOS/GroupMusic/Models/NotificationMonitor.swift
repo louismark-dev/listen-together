@@ -43,6 +43,10 @@ class NotificationMonitor {
                                             name: .previousEvent,
                                             object: nil)
         self.notificationCenter.addObserver(self,
+                                            selector: #selector(didRecieveSeekEvent),
+                                            name: .seekEvent,
+                                            object: nil)
+        self.notificationCenter.addObserver(self,
                                             selector: #selector(didRecievePrependToQueueEvent),
                                             name: .prependToQueueEvent,
                                             object: nil)
@@ -117,6 +121,19 @@ class NotificationMonitor {
                 fatalError(error.localizedDescription)
             }
         })
+    }
+    
+    @objc private func didRecieveSeekEvent(_ notification: NSNotification) {
+        guard let timeInterval = notification.object as? TimeInterval else { return }
+        self.playerAdapter.seek(toPlaybackTime: timeInterval) {
+            // Emit only if coordinator
+            guard (self.socketManager.state.isCoordinator) else { return }
+            do {
+                try self.socketManager.emitSeekEvent(withTimeInterval: timeInterval)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     @objc private func didRecievePrependToQueueEvent(_ notification: NSNotification) {

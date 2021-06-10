@@ -10,6 +10,7 @@ import Combine
 
 class PlaybackProgressMonitor: ObservableObject {
     private var playerAdapter: PlayerAdapter?
+    private let socketManager: GMSockets
     
     private let notificationCenter: NotificationCenter
     private let enteringBackgroundPublisher: NotificationCenter.Publisher
@@ -22,10 +23,13 @@ class PlaybackProgressMonitor: ObservableObject {
     @Published var playbackProgressTimestamp: String = "0:00"
     @Published var playbackDurationTimestamp: String = "0:00"
     
-    init(notificationCenter: NotificationCenter = NotificationCenter.default) {
+    init(notificationCenter: NotificationCenter = NotificationCenter.default,
+         socketManager: GMSockets = GMSockets.sharedInstance) {
         self.notificationCenter = notificationCenter
         self.enteringBackgroundPublisher = self.notificationCenter.publisher(for: UIApplication.willResignActiveNotification)
         self.enteringForegroundPublisher = self.notificationCenter.publisher(for: UIApplication.didBecomeActiveNotification)
+        
+        self.socketManager = socketManager
     }
     
     public func startMonitoring(withPlayerAdapter playerAdapter: PlayerAdapter) {
@@ -40,11 +44,7 @@ class PlaybackProgressMonitor: ObservableObject {
     }
     
     public func userScrubbingEnded(withPlaybackFraction playbackFraction: Double) {
-        guard let playbackDuration = self.playerAdapter?.state.playbackPosition.playbackDuration else {
-            return
-        }
-        let seekTime = playbackDuration * (playbackFraction / 100)
-        self.playerAdapter?.seek(toPlaybackTime: seekTime)
+        self.seekToPosition(withPlaybackFraction: playbackFraction)
         
         self.acceptPlayerStateUpdates = true
     }
@@ -56,6 +56,37 @@ class PlaybackProgressMonitor: ObservableObject {
         let scrubberPositionInSeconds = playbackDuration * (playbackFraction / 100)
         let timestamp = self.convertToTimestamp(time: scrubberPositionInSeconds)
         self.playbackProgressTimestamp = timestamp
+    }
+    
+    private func seekToPosition(withPlaybackFraction playbackFraction: Double) {
+        guard let playbackDuration = self.playerAdapter?.state.playbackPosition.playbackDuration else {
+            print("Could not determine playbackDuration in PlaybackProgressMonitor")
+            return
+        }
+        let seekTime = playbackDuration * (playbackFraction / 100)
+        
+        guard let playerAdapter = self.playerAdapter else {
+            print("PlayerAdapter is null")
+            return
+        }
+        
+        if (self.socketManager.state.isCoordinator == true) {
+            // IF COORDINATOR
+            playerAdapter.seek(toPlaybackTime: seekTime) {
+                do {
+                    try self.socketManager.emitSeekEvent(withTimeInterval: seekTime)
+                } catch {
+                    print("Could not emit SeekEvent event.")
+                }
+            }
+        } else {
+            // NOT COORDINATOR
+            do {
+                try self.socketManager.emitSeekEvent(withTimeInterval: seekTime)
+            } catch {
+                print("Could not emit SeekEvent event.")
+            }
+        }
     }
     
     private func susbcribeToApplicationStateMonitor() {

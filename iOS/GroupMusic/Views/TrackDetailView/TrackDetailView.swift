@@ -198,7 +198,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
             do {
                 try self.socketManager.emitAppendToQueueEvent(withTracks: [self.track])
             } catch {
-                print("Could not emit apendToQueue event.")
+                print("Could not emit appendToQueue event.")
             }
         }
     }

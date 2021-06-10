@@ -35,4 +35,8 @@ class PlaybackTimer {
         self.currentPlaybackTime = 0.0
         self.runTimer()
     }
+    
+    public func setPlaybackTime(to timeInterval: TimeInterval) {
+        self.currentPlaybackTime = timeInterval
+    }
 }
