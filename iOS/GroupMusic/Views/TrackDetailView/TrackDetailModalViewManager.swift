@@ -47,36 +47,36 @@ class ButtonConfiguration {
 
 class ButtonConfigurationPlayedTrack: ButtonConfiguration {
     init() {
-        super.init(leading: .playNext(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
-                   trailing: .playLast(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")))
+        super.init(leading: .playNext(label: "Play Next", imageSystemName: "text.insert", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
+                   trailing: .playLast(label: "Play Last", imageSystemName: "text.append", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")))
     }
 }
 
 class ButtonConfigurationPlayingTrack: ButtonConfiguration {
     init() {
-        super.init(leading: .playAgain(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
+        super.init(leading: .playAgain(label: "Play Again", imageSystemName: "repeat", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
                    trailing: .none)
     }
 }
 
 class ButtonConfigurationInQueueTrack: ButtonConfiguration {
     init() {
-        super.init(leading: .playNext(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
-                   trailing: .remove(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Amaranth")))
+        super.init(leading: .playNext(label: "Play Next", imageSystemName: "text.insert", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
+                   trailing: .remove(label: "Remove", imageSystemName: "xmark", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Amaranth")))
     }
 }
 
 class ButtonConfigurationNotInQueue: ButtonConfiguration {
     init() {
-        super.init(leading: .playNext(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
-                   trailing: .playLast(foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")))
+        super.init(leading: .playNext(label: "Play Next", imageSystemName: "text.insert", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")),
+                   trailing: .playLast(label: "Play Last", imageSystemName: "text.append", foregroundColor: .white.opacity(0.9), backgroundColor: Color("Emerald")))
     }
 }
 
 enum TrackDetailModalViewButtonConfiguration {
-    case playNext(foregroundColor: Color, backgroundColor: Color)
-    case playAgain(foregroundColor: Color, backgroundColor: Color)
-    case playLast(foregroundColor: Color, backgroundColor: Color)
-    case remove(foregroundColor: Color, backgroundColor: Color)
+    case playNext(label: String, imageSystemName: String, foregroundColor: Color, backgroundColor: Color)
+    case playAgain(label: String, imageSystemName: String, foregroundColor: Color, backgroundColor: Color)
+    case playLast(label: String, imageSystemName: String, foregroundColor: Color, backgroundColor: Color)
+    case remove(label: String, imageSystemName: String, foregroundColor: Color, backgroundColor: Color)
     case none
 }

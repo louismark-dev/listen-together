@@ -46,21 +46,21 @@ struct TrackDetailView: View, AudioPreviewDelegate {
     @ViewBuilder func button(forConfiguration configuration: TrackDetailModalViewButtonConfiguration) -> some View {
         Group {
             switch configuration {
-            case .playNext(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+            case .playNext(label: let label, imageSystemName: let imageSystemName, foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
                 Button(action: self.prependToQueue) {
-                    ButtonBackground(label: "Play Next", imageSystemName: "text.insert", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                    ButtonBackground(label: label, imageSystemName: imageSystemName, backgroundColor: backgroundColor, foregroundColor: foregroundColor)
                 }
-            case .playAgain(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+            case .playAgain(label: let label, imageSystemName: let imageSystemName, foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
                 Button(action: self.playAgain) {
-                    ButtonBackground(label: "Play Again", imageSystemName: "repeat", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                    ButtonBackground(label: label, imageSystemName: imageSystemName, backgroundColor: backgroundColor, foregroundColor: foregroundColor)
                 }
-            case .playLast(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+            case .playLast(label: let label, imageSystemName: let imageSystemName, foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
                 Button(action: self.appendToQueue) {
-                    ButtonBackground(label: "Play Last", imageSystemName: "text.append", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                    ButtonBackground(label: label, imageSystemName: imageSystemName, backgroundColor: backgroundColor, foregroundColor: foregroundColor)
                 }
-            case .remove(foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
+            case .remove(label: let label, imageSystemName: let imageSystemName, foregroundColor: let foregroundColor, backgroundColor: let backgroundColor):
                 Button(action: self.removeFromQueue) {
-                    ButtonBackground(label: "Play Again", imageSystemName: "xmark", backgroundColor: backgroundColor, foregroundColor: foregroundColor)
+                    ButtonBackground(label: label, imageSystemName: imageSystemName, backgroundColor: backgroundColor, foregroundColor: foregroundColor)
                 }
             case .none:
                 EmptyView()
