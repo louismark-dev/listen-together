@@ -28,7 +28,7 @@ class GMAppleMusicGuestController: ObservableObject, PlayerProtocol {
     
     private func setupPlaybackTimer() {
         self.playbackTimer.onPlaybackTimeUpdate = { (newPlaybackTime: TimeInterval) in
-            self.state.playbackPosition.currentPlaybackTime = newPlaybackTime
+            self.state.playbackPosition.currentPlaybackTime = min(self.state.playbackPosition.playbackDuration, newPlaybackTime)
         }
     }
     
