@@ -76,6 +76,8 @@ struct MediaDetailView: View {
         self._album = State(initialValue: album)
         self._playlist = State(initialValue: nil)
         self.socketManager = GMSockets.sharedInstance
+        
+        self.setNaviagionBarAppearance()
     }
     
     init(withPlaylist playlist: Playlist) {
@@ -83,6 +85,13 @@ struct MediaDetailView: View {
         self._album = State(initialValue: nil)
         self._playlist = State(initialValue: playlist)
         self.socketManager = GMSockets.sharedInstance
+        
+        self.setNaviagionBarAppearance()
+    }
+    
+    private func setNaviagionBarAppearance() {
+        UINavigationBar.appearance().barTintColor = .clear
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
     }
     
     var body: some View {
@@ -126,7 +135,7 @@ struct MediaDetailView: View {
                 .padding(.horizontal)
             }
         }
-        .navigationBarTitle("", displayMode: .inline)
+        .navigationBarHidden(false)
         .onAppear {
             self.fetchTracks()
         }
