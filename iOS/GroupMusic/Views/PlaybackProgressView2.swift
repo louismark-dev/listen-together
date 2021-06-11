@@ -30,7 +30,7 @@ struct PlaybackProgressView2: View {
     struct Configuration {
         var knobScale: CustomSlider.KnobScale = .normal
         var animationDuration: Double = 0.15
-        var foregroundColor: Color = Color.white.opacity(0.7)
+        var foregroundColor: Color = Color.white
     }
 }
 
@@ -52,7 +52,7 @@ struct TimestampView: View {
                 .offset(x: 0, y: (self.offsetConfig == .trailing) ? self.yOffset : 0)
         }
         .foregroundColor(self.config.foregroundColor)
-        .font(Font.system(.subheadline, design: .rounded).weight(.semibold))
+        .font(Font.system(.footnote, design: .rounded).weight(.semibold))
         .onChange(of: self.playbackFraction, perform: { (value: Double) in
             self.setOffset(forSliderValue: CGFloat(self.playbackFraction))
         })
@@ -91,21 +91,24 @@ struct CustomSlider: View {
     var range: ClosedRange<CGFloat>
     var leadingOffset: CGFloat = 0
     var trailingOffset: CGFloat = 0
+    let progressBarHeight: CGFloat = 3.0
     
-    @State var knobSize: CGSize = CGSize(width: 15, height: 15)
-    
-    let trackGradient = LinearGradient(gradient: Gradient(colors: [.pink, .yellow]), startPoint: .leading, endPoint: .trailing)
-    
+    @State var knobSize: CGSize = CGSize(width: 10, height: 10)
+        
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 100)
-                    .frame(height: 5)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 30)
-                            .foregroundColor(self.config.foregroundColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                    )
+                    .frame(height: self.progressBarHeight)
+                    .foregroundColor(self.config.foregroundColor)
+                    .opacity(0.3)
+                HStack {
+                    RoundedRectangle(cornerRadius: 100)
+                        .frame(width: min(CGFloat(self.playbackFraction) / 100, 1.0) * geometry.size.width, height: self.progressBarHeight)
+                        .foregroundColor(self.config.foregroundColor)
+                        .opacity(0.6)
+                    Spacer()
+                }
                 HStack {
                     RoundedRectangle(cornerRadius: 50)
                         .frame(width: self.knobSize.width, height: self.knobSize.height)
@@ -154,7 +157,7 @@ struct CustomSlider: View {
     
     enum KnobScale: CGFloat {
         case normal = 1.0
-        case large = 2.5
+        case large = 3.0
     }
 }
 
