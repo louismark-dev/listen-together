@@ -95,18 +95,31 @@ struct MediaDetailView: View {
     }
     
     var header: some View {
-        HStack {
+        HStack(spacing: 12) {
             if let artworkURL = self.artworkURL {
                 ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
                     .aspectRatio(contentMode: .fit)
             }
-            VStack {
+            VStack(spacing: 8) {
                 HStack {
-                    Text(self.name ?? "")
+                    Text("Playlist")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .opacity(0.5)
                     Spacer()
                 }
                 HStack {
-                    Text(self.creatorName ?? "")
+                    Text(self.name ?? "")
+                        .fontWeight(.semibold)
+                        .font(.title3)
+                        .opacity(0.9)
+                    Spacer()
+                }
+                HStack {
+                    Text("94 Tracks")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .opacity(0.5)
                     Spacer()
                 }
             }
@@ -129,8 +142,6 @@ struct MediaDetailView: View {
         ScrollView {
             VStack {
                 self.header
-                    .background(Color.red)
-                    .padding()
                 HStack {
                     Button("Prepend", action: self.prependToQueue)
                     Button("Append", action: self.appendToQueue)

@@ -11,6 +11,22 @@
 		250E821425B93861001990E9 /* PlaybackHostControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821325B93861001990E9 /* PlaybackHostControllerView.swift */; };
 		250E821825B93894001990E9 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821725B93894001990E9 /* BottomBarView.swift */; };
 		250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250E821F25B938F2001990E9 /* SessionSettingsView.swift */; };
+		251B120F267513B3006EAC40 /* Biotif-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B11FF267513B3006EAC40 /* Biotif-LightItalic.ttf */; };
+		251B1210267513B3006EAC40 /* Biotif-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1200267513B3006EAC40 /* Biotif-Regular.ttf */; };
+		251B1211267513B3006EAC40 /* Biotif-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1201267513B3006EAC40 /* Biotif-Light.ttf */; };
+		251B1212267513B3006EAC40 /* Biotif-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1202267513B3006EAC40 /* Biotif-MediumItalic.ttf */; };
+		251B1213267513B3006EAC40 /* Biotif-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1203267513B3006EAC40 /* Biotif-Book.ttf */; };
+		251B1214267513B3006EAC40 /* Biotif-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1204267513B3006EAC40 /* Biotif-BlackItalic.ttf */; };
+		251B1215267513B3006EAC40 /* Biotif-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1205267513B3006EAC40 /* Biotif-ExtraBold.ttf */; };
+		251B1216267513B3006EAC40 /* Biotif-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1206267513B3006EAC40 /* Biotif-BoldItalic.ttf */; };
+		251B1217267513B3006EAC40 /* Biotif-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1207267513B3006EAC40 /* Biotif-SemiBoldItalic.ttf */; };
+		251B1218267513B3006EAC40 /* Biotif-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1208267513B3006EAC40 /* Biotif-ExtraBoldItalic.ttf */; };
+		251B1219267513B3006EAC40 /* Biotif-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B1209267513B3006EAC40 /* Biotif-BookItalic.ttf */; };
+		251B121A267513B3006EAC40 /* Biotif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120A267513B3006EAC40 /* Biotif-SemiBold.ttf */; };
+		251B121B267513B3006EAC40 /* Biotif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120B267513B3006EAC40 /* Biotif-Bold.ttf */; };
+		251B121C267513B3006EAC40 /* Biotif-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120C267513B3006EAC40 /* Biotif-Medium.ttf */; };
+		251B121D267513B3006EAC40 /* Biotif-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120D267513B3006EAC40 /* Biotif-Black.ttf */; };
+		251B121E267513B3006EAC40 /* Biotif-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120E267513B3006EAC40 /* Biotif-RegularItalic.ttf */; };
 		25272FB225D9185D00E690BE /* ReturnToNowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */; };
 		25272FB825D994F200E690BE /* BannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB725D994F200E690BE /* BannerController.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
@@ -103,6 +119,22 @@
 		250E821325B93861001990E9 /* PlaybackHostControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackHostControllerView.swift; sourceTree = "<group>"; };
 		250E821725B93894001990E9 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BottomBarView.swift; path = GroupMusic/Views/BottomBar/BottomBarView.swift; sourceTree = SOURCE_ROOT; };
 		250E821F25B938F2001990E9 /* SessionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSettingsView.swift; sourceTree = "<group>"; };
+		251B11FF267513B3006EAC40 /* Biotif-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-LightItalic.ttf"; sourceTree = "<group>"; };
+		251B1200267513B3006EAC40 /* Biotif-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Regular.ttf"; sourceTree = "<group>"; };
+		251B1201267513B3006EAC40 /* Biotif-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Light.ttf"; sourceTree = "<group>"; };
+		251B1202267513B3006EAC40 /* Biotif-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-MediumItalic.ttf"; sourceTree = "<group>"; };
+		251B1203267513B3006EAC40 /* Biotif-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Book.ttf"; sourceTree = "<group>"; };
+		251B1204267513B3006EAC40 /* Biotif-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-BlackItalic.ttf"; sourceTree = "<group>"; };
+		251B1205267513B3006EAC40 /* Biotif-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-ExtraBold.ttf"; sourceTree = "<group>"; };
+		251B1206267513B3006EAC40 /* Biotif-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-BoldItalic.ttf"; sourceTree = "<group>"; };
+		251B1207267513B3006EAC40 /* Biotif-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		251B1208267513B3006EAC40 /* Biotif-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		251B1209267513B3006EAC40 /* Biotif-BookItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-BookItalic.ttf"; sourceTree = "<group>"; };
+		251B120A267513B3006EAC40 /* Biotif-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-SemiBold.ttf"; sourceTree = "<group>"; };
+		251B120B267513B3006EAC40 /* Biotif-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Bold.ttf"; sourceTree = "<group>"; };
+		251B120C267513B3006EAC40 /* Biotif-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Medium.ttf"; sourceTree = "<group>"; };
+		251B120D267513B3006EAC40 /* Biotif-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Black.ttf"; sourceTree = "<group>"; };
+		251B120E267513B3006EAC40 /* Biotif-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-RegularItalic.ttf"; sourceTree = "<group>"; };
 		25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnToNowPlayingView.swift; sourceTree = "<group>"; };
 		25272FB725D994F200E690BE /* BannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerController.swift; sourceTree = "<group>"; };
 		2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudio.swift; sourceTree = "<group>"; };
@@ -210,6 +242,29 @@
 				250E821725B93894001990E9 /* BottomBarView.swift */,
 			);
 			path = BottomBar;
+			sourceTree = "<group>";
+		};
+		251B121F267513CB006EAC40 /* font */ = {
+			isa = PBXGroup;
+			children = (
+				251B120C267513B3006EAC40 /* Biotif-Medium.ttf */,
+				251B1202267513B3006EAC40 /* Biotif-MediumItalic.ttf */,
+				251B1200267513B3006EAC40 /* Biotif-Regular.ttf */,
+				251B120E267513B3006EAC40 /* Biotif-RegularItalic.ttf */,
+				251B120A267513B3006EAC40 /* Biotif-SemiBold.ttf */,
+				251B1207267513B3006EAC40 /* Biotif-SemiBoldItalic.ttf */,
+				251B120D267513B3006EAC40 /* Biotif-Black.ttf */,
+				251B1204267513B3006EAC40 /* Biotif-BlackItalic.ttf */,
+				251B120B267513B3006EAC40 /* Biotif-Bold.ttf */,
+				251B1206267513B3006EAC40 /* Biotif-BoldItalic.ttf */,
+				251B1203267513B3006EAC40 /* Biotif-Book.ttf */,
+				251B1209267513B3006EAC40 /* Biotif-BookItalic.ttf */,
+				251B1205267513B3006EAC40 /* Biotif-ExtraBold.ttf */,
+				251B1208267513B3006EAC40 /* Biotif-ExtraBoldItalic.ttf */,
+				251B1201267513B3006EAC40 /* Biotif-Light.ttf */,
+				251B11FF267513B3006EAC40 /* Biotif-LightItalic.ttf */,
+			);
+			path = font;
 			sourceTree = "<group>";
 		};
 		25461F3225D7B95700456752 /* BackgroundBlur */ = {
@@ -354,6 +409,7 @@
 				BF5EE22725A02F27000C23DD /* VisualEffectView.swift */,
 				BF5EE24B25A15445000C23DD /* AppleMusicPlayerView.swift */,
 				BF99218025A405ED00F8CAC5 /* AppleMusicControllerView.swift */,
+				251B121F267513CB006EAC40 /* font */,
 				BF266BFE259026BA00029A2D /* Models */,
 				BF3468C9258FFC94000D609B /* Preview Content */,
 				BF266C002590277C00029A2D /* Resources */,
@@ -493,12 +549,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				251B1216267513B3006EAC40 /* Biotif-BoldItalic.ttf in Resources */,
+				251B1212267513B3006EAC40 /* Biotif-MediumItalic.ttf in Resources */,
 				BF3468CE258FFC94000D609B /* LaunchScreen.storyboard in Resources */,
 				2550D0BB25BFCEE50030E17E /* background.mp3 in Resources */,
+				251B121C267513B3006EAC40 /* Biotif-Medium.ttf in Resources */,
+				251B1219267513B3006EAC40 /* Biotif-BookItalic.ttf in Resources */,
+				251B1210267513B3006EAC40 /* Biotif-Regular.ttf in Resources */,
+				251B121B267513B3006EAC40 /* Biotif-Bold.ttf in Resources */,
+				251B121A267513B3006EAC40 /* Biotif-SemiBold.ttf in Resources */,
 				BF3468CB258FFC94000D609B /* Preview Assets.xcassets in Resources */,
+				251B121E267513B3006EAC40 /* Biotif-RegularItalic.ttf in Resources */,
 				2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */,
+				251B121D267513B3006EAC40 /* Biotif-Black.ttf in Resources */,
+				251B120F267513B3006EAC40 /* Biotif-LightItalic.ttf in Resources */,
 				2550D0BE25BFD1100030E17E /* 15-sec.mp3 in Resources */,
+				251B1213267513B3006EAC40 /* Biotif-Book.ttf in Resources */,
+				251B1217267513B3006EAC40 /* Biotif-SemiBoldItalic.ttf in Resources */,
+				251B1218267513B3006EAC40 /* Biotif-ExtraBoldItalic.ttf in Resources */,
 				BF3468C8258FFC94000D609B /* Assets.xcassets in Resources */,
+				251B1215267513B3006EAC40 /* Biotif-ExtraBold.ttf in Resources */,
+				251B1211267513B3006EAC40 /* Biotif-Light.ttf in Resources */,
+				251B1214267513B3006EAC40 /* Biotif-BlackItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
