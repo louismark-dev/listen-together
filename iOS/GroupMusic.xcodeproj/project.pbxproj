@@ -27,6 +27,13 @@
 		251B121C267513B3006EAC40 /* Biotif-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120C267513B3006EAC40 /* Biotif-Medium.ttf */; };
 		251B121D267513B3006EAC40 /* Biotif-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120D267513B3006EAC40 /* Biotif-Black.ttf */; };
 		251B121E267513B3006EAC40 /* Biotif-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B120E267513B3006EAC40 /* Biotif-RegularItalic.ttf */; };
+		251B122A26752C39006EAC40 /* BalooTammudu2-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122526752C39006EAC40 /* BalooTammudu2-SemiBold.ttf */; };
+		251B122B26752C39006EAC40 /* BalooTammudu2-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122626752C39006EAC40 /* BalooTammudu2-ExtraBold.ttf */; };
+		251B122C26752C39006EAC40 /* BalooTammudu2-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122726752C39006EAC40 /* BalooTammudu2-Regular.ttf */; };
+		251B122D26752C39006EAC40 /* BalooTammudu2-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122826752C39006EAC40 /* BalooTammudu2-Bold.ttf */; };
+		251B122E26752C39006EAC40 /* BalooTammudu2-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122926752C39006EAC40 /* BalooTammudu2-Medium.ttf */; };
+		251B123026752D3D006EAC40 /* FredokaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122F26752D3D006EAC40 /* FredokaOne-Regular.ttf */; };
+		251B123226752F36006EAC40 /* AvenirNextLTPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 251B123126752F36006EAC40 /* AvenirNextLTPro-Bold.otf */; };
 		25272FB225D9185D00E690BE /* ReturnToNowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */; };
 		25272FB825D994F200E690BE /* BannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB725D994F200E690BE /* BannerController.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
@@ -135,6 +142,13 @@
 		251B120C267513B3006EAC40 /* Biotif-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Medium.ttf"; sourceTree = "<group>"; };
 		251B120D267513B3006EAC40 /* Biotif-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-Black.ttf"; sourceTree = "<group>"; };
 		251B120E267513B3006EAC40 /* Biotif-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Biotif-RegularItalic.ttf"; sourceTree = "<group>"; };
+		251B122526752C39006EAC40 /* BalooTammudu2-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BalooTammudu2-SemiBold.ttf"; sourceTree = "<group>"; };
+		251B122626752C39006EAC40 /* BalooTammudu2-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BalooTammudu2-ExtraBold.ttf"; sourceTree = "<group>"; };
+		251B122726752C39006EAC40 /* BalooTammudu2-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BalooTammudu2-Regular.ttf"; sourceTree = "<group>"; };
+		251B122826752C39006EAC40 /* BalooTammudu2-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BalooTammudu2-Bold.ttf"; sourceTree = "<group>"; };
+		251B122926752C39006EAC40 /* BalooTammudu2-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BalooTammudu2-Medium.ttf"; sourceTree = "<group>"; };
+		251B122F26752D3D006EAC40 /* FredokaOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FredokaOne-Regular.ttf"; sourceTree = "<group>"; };
+		251B123126752F36006EAC40 /* AvenirNextLTPro-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirNextLTPro-Bold.otf"; sourceTree = "<group>"; };
 		25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnToNowPlayingView.swift; sourceTree = "<group>"; };
 		25272FB725D994F200E690BE /* BannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerController.swift; sourceTree = "<group>"; };
 		2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudio.swift; sourceTree = "<group>"; };
@@ -247,6 +261,13 @@
 		251B121F267513CB006EAC40 /* font */ = {
 			isa = PBXGroup;
 			children = (
+				251B123126752F36006EAC40 /* AvenirNextLTPro-Bold.otf */,
+				251B122F26752D3D006EAC40 /* FredokaOne-Regular.ttf */,
+				251B122826752C39006EAC40 /* BalooTammudu2-Bold.ttf */,
+				251B122626752C39006EAC40 /* BalooTammudu2-ExtraBold.ttf */,
+				251B122926752C39006EAC40 /* BalooTammudu2-Medium.ttf */,
+				251B122726752C39006EAC40 /* BalooTammudu2-Regular.ttf */,
+				251B122526752C39006EAC40 /* BalooTammudu2-SemiBold.ttf */,
 				251B120C267513B3006EAC40 /* Biotif-Medium.ttf */,
 				251B1202267513B3006EAC40 /* Biotif-MediumItalic.ttf */,
 				251B1200267513B3006EAC40 /* Biotif-Regular.ttf */,
@@ -559,9 +580,15 @@
 				251B121B267513B3006EAC40 /* Biotif-Bold.ttf in Resources */,
 				251B121A267513B3006EAC40 /* Biotif-SemiBold.ttf in Resources */,
 				BF3468CB258FFC94000D609B /* Preview Assets.xcassets in Resources */,
+				251B122E26752C39006EAC40 /* BalooTammudu2-Medium.ttf in Resources */,
+				251B123026752D3D006EAC40 /* FredokaOne-Regular.ttf in Resources */,
+				251B122C26752C39006EAC40 /* BalooTammudu2-Regular.ttf in Resources */,
+				251B122A26752C39006EAC40 /* BalooTammudu2-SemiBold.ttf in Resources */,
 				251B121E267513B3006EAC40 /* Biotif-RegularItalic.ttf in Resources */,
 				2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */,
+				251B122B26752C39006EAC40 /* BalooTammudu2-ExtraBold.ttf in Resources */,
 				251B121D267513B3006EAC40 /* Biotif-Black.ttf in Resources */,
+				251B123226752F36006EAC40 /* AvenirNextLTPro-Bold.otf in Resources */,
 				251B120F267513B3006EAC40 /* Biotif-LightItalic.ttf in Resources */,
 				2550D0BE25BFD1100030E17E /* 15-sec.mp3 in Resources */,
 				251B1213267513B3006EAC40 /* Biotif-Book.ttf in Resources */,
@@ -570,6 +597,7 @@
 				BF3468C8258FFC94000D609B /* Assets.xcassets in Resources */,
 				251B1215267513B3006EAC40 /* Biotif-ExtraBold.ttf in Resources */,
 				251B1211267513B3006EAC40 /* Biotif-Light.ttf in Resources */,
+				251B122D26752C39006EAC40 /* BalooTammudu2-Bold.ttf in Resources */,
 				251B1214267513B3006EAC40 /* Biotif-BlackItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

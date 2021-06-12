@@ -43,16 +43,17 @@ struct MediaCardView: View {
                 HStack {
                     Text(headlineText)
                         .lineLimit(1)
-                        .font(.headline)
+                        .font(.system(.headline, design: .rounded))
                     Spacer()
                 }
             }
             if let subheadlineText = self.subheadlineText {
                 HStack {
                     Text(subheadlineText)
+                        
                         .lineLimit(1)
-                        .font(.subheadline)
-                        .opacity(0.8)
+                        .font(.system(.subheadline, design: .rounded))
+                        .opacity(0.7)
                     Spacer()
 
                 }

@@ -37,7 +37,7 @@ struct ResultTypeView: View {
                 VStack {
                     HStack {
                         Text("Songs")
-                            .font(.custom("Arial Rounded MT Bold", size: 30, relativeTo: .largeTitle))
+                            .font(.custom("AvenirNextLTPro-Bold", size: 25))
                             .padding(.horizontal, 10)
                         Spacer()
                     }
@@ -50,7 +50,7 @@ struct ResultTypeView: View {
                 VStack {
                     HStack {
                         Text("Albums")
-                            .font(.custom("Arial Rounded MT Bold", size: 30, relativeTo: .largeTitle))
+                            .font(.custom("AvenirNextLTPro-Bold", size: 25))
                             .padding(.horizontal, 10)
                         Spacer()
                     }
@@ -63,7 +63,7 @@ struct ResultTypeView: View {
                 VStack {
                     HStack {
                         Text("Playlists")
-                            .font(.custom("Arial Rounded MT Bold", size: 30, relativeTo: .largeTitle))
+                            .font(.custom("AvenirNextLTPro-Bold", size: 25))
                             .padding(.horizontal, 10)
                         Spacer()
                     }

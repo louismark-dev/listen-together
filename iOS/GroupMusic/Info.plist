@@ -72,6 +72,10 @@
 	<array>
 		<string>Biotif-ExtraBold.ttf</string>
 		<string>Biotif-Book.ttf</string>
+		<string>BalooTammudu2-SemiBold.ttf</string>
+		<string>FredokaOne-Regular.ttf</string>
+		<string>AvenirNextLTPro-Bold.otf</string>
+		<string></string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
