@@ -90,9 +90,8 @@ struct MediaDetailView: View {
     }
     
     private func setNavigationBarAppearance() {
-        UINavigationBar.appearance().barTintColor = .red
-//        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-//        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().barTintColor = .white
+        UINavigationBar.appearance().shadowImage = UIImage()
     }
     
     var header: some View {
@@ -127,13 +126,7 @@ struct MediaDetailView: View {
     }
     
     var body: some View {
-        ScrollViewWithOffset(
-            axes: [.vertical],
-            showsIndicators: false,
-            offsetChanged: {
-                self.setNavigationBarTransparency(withScrollOffset: $0)
-            }
-        ) {
+        ScrollView {
             VStack {
                 self.header
                     .background(Color.red)
@@ -148,26 +141,11 @@ struct MediaDetailView: View {
             }
             .padding(.horizontal)
         }
-        .navigationBarTitle("", displayMode: .inline)
+        .navigationBarTitle(self.name ?? "", displayMode: .inline)
         .navigationBarHidden(false)
         .onAppear {
             self.fetchTracks()
         }
-    }
-    
-    private func setNavigationBarTransparency(withScrollOffset scrollOffset:CGPoint) {
-        let scrollViewYOffset = -1 * scrollOffset.y
-        let opacity: CGFloat = max(0, min(1, CGFloat(scrollViewYOffset / 200))) // Clamp values between 0 and 1
-        let alpha = 1 - opacity
-        print("Opacity: \(opacity)")
-        print("Alpha: \(alpha)")
-        
-        let appearance = UINavigationBarAppearance()
-            appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(alpha)
-        UINavigationBar.appearance().standardAppearance = appearance
-        
-        // TODO: appearance() will only change the UINavigationBar appearance upon its first initialization
     }
     
     private func prependToQueue() {
