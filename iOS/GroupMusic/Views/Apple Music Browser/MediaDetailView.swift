@@ -97,27 +97,27 @@ struct MediaDetailView: View {
     var header: some View {
         HStack(spacing: 12) {
             if let artworkURL = self.artworkURL {
-                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
+                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 16)
                     .aspectRatio(contentMode: .fit)
             }
             VStack(spacing: 8) {
                 HStack {
                     Text("Playlist")
-                        .font(.subheadline)
+                        .font(.system(.subheadline, design: .rounded))
                         .fontWeight(.medium)
                         .opacity(0.5)
                     Spacer()
                 }
                 HStack {
                     Text(self.name ?? "")
+                        .font(.system(.title3, design: .rounded))
                         .fontWeight(.semibold)
-                        .font(.title3)
                         .opacity(0.9)
                     Spacer()
                 }
                 HStack {
                     Text("94 Tracks")
-                        .font(.subheadline)
+                        .font(.system(.subheadline, design: .rounded))
                         .fontWeight(.medium)
                         .opacity(0.5)
                     Spacer()
@@ -150,7 +150,7 @@ struct MediaDetailView: View {
                     self.generateTracksList(for: tracks)
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 16)
         }
         .navigationBarTitle(self.name ?? "", displayMode: .inline)
         .navigationBarHidden(false)

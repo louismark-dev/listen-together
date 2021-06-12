@@ -13,19 +13,21 @@ struct TrackCellView: View {
     var body: some View {
         HStack {
             if let artworkURL = self.track.attributes?.artwork.url(forWidth: Int(44 * UIScreen.main.scale)) {
-                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 4)
-                    .frame(width: 44, height: 44)
+                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 8)
+                    .frame(width: 60, height: 60)
             }
-            VStack {
+            VStack(spacing: 4) {
                 HStack {
                     Text(self.track.attributes?.name ?? "")
-                        .font(.custom("Arial Rounded MT Bold", size: (18), relativeTo: .title))
+                        .font(.system(.headline, design: .rounded))
+                        .fontWeight(.semibold)
                         .opacity(0.9)
                     Spacer()
                 }
                 HStack {
                     Text(self.track.attributes?.artistName ?? " ")
-                        .font(.custom("Arial Rounded MT Bold", size: 14, relativeTo: .title2))
+                        .font(.system(.subheadline, design: .rounded))
+                        .fontWeight(.medium)
                         .opacity(0.7)
                     Spacer()
                 }
