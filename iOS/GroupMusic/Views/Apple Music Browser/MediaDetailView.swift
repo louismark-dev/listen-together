@@ -135,6 +135,7 @@ struct MediaDetailView: View {
                                                                                                                trackIsInQueue: false,
                                                                                                                buttonConfiguration: ButtonConfigurationNotInQueue()))
                 }
+            Divider()
         }
     }
     
