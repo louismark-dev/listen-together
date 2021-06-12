@@ -77,7 +77,7 @@ struct MediaDetailView: View {
         self._playlist = State(initialValue: nil)
         self.socketManager = GMSockets.sharedInstance
         
-        self.setNaviagionBarAppearance()
+        self.setNavigationBarAppearance()
     }
     
     init(withPlaylist playlist: Playlist) {
@@ -86,40 +86,44 @@ struct MediaDetailView: View {
         self._playlist = State(initialValue: playlist)
         self.socketManager = GMSockets.sharedInstance
         
-        self.setNaviagionBarAppearance()
+        self.setNavigationBarAppearance()
     }
     
-    private func setNaviagionBarAppearance() {
+    private func setNavigationBarAppearance() {
         UINavigationBar.appearance().barTintColor = .clear
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().shadowImage = UIImage()
+    }
+    
+    var header: some View {
+        HStack {
+            if let artworkURL = self.artworkURL {
+                ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
+                    .aspectRatio(contentMode: .fit)
+            }
+            VStack {
+                HStack {
+                    Text(self.name ?? "")
+                    Spacer()
+                }
+                HStack {
+                    Text(self.creatorName ?? "")
+                    Spacer()
+                }
+            }
+        }
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                if let artworkURL = self.artworkURL {
-                    ArtworkImageView(artworkURL: artworkURL, cornerRadius: 11)
-                        .aspectRatio(contentMode: .fit)
-                }
-                VStack {
-                    HStack {
-                        Text(self.name ?? "")
-                        Spacer()
-                    }
-                    HStack {
-                        Text(self.creatorName ?? "")
-                        Spacer()
-                    }
-                }
-            }
-            .frame(height: 200)
-            .padding()
-            HStack {
-                Button("Prepend", action: self.prependToQueue)
-                Button("Append", action: self.appendToQueue)
-            }
             ScrollView {
                 VStack {
+                    self.header
+                        .background(Color.red)
+                        .padding()
+                    HStack {
+                        Button("Prepend", action: self.prependToQueue)
+                        Button("Append", action: self.appendToQueue)
+                    }
                     if let tracks = self.tracks {
                         ForEach(tracks) { (track: Track) in
                             TrackCellView(track: track)
@@ -134,7 +138,7 @@ struct MediaDetailView: View {
                 }
                 .padding(.horizontal)
             }
-        }
+        .navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(false)
         .onAppear {
             self.fetchTracks()
