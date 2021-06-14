@@ -13,6 +13,9 @@ struct MediaDetailView3: View {
     @State private var playlist: Playlist?
     @State private var albumImage: Image?
     @State private var artworkDetailColor: Color?
+    @State private var artworkSize: CGFloat = 200
+    @State private var artworkResizeProgress: CGFloat = 0.0
+    private let originalArtworkSize: CGFloat = 200
     
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     @EnvironmentObject var playerAdapter: PlayerAdapter
@@ -185,7 +188,13 @@ struct MediaDetailView3: View {
     
     
     @ViewBuilder func scrollView() -> some View {
-        ScrollView {
+        ScrollViewWithOffset(
+            axes: [.vertical],
+            showsIndicators: false,
+            offsetChanged: {
+                self.resizeArtwork(withScrollOffset: $0, andTolerance: 20)
+            }
+        ) {
             VStack(spacing: 0) {
                 if let artworkURL = self.artworkURL {
                     ArtworkImageView(artworkURL: artworkURL, cornerRadius: 25)
@@ -196,8 +205,9 @@ struct MediaDetailView3: View {
                             }
                             self.albumImage = image
                         }
-                        .frame(width: 200, height: 200)
+                        .frame(width: self.artworkSize, height: self.artworkSize)
                         .shadow(color: (self.artworkDetailColor ?? .white), radius: 10, x: 0, y: 0)
+                        .opacity(1 - Double(self.artworkResizeProgress))
                 }
                 self.captions()
                     .padding(.vertical, 32)
@@ -206,6 +216,7 @@ struct MediaDetailView3: View {
                 }
             }
         }
+
     }
     
     
@@ -218,6 +229,13 @@ struct MediaDetailView3: View {
         .onAppear {
             self.fetchTracks()
         }
+    }
+    
+    private func resizeArtwork(withScrollOffset scrollOffset:CGPoint, andTolerance tolerance: CGFloat) {
+        let target: CGFloat = 250
+        self.artworkResizeProgress = abs(scrollOffset.y / target)
+        print(self.artworkResizeProgress)
+        self.artworkSize = self.originalArtworkSize * (1 - self.artworkResizeProgress)
     }
     
     private func prependToQueue() {

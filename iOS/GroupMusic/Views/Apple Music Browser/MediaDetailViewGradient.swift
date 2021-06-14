@@ -41,7 +41,7 @@ struct MediaDetailViewGradient: View {
                 .saturation(4)
                 .opacity(0.5)
                 .blendMode(.screen)
-                .colorMultiply((self.tintColor != nil) ? self.tintColor! : .white)
+//                .colorMultiply((self.tintColor != nil) ? self.tintColor! : .white)
                 .animation(.default)
                 Group {
                     self.fullScreenImage(image: image)
@@ -56,7 +56,7 @@ struct MediaDetailViewGradient: View {
                 .opacity(0.5)
                 .blendMode(.screen)
                 .rotationEffect(.degrees(180))
-                .colorMultiply((self.tintColor != nil) ? self.tintColor! : .white)
+//                .colorMultiply((self.tintColor != nil) ? self.tintColor! : .white)
                 .animation(.default)
             }
         }
@@ -66,8 +66,9 @@ struct MediaDetailViewGradient: View {
         ZStack {
             if let image = self.image {
                 self.blurredImageView(image: image)
-                    .colorMultiply((self.tintColor != nil) ? self.tintColor! : .white)
+//                    .colorMultiply((self.tintColor != nil) ? self.tintColor! : .white)
                     .animation(.default)
+                    .drawingGroup()
                 VisualEffectView(effect: UIBlurEffect(style:.systemThinMaterialDark))
             }
         }
