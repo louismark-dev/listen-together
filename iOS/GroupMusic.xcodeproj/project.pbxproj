@@ -34,8 +34,12 @@
 		251B122E26752C39006EAC40 /* BalooTammudu2-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122926752C39006EAC40 /* BalooTammudu2-Medium.ttf */; };
 		251B123026752D3D006EAC40 /* FredokaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 251B122F26752D3D006EAC40 /* FredokaOne-Regular.ttf */; };
 		251B123226752F36006EAC40 /* AvenirNextLTPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 251B123126752F36006EAC40 /* AvenirNextLTPro-Bold.otf */; };
+		251B1236267549B4006EAC40 /* MediaDetailView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251B1235267549B4006EAC40 /* MediaDetailView2.swift */; };
+		251B123A26754BC4006EAC40 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251B123926754BC4006EAC40 /* Color+Extensions.swift */; };
 		25272FB225D9185D00E690BE /* ReturnToNowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */; };
 		25272FB825D994F200E690BE /* BannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB725D994F200E690BE /* BannerController.swift */; };
+		253C3D46267717B2008A2E45 /* MediaDetailView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253C3D45267717B2008A2E45 /* MediaDetailView3.swift */; };
+		253C3D48267717DE008A2E45 /* MediaDetailViewGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253C3D47267717DE008A2E45 /* MediaDetailViewGradient.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
 		2550D0AC25BFC2FF0030E17E /* BackgroundAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */; };
 		2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0AE25BFC34D0030E17E /* sample-1.mp3 */; };
@@ -46,6 +50,9 @@
 		2577BCEE25B9321100F65B8F /* QueueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCEA25B9321100F65B8F /* QueueCell.swift */; };
 		2577BCF525B9326200F65B8F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCF425B9326200F65B8F /* SampleData.swift */; };
 		257E32B425BA6F4C003BA73F /* PlaybackGuestControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */; };
+		258CBB7D26754EB700711DA0 /* UIImageColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CBB7C26754EB700711DA0 /* UIImageColors.swift */; };
+		258CBB7F26755AA600711DA0 /* ImageToUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CBB7E26755AA600711DA0 /* ImageToUIImage.swift */; };
+		258CBB812675615B00711DA0 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CBB802675615B00711DA0 /* UIColor+Extensions.swift */; };
 		2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */; };
 		259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */; };
 		25A2E80125D67598003501E1 /* BackgroundBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A2E80025D67598003501E1 /* BackgroundBlurView.swift */; };
@@ -149,8 +156,12 @@
 		251B122926752C39006EAC40 /* BalooTammudu2-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BalooTammudu2-Medium.ttf"; sourceTree = "<group>"; };
 		251B122F26752D3D006EAC40 /* FredokaOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FredokaOne-Regular.ttf"; sourceTree = "<group>"; };
 		251B123126752F36006EAC40 /* AvenirNextLTPro-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirNextLTPro-Bold.otf"; sourceTree = "<group>"; };
+		251B1235267549B4006EAC40 /* MediaDetailView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView2.swift; sourceTree = "<group>"; };
+		251B123926754BC4006EAC40 /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
 		25272FB125D9185D00E690BE /* ReturnToNowPlayingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnToNowPlayingView.swift; sourceTree = "<group>"; };
 		25272FB725D994F200E690BE /* BannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerController.swift; sourceTree = "<group>"; };
+		253C3D45267717B2008A2E45 /* MediaDetailView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView3.swift; sourceTree = "<group>"; };
+		253C3D47267717DE008A2E45 /* MediaDetailViewGradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaDetailViewGradient.swift; sourceTree = "<group>"; };
 		2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudio.swift; sourceTree = "<group>"; };
 		2550D0AE25BFC34D0030E17E /* sample-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sample-1.mp3"; sourceTree = "<group>"; };
 		2550D0BA25BFCEE50030E17E /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
@@ -160,6 +171,9 @@
 		2577BCEA25B9321100F65B8F /* QueueCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCell.swift; sourceTree = "<group>"; };
 		2577BCF425B9326200F65B8F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		257E32B325BA6F4C003BA73F /* PlaybackGuestControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackGuestControllerView.swift; sourceTree = "<group>"; };
+		258CBB7C26754EB700711DA0 /* UIImageColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageColors.swift; sourceTree = "<group>"; };
+		258CBB7E26755AA600711DA0 /* ImageToUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageToUIImage.swift; sourceTree = "<group>"; };
+		258CBB802675615B00711DA0 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView.swift; sourceTree = "<group>"; };
 		259CC4AA25BEBF52004E4F5D /* PlaybackTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimer.swift; sourceTree = "<group>"; };
 		25A2E80025D67598003501E1 /* BackgroundBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBlurView.swift; sourceTree = "<group>"; };
@@ -288,6 +302,16 @@
 			path = font;
 			sourceTree = "<group>";
 		};
+		251B123826754BB6006EAC40 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				251B123926754BC4006EAC40 /* Color+Extensions.swift */,
+				258CBB7E26755AA600711DA0 /* ImageToUIImage.swift */,
+				258CBB802675615B00711DA0 /* UIColor+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		25461F3225D7B95700456752 /* BackgroundBlur */ = {
 			isa = PBXGroup;
 			children = (
@@ -328,6 +352,22 @@
 			path = Queue;
 			sourceTree = "<group>";
 		};
+		258CBB7A26754E9B00711DA0 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				258CBB7B26754EA600711DA0 /* UIImageColors */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		258CBB7B26754EA600711DA0 /* UIImageColors */ = {
+			isa = PBXGroup;
+			children = (
+				258CBB7C26754EB700711DA0 /* UIImageColors.swift */,
+			);
+			path = UIImageColors;
+			sourceTree = "<group>";
+		};
 		25B2B51725FEA96500C47023 /* TrackDetailView */ = {
 			isa = PBXGroup;
 			children = (
@@ -349,7 +389,10 @@
 				25A441E625C9FDF800193129 /* MediaCardView.swift */,
 				25F8896625CF96FF00267617 /* ArtworkImageView.swift */,
 				25DB5CA325D06466008033BB /* MediaDetailView.swift */,
+				251B1235267549B4006EAC40 /* MediaDetailView2.swift */,
+				253C3D45267717B2008A2E45 /* MediaDetailView3.swift */,
 				25DB5CA625D064D0008033BB /* TrackCellView.swift */,
+				253C3D47267717DE008A2E45 /* MediaDetailViewGradient.swift */,
 			);
 			path = "Apple Music Browser";
 			sourceTree = "<group>";
@@ -417,6 +460,8 @@
 		BF3468C0258FFC92000D609B /* GroupMusic */ = {
 			isa = PBXGroup;
 			children = (
+				258CBB7A26754E9B00711DA0 /* Packages */,
+				251B123826754BB6006EAC40 /* Extensions */,
 				2577BCE625B931B800F65B8F /* Views */,
 				BF3468C1258FFC92000D609B /* AppDelegate.swift */,
 				BF3468C3258FFC92000D609B /* SceneDelegate.swift */,
@@ -624,6 +669,7 @@
 				BF99218125A405ED00F8CAC5 /* AppleMusicControllerView.swift in Sources */,
 				25272FB225D9185D00E690BE /* ReturnToNowPlayingView.swift in Sources */,
 				BF8BEE69259B1B9100B9DCD3 /* MediaType.swift in Sources */,
+				253C3D46267717B2008A2E45 /* MediaDetailView3.swift in Sources */,
 				BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */,
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
 				BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */,
@@ -637,9 +683,12 @@
 				2577BCF525B9326200F65B8F /* SampleData.swift in Sources */,
 				250E822025B938F2001990E9 /* SessionSettingsView.swift in Sources */,
 				BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */,
+				258CBB7F26755AA600711DA0 /* ImageToUIImage.swift in Sources */,
 				BF5EE24C25A15445000C23DD /* AppleMusicPlayerView.swift in Sources */,
 				BF8BEE81259B1C1B00B9DCD3 /* Include.swift in Sources */,
 				25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */,
+				251B1236267549B4006EAC40 /* MediaDetailView2.swift in Sources */,
+				253C3D48267717DE008A2E45 /* MediaDetailViewGradient.swift in Sources */,
 				25D0B104264A3FB500D43DE1 /* PlaybackProgressView2.swift in Sources */,
 				BF8BEE6A259B1B9100B9DCD3 /* Playlist.swift in Sources */,
 				BF266C0D25902A2000029A2D /* PlayerView.swift in Sources */,
@@ -671,6 +720,7 @@
 				BF5EE21F25A0256C000C23DD /* ResultCardView.swift in Sources */,
 				BF5D5DDE25915B1F00EF6C37 /* GMSockets.swift in Sources */,
 				BF5EE22325A028A3000C23DD /* PreviewView.swift in Sources */,
+				251B123A26754BC4006EAC40 /* Color+Extensions.swift in Sources */,
 				25CFFCEB25FDC85500133C1C /* TrackDetailView.swift in Sources */,
 				BF8BEE68259B1B9100B9DCD3 /* Curator.swift in Sources */,
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
@@ -683,11 +733,13 @@
 				25E9D3982656F7BC0075E52D /* PlaybackProgressMonitor.swift in Sources */,
 				BF8BEE77259B1BC500B9DCD3 /* Relationship.swift in Sources */,
 				25D3207725F7EC3D00DD4970 /* ImageCache.swift in Sources */,
+				258CBB812675615B00711DA0 /* UIColor+Extensions.swift in Sources */,
 				25272FB825D994F200E690BE /* BannerController.swift in Sources */,
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
 				2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */,
 				25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */,
 				25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */,
+				258CBB7D26754EB700711DA0 /* UIImageColors.swift in Sources */,
 				BF8BEE80259B1C1B00B9DCD3 /* UrlFetcher.swift in Sources */,
 				BF5EE24125A13E06000C23DD /* GMAppleMusicHostController.swift in Sources */,
 			);

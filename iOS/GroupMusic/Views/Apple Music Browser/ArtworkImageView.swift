@@ -13,8 +13,21 @@ struct ArtworkImageView: View {
     let cornerRadius: CGFloat
     @State private var imageOpacity: Double = 0.0
     @State private var isCached: Bool = false
+    private var onLoadAction: ((Image) -> Void)?
+    
+    init(artworkURL: URL, cornerRadius: CGFloat) {
+        self.artworkURL = artworkURL
+        self.cornerRadius = cornerRadius
+    }
+    
+    public func onImageAppear(perform action: ((Image) -> Void)? = nil) -> some View {
+        var new = self
+        new.onLoadAction = action
+        return new
+    }
     
     var body: some View {
+        
         URLImage(url: self.artworkURL,
                  empty: {
                     Rectangle()
@@ -40,6 +53,9 @@ struct ArtworkImageView: View {
                             .aspectRatio(contentMode: .fit)
                             .opacity(self.imageOpacity)
                             .onAppear {
+                                if let onLoadAction = self.onLoadAction {
+                                    onLoadAction(image)
+                                }
                                 withAnimation {
                                     self.imageOpacity = 1.0
                                 }
