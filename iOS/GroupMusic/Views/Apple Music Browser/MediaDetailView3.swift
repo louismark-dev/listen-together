@@ -15,6 +15,8 @@ struct MediaDetailView3: View {
     @State private var artworkDetailColor: Color?
     @State private var artworkSize: CGFloat = 200
     @State private var artworkResizeProgress: CGFloat = 0.0
+    @State private var scrollProgressMonitor: ScrollProgressMonitor = ScrollProgressMonitor()
+    @State private var headerSizeRect: CGRect = CGRect()
     private let originalArtworkSize: CGFloat = 200
     
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
@@ -184,7 +186,7 @@ struct MediaDetailView3: View {
                 .opacity(0.5)
         }
     }
-
+    
     
     
     @ViewBuilder func scrollView() -> some View {
@@ -196,27 +198,35 @@ struct MediaDetailView3: View {
             }
         ) {
             VStack(spacing: 0) {
-                if let artworkURL = self.artworkURL {
-                    ArtworkImageView(artworkURL: artworkURL, cornerRadius: 25)
-                        .onImageAppear {(image: Image) in
-                            print("The view has loaded")
-                            withAnimation(.linear(duration: 5.0)) {
-                                self.getImageColors(image: image)
+                VStack {
+                    if let artworkURL = self.artworkURL {
+                        ArtworkImageView(artworkURL: artworkURL, cornerRadius: 25)
+                            .onImageAppear {(image: Image) in
+                                print("The view has loaded")
+                                withAnimation(.linear(duration: 5.0)) {
+                                    self.getImageColors(image: image)
+                                }
+                                self.albumImage = image
                             }
-                            self.albumImage = image
-                        }
-                        .frame(width: self.artworkSize, height: self.artworkSize)
-                        .shadow(color: (self.artworkDetailColor ?? .white), radius: 10, x: 0, y: 0)
-                        .opacity(1 - Double(self.artworkResizeProgress))
+                            .frame(width: self.artworkSize, height: self.artworkSize)
+                            .shadow(color: (self.artworkDetailColor ?? .white), radius: 10, x: 0, y: 0)
+                            .opacity(1 - Double(self.artworkResizeProgress))
+                    }
+                    self.captions()
+                        .padding(.vertical, 32)
+                        
                 }
-                self.captions()
-                    .padding(.vertical, 32)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(GeometryGetter(rect: $headerSizeRect))
+                .onChange(of: self.headerSizeRect, perform: { rect in
+                    self.scrollProgressMonitor.setInitialHeaderHeight(to: rect.height)
+                })
                 if let tracks = self.tracks {
-                    self.generateTracksList(for: tracks, withSpacing: 16.0)
+                        self.generateTracksList(for: tracks, withSpacing: 16.0)
                 }
             }
         }
-
+        
     }
     
     
@@ -228,14 +238,20 @@ struct MediaDetailView3: View {
         .navigationBarTitle("", displayMode: .inline)
         .onAppear {
             self.fetchTracks()
-        }
+        }.coordinateSpace(name: "Modal")
     }
     
     private func resizeArtwork(withScrollOffset scrollOffset:CGPoint, andTolerance tolerance: CGFloat) {
         let target: CGFloat = 250
         self.artworkResizeProgress = abs(scrollOffset.y / target)
-        print(self.artworkResizeProgress)
+        
         self.artworkSize = self.originalArtworkSize * (1 - self.artworkResizeProgress)
+        
+        let sizeDelta = self.originalArtworkSize * artworkResizeProgress
+        self.scrollProgressMonitor.updateHeaderSizeDelta(to: sizeDelta)
+
+        
+        self.scrollProgressMonitor.didScrollHeader(withScrollOffset: scrollOffset)
     }
     
     private func prependToQueue() {
@@ -348,6 +364,29 @@ struct MediaDetailView3: View {
             
             self.artworkDetailColor = Color(colors.background)
         }
+    }
+}
+
+fileprivate struct ScrollProgressMonitor {
+    let navigationBarTargetHeight: CGFloat = 48
+    private var initialHeaderHeight: CGFloat?
+    private var headerSizeDelta: CGFloat = 0.0 // This accounts for reduction in header size while scrolling
+    private var progress: CGFloat = 0.0
+    
+    mutating func didScrollHeader(withScrollOffset scrollOffset:CGPoint) {
+        guard let initialHeaderHeight = self.initialHeaderHeight else { return }
+        self.progress = ((-1 * scrollOffset.y) + headerSizeDelta) / initialHeaderHeight
+        print(self.progress)
+    }
+    
+    mutating func setInitialHeaderHeight(to headerHeight: CGFloat)  {
+        if (self.initialHeaderHeight == nil) {
+            self.initialHeaderHeight = headerHeight
+        }
+    }
+    
+    mutating func updateHeaderSizeDelta(to headerSizeDelta: CGFloat) {
+         self.headerSizeDelta = headerSizeDelta
     }
 }
 

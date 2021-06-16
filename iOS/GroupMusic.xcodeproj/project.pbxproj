@@ -40,6 +40,7 @@
 		25272FB825D994F200E690BE /* BannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25272FB725D994F200E690BE /* BannerController.swift */; };
 		253C3D46267717B2008A2E45 /* MediaDetailView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253C3D45267717B2008A2E45 /* MediaDetailView3.swift */; };
 		253C3D48267717DE008A2E45 /* MediaDetailViewGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253C3D47267717DE008A2E45 /* MediaDetailViewGradient.swift */; };
+		253C3D4A26797AEC008A2E45 /* GeometryGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253C3D4926797AEC008A2E45 /* GeometryGetter.swift */; };
 		2548812025B92A89005241DB /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2548811F25B92A89005241DB /* URLImage */; };
 		2550D0AC25BFC2FF0030E17E /* BackgroundAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */; };
 		2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0AE25BFC34D0030E17E /* sample-1.mp3 */; };
@@ -162,6 +163,7 @@
 		25272FB725D994F200E690BE /* BannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerController.swift; sourceTree = "<group>"; };
 		253C3D45267717B2008A2E45 /* MediaDetailView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView3.swift; sourceTree = "<group>"; };
 		253C3D47267717DE008A2E45 /* MediaDetailViewGradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaDetailViewGradient.swift; sourceTree = "<group>"; };
+		253C3D4926797AEC008A2E45 /* GeometryGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryGetter.swift; sourceTree = "<group>"; };
 		2550D0AB25BFC2FF0030E17E /* BackgroundAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudio.swift; sourceTree = "<group>"; };
 		2550D0AE25BFC34D0030E17E /* sample-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sample-1.mp3"; sourceTree = "<group>"; };
 		2550D0BA25BFCEE50030E17E /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 			isa = PBXGroup;
 			children = (
 				258CBB7B26754EA600711DA0 /* UIImageColors */,
+				253C3D4926797AEC008A2E45 /* GeometryGetter.swift */,
 			);
 			path = Packages;
 			sourceTree = "<group>";
@@ -654,6 +657,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				253C3D4A26797AEC008A2E45 /* GeometryGetter.swift in Sources */,
 				250E821425B93861001990E9 /* PlaybackHostControllerView.swift in Sources */,
 				BF3468C2258FFC92000D609B /* AppDelegate.swift in Sources */,
 				2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */,
