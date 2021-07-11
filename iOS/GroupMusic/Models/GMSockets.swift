@@ -11,7 +11,7 @@ import MediaPlayer
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.52:\((UIApplication.shared.delegate as! AppDelegate).port)")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.39:\((UIApplication.shared.delegate as! AppDelegate).port)")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
     private var backgroundTaskID: UIBackgroundTaskIdentifier? = nil
     private var timer: Timer? = nil

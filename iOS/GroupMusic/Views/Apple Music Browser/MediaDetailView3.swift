@@ -158,16 +158,18 @@ struct MediaDetailView3: View {
             ZStack {
                 Color(hex: "#121212")
                     .edgesIgnoringSafeArea(.all)
-                TrackCellView(track: track)
-                    .foregroundColor(.white)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        self.trackDetailModalViewManager.open(withConfiguration: TrackDetailModalViewConfiguration(track: track,
-                                                                                                                   trackIsInQueue: false,
-                                                                                                                   buttonConfiguration: ButtonConfigurationNotInQueue()))
-                    }
-                    .padding(.vertical, spacing/2)
-                    .padding(.horizontal, 16)
+                VStack {
+                    TrackCellView(track: track)
+                        .foregroundColor(.white)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            self.trackDetailModalViewManager.open(withConfiguration: TrackDetailModalViewConfiguration(track: track,
+                                                                                                                       trackIsInQueue: false,
+                                                                                                                       buttonConfiguration: ButtonConfigurationNotInQueue()))
+                        }
+                        .padding(.vertical, spacing/2)
+                        .padding(.horizontal, 16)
+                }
             }
         }
     }

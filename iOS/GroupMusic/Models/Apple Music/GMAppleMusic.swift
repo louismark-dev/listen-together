@@ -19,7 +19,7 @@ class GMAppleMusic {
     init(storefront: Storefront, urlFetcher: UrlFetcher = CiderClient.defaultURLFetcher) {
         self.storefront = storefront
         self.urlBuilder = CiderUrlBuilder(storefront: self.storefront)
-        self.apiEndpoint = URL(string: "http://192.168.2.52:\(self.port)/am-api")!
+        self.apiEndpoint = URL(string: "http://192.168.2.39:\(self.port)/am-api")!
         self.fetcher = urlFetcher
         
     }
