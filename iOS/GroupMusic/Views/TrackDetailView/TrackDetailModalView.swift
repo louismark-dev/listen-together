@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TrackDetailModalView: View {
-    @State var contentHeight: CGFloat = 500
+    @State var contentHeight: CGFloat = 300
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     
     var geometryReader: some View {
