@@ -31,15 +31,15 @@ struct ArtworkImageView: View {
         URLImage(url: self.artworkURL,
                  empty: {
                     Rectangle()
-                        .foregroundColor(Color("RedactedColor"))
+                        .foregroundColor(Color.clear)
                  },
                  inProgress: { _ in
                      Rectangle()
-                        .foregroundColor(Color("RedactedColor"))
+                        .foregroundColor(Color.clear)
                  },
                  failure: {_,_ in
                     Rectangle()
-                        .foregroundColor(Color("RedactedColor"))
+                        .foregroundColor(Color.clear)
                         .onAppear {
                             print("Image load fail")
                         }
@@ -47,7 +47,7 @@ struct ArtworkImageView: View {
                  content: { image in
                     ZStack {
                         Rectangle()
-                            .foregroundColor(Color("RedactedColor"))
+                            .foregroundColor(Color.clear)
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -62,7 +62,7 @@ struct ArtworkImageView: View {
                             }
                     }
                  })
-            .clipShape(RoundedRectangle(cornerRadius: self.cornerRadius, style: .continuous))
+            .cornerRadius(self.cornerRadius, antialiased: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
     }
 }
 
