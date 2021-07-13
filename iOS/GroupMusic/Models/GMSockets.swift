@@ -7,13 +7,15 @@
 
 import Foundation
 import SocketIO
+import MediaPlayer
 
 class GMSockets: ObservableObject {
     private let notificationCenter: NotificationCenter
-    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://localhost:4430")!, config: [.log(false), .compress])
+    private var manager: SocketManager = SocketManager(socketURL: URL(string: "ws://192.168.2.39:\((UIApplication.shared.delegate as! AppDelegate).port)")!, config: [.log(false), .compress])
     private var socket: SocketIOClient
+    private var backgroundTaskID: UIBackgroundTaskIdentifier? = nil
+    private var timer: Timer? = nil
     @Published var state: State = State()
-    private var queuePlayerState: GMQueuePlayer.State?
     
     static let sharedInstance = GMSockets()
     
@@ -21,6 +23,10 @@ class GMSockets: ObservableObject {
         self.notificationCenter = notificationCenter
         self.socket = self.manager.defaultSocket
         self.addHandlers()
+        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: "Sockets") {
+            print("SOCKET CONNECTION WILL DIE")
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskID!)
+        }
         self.socket.connect()
     }
     // MARK: Handlers - Incoming Events
@@ -44,6 +50,22 @@ class GMSockets: ObservableObject {
         self.socket.on(Event.forwardEvent.rawValue, callback: self.forwardEventHandler)
         
         self.socket.on(Event.previousEvent.rawValue, callback: self.previousEventHandler)
+        
+        self.socket.on(Event.seekEvent.rawValue, callback: self.seekEventHandler)
+        
+        self.socket.on(Event.appendToQueue.rawValue, callback: self.appendToQueueEventHandler)
+        
+        self.socket.on(Event.prependToQueue.rawValue, callback: self.prependToQueueEventHandler)
+        
+        self.socket.on(Event.nowPlayingIndexDidChangeEvent.rawValue, callback: self.nowPlayingIndexDidChangeEventHandler)
+        
+        self.socket.on(Event.removeFromQueue.rawValue, callback: self.removeFromQueueEventHandler)
+        
+        self.socket.on(Event.moveToStartOfQueue.rawValue, callback: self.moveToStartOfQueueEventHandler)
+        
+//        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer: Timer) in
+//            print("Execution time remaining: \(UIApplication.shared.backgroundTimeRemaining)")
+//        }
     }
     
     private func connectEventHandler(data: [Any], ack: SocketAckEmitter) {
@@ -83,15 +105,24 @@ class GMSockets: ObservableObject {
     
     private func stateUpdateEventHandler(data: [Any], ack: SocketAckEmitter) {
         print("State update recieved")
-        guard let data = data[0] as? [String:Any] else {
-            print("Could not unwrap dictionary")
+        
+        
+        guard let jsonString = data[0] as? String else {
+            print("Could not unwrap string")
             // TODO: Handle this
             return
         }
+        let jsonData = Data(jsonString.utf8)
+        let decoder = JSONDecoder()
         do {
-            try self.state.update(with: data)
+            let newState = try decoder.decode(GMSockets.State.self, from: jsonData)
+            
+            self.state.sessionID = newState.sessionID
+            self.state.coordinatorID = newState.coordinatorID
+            
+            self.notificationCenter.post(name: .stateUpdateEvent, object: newState.playerState)
         } catch {
-            print("Error: \(error)")
+            print("State update decoding failed \(error)")
         }
     }
     
@@ -115,6 +146,77 @@ class GMSockets: ObservableObject {
         self.notificationCenter.post(name: .previousEvent, object: nil)
     }
     
+    private func seekEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("seekEvent recieved")
+        do {
+            let timeInterval = try self.dataToObject(data: data) as TimeInterval
+            self.notificationCenter.post(name: .seekEvent, object: timeInterval)
+        } catch {
+            fatalError("seekEvent decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func appendToQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("appendToQueueEvent recieved")
+        do {
+            let tracks = try self.dataToObject(data: data) as [Track]
+            self.notificationCenter.post(name: .appendToQueueEvent, object: tracks)
+        } catch {
+            fatalError("prependToQueueEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func prependToQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("prependToQueueEvent recieved")
+        do {
+            let tracks = try self.dataToObject(data: data) as [Track]
+            self.notificationCenter.post(name: .prependToQueueEvent, object: tracks)
+        } catch {
+            print("prependToQueueEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func removeFromQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("removeFromQueue recieved")
+        do {
+            let trackIndex = try self.dataToObject(data: data) as Int
+            self.notificationCenter.post(name: .removeFromQueueEvent, object: trackIndex)
+        } catch {
+            print("removeFromQueueEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func moveToStartOfQueueEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("moveToStartOfQueueEvent recieved")
+        do {
+            let trackIndex = try self.dataToObject(data: data) as Int
+            self.notificationCenter.post(name: .moveToStartOfQueueEvent, object: trackIndex)
+        } catch {
+            print("mvoeToStartOfQueue decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func nowPlayingIndexDidChangeEventHandler(data: [Any], ack: SocketAckEmitter) {
+        print("nowPlayingIndexDidChangeEvent recieved")
+        do {
+            let indexOfNowPlayingItem = try self.dataToObject(data: data) as Int
+            self.notificationCenter.post(name: .nowPlayingIndexDidChangeEvent, object: indexOfNowPlayingItem)
+        } catch {
+            fatalError("nowPlayingDidChangeEventHandler decoding failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func dataToObject<T: Codable>(data: [Any]) throws -> T {
+        guard var jsonString = data[0] as? String else {
+            throw JSONDecodingErrors.couldNotCastAsString
+        }
+        // URLs in the JSONString will have "\\" before each "/". Remove these.
+        let jsonData = Data(jsonString.utf8)
+        let decoder = JSONDecoder()
+        let decodedValue = try decoder.decode(SocketIOArguments<T>.self, from: jsonData)
+        return decodedValue.data
+    }
+    
     // MARK: Emitters - Outgoing Events
     public func emitSessionStartRequest() {
         self.socket.emit(Event.startSession.rawValue, "")
@@ -124,16 +226,11 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.joinSession.rawValue, sessionID)
     }
     
-    public func emitStateUpdate(withState state: State) {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        do {
-            let data = try encoder.encode(state)
-            let encodedString = String(data: data, encoding: .utf8)! //
-            self.socket.emit(Event.stateUpdate.rawValue, encodedString)
-        } catch {
-            fatalError("Could not contruct state update")
-        }
+    public func emitStateUpdate(withState state: State) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<State>(roomID: sessionID, data: state)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.stateUpdate.rawValue, encodedJSON)
     }
     
     public func emitPlayEvent() throws {
@@ -156,6 +253,81 @@ class GMSockets: ObservableObject {
         self.socket.emit(Event.previousEvent.rawValue,  "{ \"roomID\": \"\(sessionID)\" }")
     }
     
+    public func emitSeekEvent(withTimeInterval timeInterval: TimeInterval) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<TimeInterval>(roomID: sessionID, data: timeInterval)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.seekEvent.rawValue, encodedJSON)
+    }
+    
+    public func emitPrependToQueueEvent(withTracks tracks: [Track]) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<[Track]>(roomID: sessionID, data: tracks)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.prependToQueue.rawValue, encodedJSON)
+    }
+    
+    public func emitAppendToQueueEvent(withTracks tracks: [Track]) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<[Track]>(roomID: sessionID, data: tracks)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.appendToQueue.rawValue, encodedJSON)
+    }
+    
+    public func emitRemoveEvent(atIndex index: Int) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<Int>(roomID: sessionID, data: index)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.removeFromQueue.rawValue, encodedJSON)
+    }
+    
+    public func emitMoveToStartOfQueue(fromIndex: Int) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<Int>(roomID: sessionID, data: fromIndex)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.moveToStartOfQueue.rawValue, encodedJSON)
+    }
+    
+    public func emitNowPlayingDidChangeEvent(withIndex index: Int) throws {
+        guard let sessionID = self.state.sessionID else { throw EventEmitterErrors.noSessionId }
+        let arguments = SocketIOArguments<Int>(roomID: sessionID, data: index)
+        let encodedJSON = try self.encodeJSON(fromObject: arguments)
+        self.socket.emit(Event.nowPlayingIndexDidChangeEvent.rawValue, encodedJSON)
+    }
+    
+    private func encodeJSON<T: Codable>(fromObject object: T) throws -> String {
+        let encoder = JSONEncoder()
+//        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(object)
+            let encodedString = String(data: data, encoding: .utf8)!
+            return encodedString
+        } catch {
+            throw JSONEncodingErrors.couldNotEncodeJSON
+        }
+    }
+    
+    enum JSONDecodingErrors: Error, LocalizedError {
+        case couldNotCastAsString
+        
+        
+        public var errorDescription: String? {
+            switch self {
+            case .couldNotCastAsString: return String("Was unable to cast the incoming data as a string")
+            }
+        }
+    }
+    
+    enum JSONEncodingErrors: Error, LocalizedError {
+        case couldNotEncodeJSON
+        
+        public var errorDescription: String? {
+            switch self {
+            case .couldNotEncodeJSON: return String("Was unable to encode this object into JSON")
+            }
+        }
+    }
+    
     enum EventEmitterErrors: Error, LocalizedError {
         case noSessionId
         
@@ -168,18 +340,43 @@ class GMSockets: ObservableObject {
     
     /// SocketIO Events
     enum Event: String {
-        case playEvent, pauseEvent, forwardEvent, previousEvent, startSession, sessionStarted, joinSession, joinFailed, stateUpdate, requestStateUpdate, assigningID
+        case playEvent
+        case pauseEvent
+        case forwardEvent
+        case previousEvent
+        case startSession
+        case sessionStarted
+        case joinSession
+        case joinFailed
+        case stateUpdate
+        case requestStateUpdate
+        case assigningID
+        case queueUpdate
+        case appendToQueue
+        case seekEvent
+        case prependToQueue
+        case nowPlayingIndexDidChangeEvent
+        case removeFromQueue
+        case moveToStartOfQueue
     }
     
-    public func updateQueuePlayerState(with queuePlayerState: GMQueuePlayer.State) {
-        self.queuePlayerState = queuePlayerState
-        self.emitStateUpdate(withState: self.state)
+    public func updateQueuePlayerState(with queuePlayerState: GMAppleMusicHostController.State) {
+        self.state.playerState = queuePlayerState
+        do {
+            try self.emitStateUpdate(withState: self.state)
+        } catch {
+            print("WARNING: Could not emit state update. Error: \(error.localizedDescription)")
+        }
     }
     
 }
 // MARK: Notification Center Events
 /// Notification Center events
 extension Notification.Name {
+    static var stateUpdateEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.stateUpdateEvent")
+    }
+    
     static var playEvent: Notification.Name {
         return .init(rawValue: "GMSockets.playEvent")
     }
@@ -196,8 +393,39 @@ extension Notification.Name {
         return .init(rawValue: "GMSockets.previousEvent")
     }
     
+    static var seekEvent: Notification.Name {
+        return .init("GMSockets.seekEvent")
+    }
+    
+    static var appendToQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.appendToQueueEvent")
+    }
+    
+    static var prependToQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.prependToQueueEvent")
+    }
+    
     static var stateUpdateRequested: Notification.Name {
         return .init(rawValue: "GMSockets.stateUpdateRequested")
+    }
+    
+    static var nowPlayingIndexDidChangeEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.nowPlayingIndexDidChangeEvent")
+    }
+    
+    static var removeFromQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.removeFromQueueEvent")
+    }
+    
+    static var moveToStartOfQueueEvent: Notification.Name {
+        return .init(rawValue: "GMSockets.moveToStartOfQueueEvent")
+    }
+}
+
+extension GMSockets {
+    struct SocketIOArguments<Wrapped:Codable>: Codable {
+        let roomID: String
+        let data: Wrapped
     }
 }
 
@@ -218,6 +446,7 @@ extension GMSockets {
             }
             return coordinatorID == clientID
         }
+        var playerState: GMAppleMusicHostController.State?
         
         init() { }
         // TODO: Make this use Codable to decode the dictionary

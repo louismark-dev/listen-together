@@ -25,6 +25,8 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>APP_NAME needs access to your Apple Music Library to control media playback.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>For testing purposes</string>
 	<key>UIApplicationSceneManifest</key>
@@ -61,6 +63,19 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Biotif-ExtraBold.ttf</string>
+		<string>Biotif-Book.ttf</string>
+		<string>BalooTammudu2-SemiBold.ttf</string>
+		<string>FredokaOne-Regular.ttf</string>
+		<string>AvenirNextLTPro-Bold.otf</string>
+		<string></string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

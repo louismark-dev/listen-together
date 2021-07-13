@@ -1,12 +1,40 @@
-let port = parseInt(process.argv.slice(2)) || 4440;
+let port = parseInt(process.argv.slice(2)) || 4403;
 
 var express = require('express');
 var app = express();
+app.use(express.json()) // for parsing application/json
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+const fetch = require('node-fetch');
+const fs = require('fs')
 
 server.listen(port);
 console.log(`Server is running on port ${port}...`)
+
+// TODO: Need to put the Apple Music API code into a different file
+
+let headers = { "Content-Type": "application/json",
+                "Authorization": `Bearer ` };
+
+fs.readFile(`./bearer-token.txt`, 'utf8', function(err, data) { 
+    if (err) { return console.log(err) }
+    console.log(data)
+    const token = data
+    headers["Authorization"] = `Bearer ${token}`
+})
+                                  
+app.post("/am-api", (req, res) => {
+    const requestJSON = req.body
+    const targetURL = requestJSON.requestURL
+    // TODO: Error handling. 404, etc...
+    fetch(targetURL, { headers })
+        .then(res => res.text())
+        .then(text => {
+            console.log("Sending response")
+            console.log(text)
+            res.send(text)
+        })
+  });
 
 io.sockets.on("connection", function(socket) {
     console.log("NEW CONNECTION")
@@ -52,42 +80,157 @@ io.sockets.on("connection", function(socket) {
         console.log(data)
         data = JSON.parse(data)
         // Need to forward this to all clients in room
-        const sessionID = data["sessionID"]
-        const coordinatorID = data["coordinatorID"]
+        const sessionID = data.data.sessionID
+        const coordinatorID = data.data.coordinatorID
+        const playerState = data.data.playerState
+
+        const encodedString = JSON.stringify({  sessionID: sessionID,
+                                                coordinatorID: coordinatorID,
+                                                playerState: playerState })
 
         // console.log(`Clients in room: ${sessionID}`)
         // console.log(io.sockets.clients(sessionID))
 
-        io.to(sessionID).emit(MESSAGES.STATE_UPDATE, {  session_id: sessionID,
-                                                            coordinator_id: coordinatorID })
+        io.to(sessionID).emit(MESSAGES.STATE_UPDATE, encodedString)
     })
 
     socket.on(MESSAGES.PLAY_EVENT, function(data) {
-        data = JSON.parse(data)
-        const roomID = data.roomID
-        console.log(`Emitting play event to room: ${roomID}`)
-        socket.broadcast.to(roomID).emit(MESSAGES.PLAY_EVENT, data)
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Play msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting playEvent to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.PLAY_EVENT, data)
+        } else { // Play msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending playEvent to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PLAY_EVENT, data)
+        }
     })
 
     socket.on(MESSAGES.PAUSE_EVENT, function(data) {
-        data = JSON.parse(data)
-        const roomID = data.roomID
-        console.log(`Emitting pause event to room: ${roomID}`)
-        socket.broadcast.to(roomID).emit(MESSAGES.PAUSE_EVENT, data)
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Pause msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting pauseEvent to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.PAUSE_EVENT, data)
+        } else { // Pause msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending pauseEvent to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PAUSE_EVENT, data)
+        }
     })
 
     socket.on(MESSAGES.FORWARD_EVENT, function(data) {
-        data = JSON.parse(data)
-        const roomID = data.roomID
-        console.log(`Emitting forwardEvent to room: ${roomID}`)
-        socket.broadcast.to(roomID).emit(MESSAGES.FORWARD_EVENT, data)
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Forward msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting fowardEvent to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.FORWARD_EVENT, data)
+        } else { // Forward msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending fowardEvent to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.FORWARD_EVENT, data)
+        }
     })
 
     socket.on(MESSAGES.PREVIOUS_EVENT, function(data) {
-        data = JSON.parse(data)
-        const roomID = data.roomID
-        console.log(`Emitting previousEvent to room: ${roomID}`)
-        socket.broadcast.to(roomID).emit(MESSAGES.PREVIOUS_EVENT, data)
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Previous msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting previousEvent to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.PREVIOUS_EVENT, data)
+        } else { // Previous msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending previousEvent to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PREVIOUS_EVENT, data)
+        }
+    })
+
+    socket.on(MESSAGES.NOW_PLAYING_INDEX_DID_CHANGE_EVENT, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        console.log(parsedData)
+
+        if (socket.id == sessionData.coordinatorID) { // Previous msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting nowPlayingIndexDidChangeEvent to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.NOW_PLAYING_INDEX_DID_CHANGE_EVENT, data)
+        }
+    })
+
+    socket.on(MESSAGES.PREPEND_TO_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Prepend msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting prependToQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        } else { // Prepend msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending prependToQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.PREPEND_TO_QUEUE, data)
+        }
+    })
+
+    socket.on(MESSAGES.APPEND_TO_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+
+        if (socket.id == sessionData.coordinatorID) { // Append msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting appendToQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        } else { // Append msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending appendToQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.APPEND_TO_QUEUE, data)
+        }
+    })
+
+    socket.on(MESSAGES.REMOVE_FROM_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+        
+        if (socket.id == sessionData.coordinatorID) { // REMOVE_FROM_QUEUE msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting removeFromQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.REMOVE_FROM_QUEUE, data)
+        } else { // Append msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending removeFromQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.REMOVE_FROM_QUEUE, data)
+        }
+    })
+
+    socket.on(MESSAGES.MOVE_TO_START_OF_QUEUE, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+        
+        if (socket.id == sessionData.coordinatorID) { // MOVE_TO_START_OF_QUEUE msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting moveToStartOfQueue to room ${roomID}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.MOVE_TO_START_OF_QUEUE, data)
+        } else { // MOVE_TO_START_OF_QUEUE msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending moveToStartOfQueue to coordinator ${sessionData.coordinatorID}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.MOVE_TO_START_OF_QUEUE, data)
+        }
+    })
+
+    socket.on(MESSAGES.SEEK_EVENT, function(data) {
+        const parsedData = JSON.parse(data)
+        const roomID = parsedData.roomID
+        const sessionData = current_sessions[roomID]
+        
+        if (socket.id == sessionData.coordinatorID) { // SEEK_EVENT msg is from coordinator -> Broadcast to all in room
+            console.log(`Coordinator ${socket.id} is broadcasting seekEvent to room ${roomID}, ${data}`)
+            socket.broadcast.to(roomID).emit(MESSAGES.SEEK_EVENT, data)
+        } else { // SEEK_EVENT msg is from guest -> Send to coordinator
+            console.log(`Client ${socket.id} is sending seekEvent to coordinator ${sessionData.coordinatorID}, ${data}`)
+            socket.broadcast.to(sessionData.coordinatorID).emit(MESSAGES.SEEK_EVENT, data)
+        }
     })
 })
 
@@ -133,5 +276,11 @@ const MESSAGES = {
     PLAY_EVENT: "playEvent",
     PAUSE_EVENT: "pauseEvent",
     TEST_EVENT: "testEvent",
-    ASSIGNING_ID: "assigningID"
+    ASSIGNING_ID: "assigningID",
+    APPEND_TO_QUEUE: "appendToQueue",
+    PREPEND_TO_QUEUE: "prependToQueue",
+    NOW_PLAYING_INDEX_DID_CHANGE_EVENT: "nowPlayingIndexDidChangeEvent",
+    REMOVE_FROM_QUEUE: "removeFromQueue",
+    MOVE_TO_START_OF_QUEUE: "moveToStartOfQueue",
+    SEEK_EVENT: "seekEvent"
 }
