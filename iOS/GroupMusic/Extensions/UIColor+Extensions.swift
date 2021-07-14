@@ -29,3 +29,15 @@ extension UIColor {
         return (brightness > threshold)
     }
 }
+
+extension UIColor {
+    static let ui = UI()
+    
+    struct UI {
+        let russianViolet = UIColor(named: "RussianViolet")!
+        let amaranth = UIColor(named: "Amaranth")!
+        let bluetiful = UIColor(named: "Bluetiful")!
+        let emerald = UIColor(named: "Emerald")!
+        let white = UIColor.white
+    }
+}

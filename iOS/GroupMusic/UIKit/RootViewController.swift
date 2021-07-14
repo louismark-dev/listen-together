@@ -1,0 +1,64 @@
+//
+//  RootViewController.swift
+//  GroupMusic
+//
+//  Created by Louis on 2021-07-13.
+//
+
+import UIKit
+import SwiftUI
+
+class RootViewController: UIViewController {
+    var backgroundBlurViewController: BackgroundBlurViewController!
+    var bottomBarHostingController: UIHostingController<BottomButtonView>!
+    
+    // MARK: View Setup
+    
+    override func viewDidLoad() {
+        self.setupBackgroundBlurViewController()
+        self.setupBottomBar()
+    }
+    
+    private func setupBottomBar() {
+        self.configureBottomBar()
+        self.setupBottomBarLayout()
+    }
+    
+    private func configureBottomBar() {
+        let sessionSettingsAction = {
+            self.present(SessionSettingsViewController(), animated: true)
+        }
+        
+        let hostingController = UIHostingController(rootView: BottomButtonView(sessionSettingsAction: sessionSettingsAction))
+        
+        self.bottomBarHostingController = hostingController
+    }
+    
+    private func setupBottomBarLayout() {
+        self.addChild(self.bottomBarHostingController)
+        self.view.addSubview(self.bottomBarHostingController.view)
+        
+        self.bottomBarHostingController.view.backgroundColor = .clear
+        
+        self.bottomBarHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.bottomBarHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.bottomBarHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        self.bottomBarHostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+    }
+    
+    private func setupBackgroundBlurViewController() {
+        self.backgroundBlurViewController = BackgroundBlurViewController()
+        
+        self.addChild(self.backgroundBlurViewController)
+        self.view.addSubview(self.backgroundBlurViewController.view)
+        
+        self.view.translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundBlurViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.backgroundBlurViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.backgroundBlurViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.backgroundBlurViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.backgroundBlurViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    }
+}
+
