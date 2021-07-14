@@ -7,17 +7,39 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 class RootViewController: UIViewController {
     var backgroundBlurViewController: BackgroundBlurViewController!
     var bottomBarHostingController: UIHostingController<BottomButtonView>!
+    
+    let playerAdapter = PlayerAdapter()
+    var playerAdapterState: GMAppleMusicHostController.State = GMAppleMusicHostController.State()
+    private var appleMusicManager: GMAppleMusic! // TODO: Remove this dependancy. It is only for testing
+    
+    private var cancellables: Set<AnyCancellable> = []
     
     // MARK: View Setup
     
     override func viewDidLoad() {
         self.setupBackgroundBlurViewController()
         self.setupBottomBar()
+        
+        self.appleMusicManager = GMAppleMusic(storefront: .canada)
+        self.subscribeToPlayerAdapterPublishers()
     }
+    
+    private func subscribeToPlayerAdapterPublishers() {
+        self.playerAdapter.$state
+            .receive(on: RunLoop.main)
+            .sink { state in
+                self.playerAdapterState = state
+                print("COUNT \(self.playerAdapterState.queue.state.queue.count)")
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: Bottom Bar Setup
     
     private func setupBottomBar() {
         self.configureBottomBar()
@@ -45,6 +67,8 @@ class RootViewController: UIViewController {
         self.bottomBarHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         self.bottomBarHostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     }
+    
+    // MARK: Background Blur Setup
     
     private func setupBackgroundBlurViewController() {
         self.backgroundBlurViewController = BackgroundBlurViewController()
