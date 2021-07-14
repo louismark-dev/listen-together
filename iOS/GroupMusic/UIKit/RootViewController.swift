@@ -12,9 +12,10 @@ import Combine
 class RootViewController: UIViewController {
     var backgroundBlurViewController: BackgroundBlurViewController!
     var bottomBarHostingController: UIHostingController<BottomButtonView>!
+    var queueTableView: UITableView!
+    var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
     
     let playerAdapter = PlayerAdapter()
-    var playerAdapterState: GMAppleMusicHostController.State = GMAppleMusicHostController.State()
     private var appleMusicManager: GMAppleMusic! // TODO: Remove this dependancy. It is only for testing
     
     private var cancellables: Set<AnyCancellable> = []
@@ -25,6 +26,8 @@ class RootViewController: UIViewController {
         self.setupBackgroundBlurViewController()
         self.setupBottomBar()
         
+        self.setupQueueTableView()
+        
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
         self.subscribeToPlayerAdapterPublishers()
     }
@@ -33,8 +36,9 @@ class RootViewController: UIViewController {
         self.playerAdapter.$state
             .receive(on: RunLoop.main)
             .sink { state in
-                self.playerAdapterState = state
-                print("COUNT \(self.playerAdapterState.queue.state.queue.count)")
+                self.applyNewQueueTableViewSnapshot(withTracks: state.queue.state.queue)
+                
+                print("COUNT \(state.queue.state.queue.count)")
             }
             .store(in: &cancellables)
     }
@@ -86,3 +90,47 @@ class RootViewController: UIViewController {
     }
 }
 
+extension RootViewController: UITableViewDelegate {
+    private func setupQueueTableView() {
+        self.configureQueueTableView()
+        self.setupQueueTableViewLayout()
+    }
+    
+    private func configureQueueTableView() {
+        self.queueTableView = UITableView()
+        self.queueTableView.delegate = self
+        
+        self.queueTableViewDiffableDataSource = UITableViewDiffableDataSource<Section, Track>(tableView: self.queueTableView) {
+            (tableView: UITableView, indexPath: IndexPath, track: Track) in
+            let cell = UITableViewCell()
+            
+            let name = track.attributes?.name
+            
+            cell.textLabel?.text = name
+            
+            return cell
+        }
+        self.queueTableView.dataSource = self.queueTableViewDiffableDataSource
+    }
+    
+    private func setupQueueTableViewLayout() {
+        self.view.addSubview(self.queueTableView)
+        self.queueTableView.translatesAutoresizingMaskIntoConstraints = false
+        self.queueTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        self.queueTableView.bottomAnchor.constraint(equalTo: self.bottomBarHostingController.view.topAnchor).isActive = true
+        self.queueTableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.queueTableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    }
+    
+    private func applyNewQueueTableViewSnapshot(withTracks tracks: [Track]) {
+        var queueTableViewSnapshot = NSDiffableDataSourceSnapshot<Section, Track>()
+        queueTableViewSnapshot.appendSections(Section.allCases)
+        queueTableViewSnapshot.appendItems(tracks)
+        
+        self.queueTableViewDiffableDataSource.apply(queueTableViewSnapshot)
+    }
+    
+    enum Section: CaseIterable {
+        case main
+    }
+}

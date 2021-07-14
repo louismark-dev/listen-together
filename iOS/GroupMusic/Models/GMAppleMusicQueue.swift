@@ -136,13 +136,16 @@ struct GMAppleMusicQueue: Codable {
             
             get { return self._queue }
             
-            set {
-                self._queue = newValue.map({ (track: Track) -> Track in
-                    var trackWithUUID = track
-                    trackWithUUID.id = UUID()
-                    return trackWithUUID
-                })
-            }
+            set { self._queue = newValue }
+            
+            // TODO: Uncomment this if app can't handle identical items in queue
+//            set {
+//                self._queue = newValue.map({ (track: Track) -> Track in
+//                    var trackWithUUID = track
+//                    trackWithUUID.id = UUID()
+//                    return trackWithUUID
+//                })
+//            }
         }
         
         public var indexOfNowPlayingItem: Int
