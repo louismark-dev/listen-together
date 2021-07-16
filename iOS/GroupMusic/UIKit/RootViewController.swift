@@ -20,6 +20,7 @@ class RootViewController: UIViewController {
     
     let playerAdapter = PlayerAdapter()
     private var appleMusicManager: GMAppleMusic! // TODO: Remove this dependancy. It is only for testing
+    var notificationMonitor: NotificationMonitor!
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -37,8 +38,14 @@ class RootViewController: UIViewController {
         self.setupPlaybackControls()
         self.setupQueueTableView()
         
+        self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
         self.subscribeToQueueStatePublishers()
+    }
+    
+    private func setupNotificationMonitor() {
+        self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
+        self.notificationMonitor.startListeningForNotifications()
     }
     
     private func subscribeToQueueStatePublishers() {
