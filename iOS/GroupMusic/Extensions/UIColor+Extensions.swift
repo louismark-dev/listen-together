@@ -38,6 +38,7 @@ extension UIColor {
         let amaranth = UIColor(named: "Amaranth")!
         let bluetiful = UIColor(named: "Bluetiful")!
         let emerald = UIColor(named: "Emerald")!
+        let blackChocolate = UIColor(named: "BlackChocolate")!
         let white = UIColor.white
     }
 }
