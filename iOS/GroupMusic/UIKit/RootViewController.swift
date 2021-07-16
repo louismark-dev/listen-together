@@ -19,6 +19,7 @@ class RootViewController: UIViewController {
     private var lastUpdatedQueue: [Track] = []
     
     let playerAdapter = PlayerAdapter()
+    let socketManager: GMSockets = GMSockets.sharedInstance
     private var appleMusicManager: GMAppleMusic! // TODO: Remove this dependancy. It is only for testing
     var notificationMonitor: NotificationMonitor!
     
@@ -71,9 +72,91 @@ extension RootViewController {
     }
     
     private func generatePlaybackControlsHostingController() -> UIHostingController<PlaybackControlsView> {
-        let playbackControlsConfiguration = PlaybackControlsView.Configuration(backwardAction: { print("Backward") },
-                                                                               playAction: { print("Play") },
-                                                                               forwardAction: { print("Forward") },
+        let backwardAction = {
+            let emitPreviousEvent: () -> () = {
+                do {
+                    try self.socketManager.emitPreviousEvent()
+                } catch {
+                    print("Could not emit PreviousEvent event")
+                }
+            }
+            
+            if (self.socketManager.state.isCoordinator == true) {
+                // IS COORDINATOR
+                self.playerAdapter.skipToPreviousItem {
+                    emitPreviousEvent()
+                }
+            } else {
+                // NOT COORDINATOR
+                emitPreviousEvent()
+            }
+        }
+        
+        let forwardsAction = {
+            let emitForwardsEvent: () -> () = {
+                do {
+                    try self.socketManager.emitForwardEvent()
+                } catch {
+                    print("Could not emit ForwardEvent event")
+                }
+            }
+            
+            if (self.socketManager.state.isCoordinator == true) {
+                // IS COORDINATOR
+                self.playerAdapter.skipToNextItem {
+                    emitForwardsEvent()
+                }
+            } else {
+                // NOT COORDINATOR
+                emitForwardsEvent()
+            }
+        }
+        
+        let togglePlaybackAction = {
+            let emitPlayEvent: () -> () = {
+                do {
+                    try self.socketManager.emitPlayEvent()
+                } catch {
+                    print("Could not emit PlayEvent event")
+                }
+            }
+            
+            let emitPauseEvent: () -> () = {
+                do {
+                    try self.socketManager.emitPauseEvent()
+                } catch {
+                    print("Could not emit PauseEvent event")
+                }
+            }
+            
+            if (self.socketManager.state.isCoordinator == true) {
+                // IS COORDINATOR
+                if (self.playerAdapter.state.playbackState !=  .playing) {
+                    // NOT PLAYING
+                    self.playerAdapter.play {
+                        emitPlayEvent()
+                    }
+                } else {
+                    // PLAYING
+                    self.playerAdapter.pause {
+                        emitPauseEvent()
+                    }
+                }
+            } else {
+                // NOT COORDINATOR
+                if (self.playerAdapter.state.playbackState != .playing) {
+                    // NOT PLAYING
+                    emitPlayEvent()
+                } else {
+                    emitPauseEvent()
+                }
+            }
+        }
+        
+        
+        let playbackControlsConfiguration = PlaybackControlsView.Configuration(backwardAction: backwardAction,
+                                                                               playAction: togglePlaybackAction,
+                                                                               forwardAction: forwardsAction,
                                                                                opacity: 0.8)
         let hostingController = UIHostingController(rootView: PlaybackControlsView(withConfiguration: playbackControlsConfiguration))
         return hostingController
