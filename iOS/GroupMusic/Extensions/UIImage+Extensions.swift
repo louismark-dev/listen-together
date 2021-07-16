@@ -15,5 +15,8 @@ extension UIImage {
         let person_fill = UIImage(systemName: "person.fill")!
         let person_3_fill = UIImage(systemName: "person.3.fill")!
         let plus = UIImage(systemName: "plus")!
+        let play_fill = UIImage(systemName: "play.fill")!
+        let backward_fill = UIImage(systemName: "backward.fill")!
+        let forward_fill = UIImage(systemName: "forward.fill")!
     }
 }

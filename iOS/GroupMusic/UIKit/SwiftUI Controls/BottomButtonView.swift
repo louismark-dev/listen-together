@@ -14,7 +14,9 @@ struct BottomButtonView: View {
     var body: some View {
         HStack {
             EndSessionButton()
+            Spacer()
             AddToQueueButton()
+            Spacer()
             self.sessionSettingsButton
         }
         .foregroundColor(.white.opacity(0.9))
@@ -36,7 +38,6 @@ struct BottomButtonView: View {
                 }
                 .background(RoundedRectangle(cornerRadius: 50, style: .continuous)
                                 .foregroundColor(Color(UIColor.ui.emerald)))
-                .padding()
             }
         }
     }
@@ -69,7 +70,8 @@ struct BottomButtonView_Previews: PreviewProvider {
         ZStack {
             Color("RussianViolet")
                 .ignoresSafeArea(.all, edges: .all)
-            BottomBarView()
+            BottomButtonView(sessionSettingsAction: {})
+                .padding(.horizontal)
             
         }
     }
