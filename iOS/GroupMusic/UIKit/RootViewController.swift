@@ -153,11 +153,11 @@ extension RootViewController {
             }
         }
         
-        
         let playbackControlsConfiguration = PlaybackControlsView.Configuration(backwardAction: backwardAction,
                                                                                playAction: togglePlaybackAction,
                                                                                forwardAction: forwardsAction,
-                                                                               opacity: 0.8)
+                                                                               opacity: 0.8,
+                                                                               playerAdapter: self.playerAdapter)
         let hostingController = UIHostingController(rootView: PlaybackControlsView(withConfiguration: playbackControlsConfiguration))
         return hostingController
     }

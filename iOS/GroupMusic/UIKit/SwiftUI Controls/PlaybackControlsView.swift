@@ -9,24 +9,32 @@ import SwiftUI
 
 struct PlaybackControlsView: View {
     
-    let backwardAction: () -> Void
-    let playAction: () -> Void
-    let forwardAction: () -> Void
-    let opacity: Double
+    private let backwardAction: () -> Void
+    private let playAction: () -> Void
+    private let forwardAction: () -> Void
+    private let opacity: Double
+    private let playerAdapter: PlayerAdapter
+    
+    @State private var isPlaying: Bool = false
     
     init(withConfiguration configuration: Configuration) {
         self.backwardAction = configuration.backwardAction
         self.playAction = configuration.playAction
         self.forwardAction = configuration.forwardAction
         self.opacity = configuration.opacity
+        self.playerAdapter = configuration.playerAdapter
     }
     
-    var playButton: some View {
+    var playPauseButton: some View {
         Button(action: self.playAction, label: {
-            Image.ui.play_fill
-                .aspectRatio(1.0, contentMode: .fill)
-
+            Group {
+                (self.isPlaying == true) ? Image.ui.pause_fill : Image.ui.play_fill
+            }
+            .aspectRatio(1.0, contentMode: .fill)
         })
+        .onReceive(self.playerAdapter.$state) { (state: GMAppleMusicHostController.State) in
+            self.isPlaying = state.playbackState == .playing
+        }
     }
     
     var backwardButton: some View {
@@ -47,7 +55,7 @@ struct PlaybackControlsView: View {
         HStack {
             self.backwardButton
             Spacer()
-            self.playButton
+            self.playPauseButton
             Spacer()
             self.forwardButton
         }
@@ -60,22 +68,24 @@ struct PlaybackControlsView: View {
         let playAction: () -> Void
         let forwardAction: () -> Void
         let opacity: Double
+        let playerAdapter: PlayerAdapter
     }
 }
-
-struct PlaybackControlView_Previews: PreviewProvider {
-    static var previews: some View {
-        let configuration = PlaybackControlsView.Configuration(backwardAction: {},
-                                                               playAction: {},
-                                                               forwardAction: {},
-                                                               opacity: 0.8)
-        
-        ZStack {
-            Color.orange
-            PlaybackControlsView(withConfiguration: configuration)
-                .frame(maxHeight: 40)
-                .padding()
-        }
-        .edgesIgnoringSafeArea(.vertical)
-    }
-}
+//
+//struct PlaybackControlView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let configuration = PlaybackControlsView.Configuration(backwardAction: {},
+//                                                               playAction: {},
+//                                                               forwardAction: {},
+//                                                               opacity: 0.8,
+//                                                               playerAdapter: <#PlayerAdapter#>)
+//
+//        ZStack {
+//            Color.orange
+//            PlaybackControlsView(withConfiguration: configuration)
+//                .frame(maxHeight: 40)
+//                .padding()
+//        }
+//        .edgesIgnoringSafeArea(.vertical)
+//    }
+//}

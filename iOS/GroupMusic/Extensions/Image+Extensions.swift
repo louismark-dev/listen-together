@@ -17,6 +17,7 @@ extension Image {
         let person_3_fill = Image(systemName: "person.3.fill")
         let plus = Image(systemName: "plus")
         let play_fill = Image(systemName: "play.fill")
+        let pause_fill = Image(systemName: "pause.fill")
         let backward_fill = Image(systemName: "backward.fill")
         let forward_fill = Image(systemName: "forward.fill")
     }
