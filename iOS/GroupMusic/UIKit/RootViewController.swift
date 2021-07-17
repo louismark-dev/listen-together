@@ -31,18 +31,48 @@ class RootViewController: UIViewController {
         return 8
     }
     
-    // MARK: View Setup
+    // MARK: Views Setup
     
     override func viewDidLoad() {
-        self.setupBackgroundBlurViewController()
-        self.setupBottomBar()
-        self.setupPlaybackControls()
-        self.setupQueueTableView()
+        self.initalizeViews()
+        self.configureViewHirearchy()
+        self.configureLayout()
         
         self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
         self.subscribeToQueueStatePublishers()
     }
+    
+    private func initalizeViews() {
+        self.playbackControlsHostingController = self.generatePlaybackControlsHostingController()
+        self.bottomBarHostingController = self.generateBottomBar()
+        self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
+        self.queueTableView = self.generateQueueTableView()
+        self.queueTableViewDiffableDataSource = self.generateDataSource(forTableView: self.queueTableView)
+    }
+    
+    /// Adds all views to the virw hirearchy
+    private func configureViewHirearchy() {
+        self.addChild(self.backgroundBlurViewController)
+        self.view.addSubview(self.backgroundBlurViewController.view)
+        
+        self.addChild(self.playbackControlsHostingController)
+        self.view.addSubview(self.playbackControlsHostingController.view)
+        
+        self.addChild(self.bottomBarHostingController)
+        self.view.addSubview(self.bottomBarHostingController.view)
+        
+        self.view.addSubview(self.queueTableView)
+    }
+    
+    private func configureLayout() {
+        self.setupPlaybackControlsLayout()
+        self.setupBottomBarLayout()
+        self.setupBackgroundBlurViewControllerLayout()
+        self.setupQueueTableViewLayout()
+    }
+    
+    // MARK: Data
     
     private func setupNotificationMonitor() {
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
@@ -66,11 +96,6 @@ class RootViewController: UIViewController {
 
 // MARK: Playback Controls
 extension RootViewController {
-    private func setupPlaybackControls() {
-        self.playbackControlsHostingController = self.generatePlaybackControlsHostingController()
-        self.setupPlaybackControlsLayout()
-    }
-    
     private func generatePlaybackControlsHostingController() -> UIHostingController<PlaybackControlsView> {
         let backwardAction = {
             let emitPreviousEvent: () -> () = {
@@ -158,17 +183,15 @@ extension RootViewController {
                                                                                forwardAction: forwardsAction,
                                                                                opacity: 0.8,
                                                                                playerAdapter: self.playerAdapter)
-        let hostingController = UIHostingController(rootView: PlaybackControlsView(withConfiguration: playbackControlsConfiguration))
-        return hostingController
+        
+        return UIHostingController(rootView: PlaybackControlsView(withConfiguration: playbackControlsConfiguration))
     }
     
     private func setupPlaybackControlsLayout() {
-        self.addChild(self.playbackControlsHostingController)
-        self.view.addSubview(self.playbackControlsHostingController.view)
-        
         self.playbackControlsHostingController.view.backgroundColor = .clear
         
         self.playbackControlsHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        
         self.playbackControlsHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: self.playbackControlsSpacing.left).isActive = true
         self.playbackControlsHostingController.view.bottomAnchor.constraint(equalTo: self.bottomBarHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
         self.playbackControlsHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -1 * self.playbackControlsSpacing.right).isActive = true
@@ -184,28 +207,19 @@ extension RootViewController {
 
 // MARK: Bottom Bar
 extension RootViewController {
-    private func setupBottomBar() {
-        self.configureBottomBar()
-        self.setupBottomBarLayout()
-    }
-    
-    private func configureBottomBar() {
+    private func generateBottomBar() -> UIHostingController<BottomButtonView>{
         let sessionSettingsAction = {
             self.present(SessionSettingsViewController(), animated: true)
         }
         
-        let hostingController = UIHostingController(rootView: BottomButtonView(sessionSettingsAction: sessionSettingsAction))
-        
-        self.bottomBarHostingController = hostingController
+        return UIHostingController(rootView: BottomButtonView(sessionSettingsAction: sessionSettingsAction))
     }
     
     private func setupBottomBarLayout() {
-        self.addChild(self.bottomBarHostingController)
-        self.view.addSubview(self.bottomBarHostingController.view)
-        
         self.bottomBarHostingController.view.backgroundColor = .clear
         
         self.bottomBarHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        
         self.bottomBarHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: self.horizontalPadding).isActive = true
         self.bottomBarHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -1 * self.horizontalPadding).isActive = true
         self.bottomBarHostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
@@ -214,13 +228,11 @@ extension RootViewController {
 
 // MARK: Background Blur
 extension RootViewController {
-    private func setupBackgroundBlurViewController() {
-        self.backgroundBlurViewController = BackgroundBlurViewController()
-        
-        self.addChild(self.backgroundBlurViewController)
-        self.view.addSubview(self.backgroundBlurViewController.view)
-        
-        self.view.translatesAutoresizingMaskIntoConstraints = false
+    private func generateBackgroundBlurViewController() -> BackgroundBlurViewController {
+        return BackgroundBlurViewController()
+    }
+    
+    private func setupBackgroundBlurViewControllerLayout() {
         self.backgroundBlurViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
         self.backgroundBlurViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -232,15 +244,23 @@ extension RootViewController {
 
 // MARK: QueueTableView
 extension RootViewController: UITableViewDelegate {
-    private func setupQueueTableView() {
-        self.queueTableView = UITableView()
+    /// Generates the queue UITableView.
+    /// Note: The configured UITableView does not have a dataSource.
+    /// The dataSource must be generated using generateDataSource(forTableView: )
+    private func generateQueueTableView() -> UITableView {
+        let tableView = UITableView()
         
-        self.configureQueueTableView()
-        self.setupQueueTableViewLayout()
+        tableView.delegate = self
+        
+        tableView.backgroundColor = .clear
+        tableView.allowsSelection = false
+        tableView.register(QueueTableViewCell.self, forCellReuseIdentifier: "QueueCell")
+        
+        return tableView
     }
     
-    private func configureQueueTableView() {
-        self.queueTableViewDiffableDataSource = UITableViewDiffableDataSource<Section, Track>(tableView: self.queueTableView) {
+    private func generateDataSource(forTableView tableView: UITableView) -> UITableViewDiffableDataSource<Section, Track> {
+        return UITableViewDiffableDataSource<Section, Track>(tableView: tableView) {
             (tableView: UITableView, indexPath: IndexPath, track: Track) in
             let cell =  tableView.dequeueReusableCell(withIdentifier: "QueueCell") as! QueueTableViewCell
             let cellConfiguration = QueueTableViewCell.Configuration(name: track.attributes?.name ?? "",
@@ -249,17 +269,11 @@ extension RootViewController: UITableViewDelegate {
             
             return cell
         }
-        self.queueTableView.dataSource = self.queueTableViewDiffableDataSource
-        self.queueTableView.delegate = self
-        
-        self.queueTableView.backgroundColor = .clear
-        self.queueTableView.allowsSelection = false
-        self.queueTableView.register(QueueTableViewCell.self, forCellReuseIdentifier: "QueueCell")
     }
     
     private func setupQueueTableViewLayout() {
-        self.view.addSubview(self.queueTableView)
         self.queueTableView.translatesAutoresizingMaskIntoConstraints = false
+        
         self.queueTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         self.queueTableView.bottomAnchor.constraint(equalTo: self.playbackControlsHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.top).isActive = true
         self.queueTableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
@@ -289,6 +303,7 @@ class QueueTableViewCell: UITableViewCell {
         label.alpha = 0.9
         label.textColor = UIColor.white
         label.textAlignment = .left
+        
         return label
     }()
     
@@ -299,6 +314,7 @@ class QueueTableViewCell: UITableViewCell {
         label.alpha = 0.7
         label.textColor = UIColor.white
         label.textAlignment = .left
+        
         return label
     }()
     
@@ -308,6 +324,7 @@ class QueueTableViewCell: UITableViewCell {
         view.layer.cornerRadius = 11
         view.layer.cornerCurve = .continuous
         view.layer.masksToBounds = true
+        
         return view
     }()
     
@@ -318,6 +335,7 @@ class QueueTableViewCell: UITableViewCell {
         view.layer.masksToBounds = true
         view.alpha = 0.55
         view.backgroundColor = UIColor.ui.blackChocolate
+        
         return view
     }()
     
@@ -330,6 +348,7 @@ class QueueTableViewCell: UITableViewCell {
         stackView.alignment = .leading
         stackView.distribution = .fillProportionally
         stackView.spacing = 2
+        
         return stackView
     }
     
@@ -339,6 +358,7 @@ class QueueTableViewCell: UITableViewCell {
         stackview.alignment = .fill
         stackview.distribution = .fill
         stackview.spacing = 10
+        
         return stackview
     }
     
@@ -359,8 +379,9 @@ class QueueTableViewCell: UITableViewCell {
         let halfSpacing = spacing / 2
         
         self.addSubview(self.background)
-        self.background.translatesAutoresizingMaskIntoConstraints = false
         
+        self.background.translatesAutoresizingMaskIntoConstraints = false
+
         self.background.topAnchor.constraint(equalTo: self.topAnchor, constant: halfSpacing).isActive = true
         self.background.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -1 * halfSpacing).isActive = true
         self.background.leftAnchor.constraint(equalTo: self.leftAnchor, constant: halfSpacing).isActive = true
@@ -385,9 +406,11 @@ class QueueTableViewCell: UITableViewCell {
     ///   - spacing: The space between each background in the UITableView.
     private func setupArtworkAndLabelStackViewLayout(withPadding padding: CGFloat, spacing: CGFloat) {
         self.artworkAndLabelStackView = createArtworkAndLabelStackView(withSubviews: [self.artworkImageView, self.labelsStackView])
+        
         self.addSubview(self.artworkAndLabelStackView)
-        self.artworkAndLabelStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         let backgroundPadding = padding  + spacing / 2
+        self.artworkAndLabelStackView.translatesAutoresizingMaskIntoConstraints = false
         self.artworkAndLabelStackView.topAnchor.constraint(equalTo: self.topAnchor, constant: backgroundPadding).isActive = true
         self.artworkAndLabelStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -1 * backgroundPadding).isActive = true
         self.artworkAndLabelStackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: backgroundPadding).isActive = true
