@@ -11,12 +11,21 @@ import Combine
 
 class RootViewController: UIViewController {
     var backgroundBlurViewController: BackgroundBlurViewController!
-    var bottomBarHostingController: UIHostingController<BottomButtonView>!
+    
+    var bottomBarHostingController: UIHostingController<BottomBarView2>!
+    
     var playbackControlsHostingController: UIHostingController<PlaybackControlsView>!
     let playbackControlsSpacing = PlaybackControlsSpacing(top: 40, bottom: 40, left: 24, right: 24)
+    
     var queueTableView: UITableView!
     var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
     private var lastUpdatedQueue: [Track] = []
+    
+    var horizontalPadding: CGFloat {
+        // Horizontal padding between the edges of the screen and the contents of this view controller
+        // Note that the PlaybackControlsView will set padding independently
+        return 8
+    }
     
     let playerAdapter = PlayerAdapter()
     let socketManager: GMSockets = GMSockets.sharedInstance
@@ -24,12 +33,6 @@ class RootViewController: UIViewController {
     var notificationMonitor: NotificationMonitor!
     
     private var cancellables: Set<AnyCancellable> = []
-    
-    var horizontalPadding: CGFloat {
-        // Horizontal padding between the edges of the screen and the contents of this view controller
-        // Note that the PlaybackControlsView will set padding independently
-        return 8
-    }
     
     // MARK: Views Setup
     
@@ -207,12 +210,12 @@ extension RootViewController {
 
 // MARK: Bottom Bar
 extension RootViewController {
-    private func generateBottomBar() -> UIHostingController<BottomButtonView>{
+    private func generateBottomBar() -> UIHostingController<BottomBarView2>{
         let sessionSettingsAction = {
             self.present(SessionSettingsViewController(), animated: true)
         }
         
-        return UIHostingController(rootView: BottomButtonView(sessionSettingsAction: sessionSettingsAction))
+        return UIHostingController(rootView: BottomBarView2(sessionSettingsAction: sessionSettingsAction))
     }
     
     private func setupBottomBarLayout() {
@@ -254,6 +257,7 @@ extension RootViewController: UITableViewDelegate {
         
         tableView.backgroundColor = .clear
         tableView.allowsSelection = false
+        tableView.separatorStyle = .none
         tableView.register(QueueTableViewCell.self, forCellReuseIdentifier: "QueueCell")
         
         return tableView

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BottomButtonView: View {
+struct BottomBarView2: View {
     
     let sessionSettingsAction: () -> ()
     
@@ -70,7 +70,7 @@ struct BottomButtonView_Previews: PreviewProvider {
         ZStack {
             Color("RussianViolet")
                 .ignoresSafeArea(.all, edges: .all)
-            BottomButtonView(sessionSettingsAction: {})
+            BottomBarView2(sessionSettingsAction: {})
                 .padding(.horizontal)
             
         }

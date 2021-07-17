@@ -58,7 +58,7 @@
 		258CF388269DE89200D736D0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF387269DE89200D736D0 /* RootViewController.swift */; };
 		258CF38A269DE8EF00D736D0 /* BackgroundBlurViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF389269DE8EF00D736D0 /* BackgroundBlurViewController.swift */; };
 		258CF38E269DFAED00D736D0 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF38D269DFAED00D736D0 /* UIImage+Extensions.swift */; };
-		258CF391269E923900D736D0 /* BottomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF390269E923900D736D0 /* BottomButtonView.swift */; };
+		258CF391269E923900D736D0 /* BottomBarView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF390269E923900D736D0 /* BottomBarView2.swift */; };
 		258CF393269E96A100D736D0 /* Image+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF392269E96A100D736D0 /* Image+Extensions.swift */; };
 		258CF395269E99A300D736D0 /* SessionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */; };
 		2592C60D25BCB42A00EE7729 /* PlaybackProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */; };
@@ -187,7 +187,7 @@
 		258CF387269DE89200D736D0 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		258CF389269DE8EF00D736D0 /* BackgroundBlurViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBlurViewController.swift; sourceTree = "<group>"; };
 		258CF38D269DFAED00D736D0 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
-		258CF390269E923900D736D0 /* BottomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonView.swift; sourceTree = "<group>"; };
+		258CF390269E923900D736D0 /* BottomBarView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView2.swift; sourceTree = "<group>"; };
 		258CF392269E96A100D736D0 /* Image+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Extensions.swift"; sourceTree = "<group>"; };
 		258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSettingsViewController.swift; sourceTree = "<group>"; };
 		2592C60C25BCB42A00EE7729 /* PlaybackProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView.swift; sourceTree = "<group>"; };
@@ -401,7 +401,7 @@
 		258CF38F269E921500D736D0 /* SwiftUI Controls */ = {
 			isa = PBXGroup;
 			children = (
-				258CF390269E923900D736D0 /* BottomButtonView.swift */,
+				258CF390269E923900D736D0 /* BottomBarView2.swift */,
 				251B452C26A20E6C006853FD /* PlaybackControlsView.swift */,
 			);
 			path = "SwiftUI Controls";
@@ -712,7 +712,7 @@
 				BF8BEE69259B1B9100B9DCD3 /* MediaType.swift in Sources */,
 				253C3D46267717B2008A2E45 /* MediaDetailView3.swift in Sources */,
 				BFFED62525A3B9DC003A3048 /* MPMusicPlaybackState+Extension.swift in Sources */,
-				258CF391269E923900D736D0 /* BottomButtonView.swift in Sources */,
+				258CF391269E923900D736D0 /* BottomBarView2.swift in Sources */,
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
 				BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */,
 				258CF388269DE89200D736D0 /* RootViewController.swift in Sources */,

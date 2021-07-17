@@ -32,9 +32,6 @@ struct PlaybackControlsView: View {
             }
             .aspectRatio(1.0, contentMode: .fill)
         })
-        .onReceive(self.playerAdapter.$state) { (state: GMAppleMusicHostController.State) in
-            self.isPlaying = state.playbackState == .playing
-        }
     }
     
     var backwardButton: some View {
@@ -61,6 +58,9 @@ struct PlaybackControlsView: View {
         }
         .foregroundColor(.white.opacity(self.opacity))
         .font(.largeTitle)
+        .onReceive(self.playerAdapter.$state) { (state: GMAppleMusicHostController.State) in
+            self.isPlaying = state.playbackState == .playing
+        }
     }
     
     struct Configuration {
