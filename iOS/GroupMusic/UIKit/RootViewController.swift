@@ -19,7 +19,6 @@ class RootViewController: UIViewController {
     
     var queueTableView: UITableView!
     var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
-    private var lastUpdatedQueue: [Track] = []
     
     var horizontalPadding: CGFloat {
         // Horizontal padding between the edges of the screen and the contents of this view controller
@@ -43,7 +42,7 @@ class RootViewController: UIViewController {
         
         self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
-        self.subscribeToQueueStatePublishers()
+        self.subscribeToPublishers()
     }
     
     private func initalizeViews() {
@@ -82,16 +81,44 @@ class RootViewController: UIViewController {
         self.notificationMonitor.startListeningForNotifications()
     }
     
-    private func subscribeToQueueStatePublishers() {
+    private func subscribeToPublishers() {
+        self.subscribeToQueuePublisher()
+        self.subscibeToIndexOfNowPlayingItemPublisher()
+    }
+    
+    private func subscribeToQueuePublisher() {
         self.playerAdapter.$state
             .receive(on: RunLoop.main)
-            .filter({ (newState: GMAppleMusicHostController.State) -> Bool in
-            // Filter out state updates where the queue has not changed
-                newState.queue.state.queue != self.lastUpdatedQueue
+            .removeDuplicates(by: { previousState, currentState in
+                (previousState.queue.state.queue == currentState.queue.state.queue)
             })
             .sink { state in
-                self.lastUpdatedQueue = state.queue.state.queue
                 self.applyNewQueueTableViewSnapshot(withTracks: state.queue.state.queue)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func subscibeToIndexOfNowPlayingItemPublisher() {
+        self.playerAdapter.$state
+            .receive(on: RunLoop.main)
+            .removeDuplicates(by: { previousState, currentState in
+                (previousState.queue.state.indexOfNowPlayingItem == currentState.queue.state.indexOfNowPlayingItem)
+            })
+            .sink { state in
+                for i in 0..<self.playerAdapter.state.queue.state.queue.count {
+                    // Only visible cells will be provided by cellForRow(at: ).
+                    // Layout updates for non-visible cells must be done when dequeing reusable cells.
+                    guard let cell = self.queueTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? QueueTableViewCell else {
+                        continue // There was no visible cell at this row... continue to next loop
+                    }
+                    self.queueTableView.beginUpdates()
+                    if (state.queue.state.indexOfNowPlayingItem == i) {
+                        cell.updateLayout(forPlaybackStatus: .playing)
+                    } else {
+                        cell.updateLayout(forPlaybackStatus: .notPlaying)
+                    }
+                    self.queueTableView.endUpdates()
+                }
             }
             .store(in: &cancellables)
     }
@@ -259,6 +286,7 @@ extension RootViewController: UITableViewDelegate {
         tableView.allowsSelection = false
         tableView.separatorStyle = .none
         tableView.register(QueueTableViewCell.self, forCellReuseIdentifier: "QueueCell")
+        tableView.estimatedRowHeight = 100
         
         return tableView
     }
@@ -266,10 +294,16 @@ extension RootViewController: UITableViewDelegate {
     private func generateDataSource(forTableView tableView: UITableView) -> UITableViewDiffableDataSource<Section, Track> {
         return UITableViewDiffableDataSource<Section, Track>(tableView: tableView) {
             (tableView: UITableView, indexPath: IndexPath, track: Track) in
-            let cell =  tableView.dequeueReusableCell(withIdentifier: "QueueCell") as! QueueTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "QueueCell") as! QueueTableViewCell
             let cellConfiguration = QueueTableViewCell.Configuration(name: track.attributes?.name ?? "",
                                                                      artistName: track.attributes?.artistName ?? "")
             cell.configure(withConfiguration: cellConfiguration)
+            
+            if (self.playerAdapter.state.queue.state.indexOfNowPlayingItem == indexPath.row) {
+                cell.updateLayout(forPlaybackStatus: .playing)
+            } else {
+                cell.updateLayout(forPlaybackStatus: .notPlaying)
+            }
             
             return cell
         }
@@ -343,9 +377,6 @@ class QueueTableViewCell: UITableViewCell {
         return view
     }()
     
-    private var labelsStackView: UIStackView!
-    private var artworkAndLabelStackView: UIStackView!
-    
     private func createLabelStackView(withSubviews subviews: [UIView]) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
@@ -365,6 +396,11 @@ class QueueTableViewCell: UITableViewCell {
         
         return stackview
     }
+    
+    private var labelsStackView: UIStackView!
+    private var artworkAndLabelStackView: UIStackView!
+    private var backgroundCompactHeightConstraint: NSLayoutConstraint!
+    private var backgroundExpandedHeightConstraint: NSLayoutConstraint!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -394,18 +430,30 @@ class QueueTableViewCell: UITableViewCell {
         self.contentView.addSubview(self.background)
         
         self.background.translatesAutoresizingMaskIntoConstraints = false
-
+        
         self.background.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: halfSpacing).isActive = true
         self.background.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -1 * halfSpacing).isActive = true
         self.background.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: halfSpacing).isActive = true
         self.background.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -1 * halfSpacing).isActive = true
-        self.background.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        
+        self.backgroundExpandedHeightConstraint = self.background.heightAnchor.constraint(equalToConstant: 120)
+        self.backgroundCompactHeightConstraint = self.background.heightAnchor.constraint(equalToConstant: 80)
+        self.backgroundCompactHeightConstraint.isActive = true
+    }
+    
+    public func updateLayout(forPlaybackStatus playbackStatus: PlaybackStatus) {
+        if (playbackStatus == .playing) {
+            self.backgroundCompactHeightConstraint.isActive = false
+            self.backgroundExpandedHeightConstraint.isActive = true
+        } else if (playbackStatus == .notPlaying) {
+            self.backgroundExpandedHeightConstraint.isActive = false
+            self.backgroundCompactHeightConstraint.isActive = true
+        }
     }
     
     private func setupArtworkImageViewLayout() {
         self.artworkImageView.translatesAutoresizingMaskIntoConstraints = false
         self.artworkImageView.widthAnchor.constraint(equalTo: self.artworkImageView.heightAnchor).isActive = true
-
     }
     
     private func setupLabelsStackViewLayout() {
@@ -442,5 +490,10 @@ class QueueTableViewCell: UITableViewCell {
     struct Configuration {
         let name: String
         let artistName: String
+    }
+    
+    enum PlaybackStatus {
+        case playing
+        case notPlaying
     }
 }
