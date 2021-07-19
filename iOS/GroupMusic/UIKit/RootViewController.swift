@@ -371,10 +371,19 @@ class QueueTableViewCell: UITableViewCell {
         self.backgroundColor = .clear
         
         let spacing: CGFloat = 20.0
+        
+        self.setupContentViewLayout()
         self.setupBackgroundLayout(withSpacing: spacing)
         self.setupArtworkImageViewLayout()
         self.setupLabelsStackViewLayout()
         self.setupArtworkAndLabelStackViewLayout(withPadding: 16, spacing: spacing)
+    }
+    
+    private func setupContentViewLayout() {
+        self.contentView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.contentView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+        self.contentView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
     }
     
     /// Adds the background to the UITableViewCell, with autolayout constraints
@@ -382,14 +391,14 @@ class QueueTableViewCell: UITableViewCell {
     private func setupBackgroundLayout(withSpacing spacing: CGFloat) {
         let halfSpacing = spacing / 2
         
-        self.addSubview(self.background)
+        self.contentView.addSubview(self.background)
         
         self.background.translatesAutoresizingMaskIntoConstraints = false
 
-        self.background.topAnchor.constraint(equalTo: self.topAnchor, constant: halfSpacing).isActive = true
-        self.background.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -1 * halfSpacing).isActive = true
-        self.background.leftAnchor.constraint(equalTo: self.leftAnchor, constant: halfSpacing).isActive = true
-        self.background.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -1 * halfSpacing).isActive = true
+        self.background.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: halfSpacing).isActive = true
+        self.background.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -1 * halfSpacing).isActive = true
+        self.background.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: halfSpacing).isActive = true
+        self.background.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -1 * halfSpacing).isActive = true
         self.background.heightAnchor.constraint(equalToConstant: 80).isActive = true
     }
     
@@ -415,10 +424,10 @@ class QueueTableViewCell: UITableViewCell {
         
         let backgroundPadding = padding  + spacing / 2
         self.artworkAndLabelStackView.translatesAutoresizingMaskIntoConstraints = false
-        self.artworkAndLabelStackView.topAnchor.constraint(equalTo: self.topAnchor, constant: backgroundPadding).isActive = true
-        self.artworkAndLabelStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -1 * backgroundPadding).isActive = true
-        self.artworkAndLabelStackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: backgroundPadding).isActive = true
-        self.artworkAndLabelStackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -1 * backgroundPadding).isActive = true
+        self.artworkAndLabelStackView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: backgroundPadding).isActive = true
+        self.artworkAndLabelStackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -1 * backgroundPadding).isActive = true
+        self.artworkAndLabelStackView.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: backgroundPadding).isActive = true
+        self.artworkAndLabelStackView.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -1 * backgroundPadding).isActive = true
     }
     
     required init?(coder: NSCoder) {
