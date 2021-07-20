@@ -334,6 +334,17 @@ extension RootViewController: UITableViewDelegate {
 // MARK: QueueTableViewCell
 class QueueTableViewCell: UITableViewCell {
     
+    private var nowPlayingLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Now Playing"
+        label.numberOfLines = 1
+        label.font = UIFont(name: "Arial Rounded MT Bold", size: 16)
+        label.alpha = 0.7
+        label.textColor = UIColor.ui.lavenderWeb
+        label.textAlignment = .left
+        return label
+    }()
+    
     private var nameLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
@@ -443,9 +454,14 @@ class QueueTableViewCell: UITableViewCell {
     
     public func updateLayout(forPlaybackStatus playbackStatus: PlaybackStatus) {
         if (playbackStatus == .playing) {
+            self.labelsStackView.insertArrangedSubview(self.nowPlayingLabel, at: 0)
+            
             self.backgroundCompactHeightConstraint.isActive = false
             self.backgroundExpandedHeightConstraint.isActive = true
         } else if (playbackStatus == .notPlaying) {
+            self.labelsStackView.removeArrangedSubview(self.nowPlayingLabel)
+            self.nowPlayingLabel.removeFromSuperview()
+            
             self.backgroundExpandedHeightConstraint.isActive = false
             self.backgroundCompactHeightConstraint.isActive = true
         }

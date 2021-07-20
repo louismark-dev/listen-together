@@ -39,6 +39,7 @@ extension UIColor {
         let bluetiful = UIColor(named: "Bluetiful")!
         let emerald = UIColor(named: "Emerald")!
         let blackChocolate = UIColor(named: "BlackChocolate")!
+        let lavenderWeb = UIColor(named: "LavenderWeb")!
         let white = UIColor.white
     }
 }
