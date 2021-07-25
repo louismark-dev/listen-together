@@ -387,6 +387,8 @@ class QueueTableViewCell: UITableViewCell {
         return view
     }()
     
+    private var animationState: AnimationState = AnimationState()
+    
     private var labelsStackView: UIStackView!
     private var artworkAndLabelStackView: UIStackView!
     
@@ -401,6 +403,8 @@ class QueueTableViewCell: UITableViewCell {
         self.configureViewHirearchy()
         self.configureLayout()
     }
+    
+    // MARK: View Setup
     
     private func initalizeViews() {
         self.labelsStackView = self.createLabelStackView(withSubviews: [self.nameLabel, self.artistNameLabel])
@@ -488,6 +492,42 @@ class QueueTableViewCell: UITableViewCell {
         }
     }
     
+    // MARK: Gesture Recognizers
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.scaleDownAnimation()
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if (self.animationState.scaleDownAnimationInProgress) {
+            self.animationState.shouldScaleUpUponScaleDownAnimationCompletion = true
+        } else {
+            self.scaleUpAnimation()
+        }
+    }
+    
+    private func scaleDownAnimation() {
+        self.animationState.scaleDownAnimationInProgress = true
+        UIView.animate(withDuration: 0.1) {
+            self.background.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
+        } completion: { _ in
+            self.animationState.scaleDownAnimationInProgress = false
+            
+            if (self.animationState.shouldScaleUpUponScaleDownAnimationCompletion == true) {
+                self.scaleUpAnimation()
+                self.animationState.shouldScaleUpUponScaleDownAnimationCompletion = false
+            }
+        }
+    }
+    
+    private func scaleUpAnimation() {
+        UIView.animate(withDuration: 0.1) {
+            self.background.transform = CGAffineTransform.identity
+        }
+    }
+    
+    // MARK: Config
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -495,6 +535,11 @@ class QueueTableViewCell: UITableViewCell {
     public func configure(withConfiguration configuration: Configuration) {
         self.nameLabel.text = configuration.name
         self.artistNameLabel.text = configuration.artistName
+    }
+    
+    struct AnimationState {
+        var scaleDownAnimationInProgress: Bool = false
+        var shouldScaleUpUponScaleDownAnimationCompletion: Bool = false
     }
     
     struct Configuration {
