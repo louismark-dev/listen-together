@@ -382,11 +382,41 @@ class QueueTableViewCell: UITableViewCell {
         view.layer.cornerRadius = 25
         view.layer.cornerCurve = .continuous
         view.layer.masksToBounds = true
-        view.alpha = 0.55
-        view.backgroundColor = UIColor.ui.blackChocolate
+        view.backgroundColor = UIColor.ui.blackChocolate.withAlphaComponent(0.55)
         
         return view
     }()
+    
+    private var labelsStackView: UIStackView!
+    private var artworkAndLabelStackView: UIStackView!
+    
+    private var backgroundCompactHeightConstraint: NSLayoutConstraint!
+    private var backgroundExpandedHeightConstraint: NSLayoutConstraint!
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .clear
+        
+        self.initalizeViews()
+        self.configureViewHirearchy()
+        self.configureLayout()
+    }
+    
+    private func initalizeViews() {
+        self.labelsStackView = self.createLabelStackView(withSubviews: [self.nameLabel, self.artistNameLabel])
+        self.artworkAndLabelStackView = self.createArtworkAndLabelStackView(withSubviews: [self.artworkImageView, self.labelsStackView])
+    }
+    
+    private func configureViewHirearchy() {
+        self.contentView.addSubview(self.background)
+        self.background.addSubview(self.artworkAndLabelStackView)
+    }
+    
+    private func configureLayout() {
+        self.setupBackgroundLayout(withSpacing: 20.0)
+        self.setupArtworkImageViewLayout()
+        self.setupArtworkAndLabelStackViewLayout(withPadding: 16.0)
+    }
     
     private func createLabelStackView(withSubviews subviews: [UIView]) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: subviews)
@@ -408,37 +438,10 @@ class QueueTableViewCell: UITableViewCell {
         return stackview
     }
     
-    private var labelsStackView: UIStackView!
-    private var artworkAndLabelStackView: UIStackView!
-    private var backgroundCompactHeightConstraint: NSLayoutConstraint!
-    private var backgroundExpandedHeightConstraint: NSLayoutConstraint!
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .clear
-        
-        let spacing: CGFloat = 20.0
-        
-        self.setupContentViewLayout()
-        self.setupBackgroundLayout(withSpacing: spacing)
-        self.setupArtworkImageViewLayout()
-        self.setupLabelsStackViewLayout()
-        self.setupArtworkAndLabelStackViewLayout(withPadding: 16, spacing: spacing)
-    }
-    
-    private func setupContentViewLayout() {
-        self.contentView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        self.contentView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        self.contentView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-    }
-    
     /// Adds the background to the UITableViewCell, with autolayout constraints
     /// - Parameter spacing: The space between each background in the UITableView
     private func setupBackgroundLayout(withSpacing spacing: CGFloat) {
         let halfSpacing = spacing / 2
-        
-        self.contentView.addSubview(self.background)
         
         self.background.translatesAutoresizingMaskIntoConstraints = false
         
@@ -450,6 +453,24 @@ class QueueTableViewCell: UITableViewCell {
         self.backgroundExpandedHeightConstraint = self.background.heightAnchor.constraint(equalToConstant: 120)
         self.backgroundCompactHeightConstraint = self.background.heightAnchor.constraint(equalToConstant: 80)
         self.backgroundCompactHeightConstraint.isActive = true
+    }
+    
+    private func setupArtworkImageViewLayout() {
+        self.artworkImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.artworkImageView.widthAnchor.constraint(equalTo: self.artworkImageView.heightAnchor).isActive = true
+    }
+    
+    /// Configures and lays out the arworkAndLabel UIStackView
+    /// - Parameters:
+    ///   - padding: The space between the edge of the background, and the contents of the cell (artworkAndLabelStackView)
+    ///   - spacing: The space between each background in the UITableView.
+    private func setupArtworkAndLabelStackViewLayout(withPadding padding: CGFloat) {
+        self.artworkAndLabelStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.artworkAndLabelStackView.topAnchor.constraint(equalTo: self.background.topAnchor, constant: padding).isActive = true
+        self.artworkAndLabelStackView.bottomAnchor.constraint(equalTo: self.background.bottomAnchor, constant: -1 * padding).isActive = true
+        self.artworkAndLabelStackView.leftAnchor.constraint(equalTo: self.background.leftAnchor, constant: padding).isActive = true
+        self.artworkAndLabelStackView.rightAnchor.constraint(equalTo: self.background.rightAnchor, constant: -1 * padding).isActive = true
     }
     
     public func updateLayout(forPlaybackStatus playbackStatus: PlaybackStatus) {
@@ -465,33 +486,6 @@ class QueueTableViewCell: UITableViewCell {
             self.backgroundExpandedHeightConstraint.isActive = false
             self.backgroundCompactHeightConstraint.isActive = true
         }
-    }
-    
-    private func setupArtworkImageViewLayout() {
-        self.artworkImageView.translatesAutoresizingMaskIntoConstraints = false
-        self.artworkImageView.widthAnchor.constraint(equalTo: self.artworkImageView.heightAnchor).isActive = true
-    }
-    
-    private func setupLabelsStackViewLayout() {
-        self.labelsStackView = createLabelStackView(withSubviews: [nameLabel, artistNameLabel])
-        self.labelsStackView.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    /// Configures and lays out the arworkAndLabel UIStackView
-    /// - Parameters:
-    ///   - padding: The space between the edge of the background, and the contents of the cell (artworkAndLabelStackView)
-    ///   - spacing: The space between each background in the UITableView.
-    private func setupArtworkAndLabelStackViewLayout(withPadding padding: CGFloat, spacing: CGFloat) {
-        self.artworkAndLabelStackView = createArtworkAndLabelStackView(withSubviews: [self.artworkImageView, self.labelsStackView])
-        
-        self.addSubview(self.artworkAndLabelStackView)
-        
-        let backgroundPadding = padding  + spacing / 2
-        self.artworkAndLabelStackView.translatesAutoresizingMaskIntoConstraints = false
-        self.artworkAndLabelStackView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: backgroundPadding).isActive = true
-        self.artworkAndLabelStackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -1 * backgroundPadding).isActive = true
-        self.artworkAndLabelStackView.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: backgroundPadding).isActive = true
-        self.artworkAndLabelStackView.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -1 * backgroundPadding).isActive = true
     }
     
     required init?(coder: NSCoder) {
