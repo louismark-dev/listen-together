@@ -17,6 +17,9 @@ class RootViewController: UIViewController {
     var playbackControlsHostingController: UIHostingController<PlaybackControlsView>!
     let playbackControlsSpacing = PlaybackControlsSpacing(top: 40, bottom: 40, left: 24, right: 24)
     
+    var trackDetailModalViewController: TrackDetailModalViewController!
+    var trackDetailModalViewModel: TrackDetailModalViewModel = TrackDetailModalViewModel()
+    
     var queueTableView: UITableView!
     var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
     
@@ -48,6 +51,7 @@ class RootViewController: UIViewController {
     private func initalizeViews() {
         self.playbackControlsHostingController = self.generatePlaybackControlsHostingController()
         self.bottomBarHostingController = self.generateBottomBar()
+        self.trackDetailModalViewController = self.generateTrackDetailModalViewController()
         self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
         self.queueTableView = self.generateQueueTableView()
         self.queueTableViewDiffableDataSource = self.generateDataSource(forTableView: self.queueTableView)
@@ -65,11 +69,15 @@ class RootViewController: UIViewController {
         self.view.addSubview(self.bottomBarHostingController.view)
         
         self.view.addSubview(self.queueTableView)
+        
+        self.addChild(self.trackDetailModalViewController)
+        self.view.addSubview(self.trackDetailModalViewController.view)
     }
     
     private func configureLayout() {
         self.setupPlaybackControlsLayout()
         self.setupBottomBarLayout()
+        self.setupTrackDetailModalViewLayout()
         self.setupBackgroundBlurViewControllerLayout()
         self.setupQueueTableViewLayout()
     }
@@ -121,6 +129,26 @@ class RootViewController: UIViewController {
                 }
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: Track Details Modal
+extension RootViewController {
+    private func generateTrackDetailModalViewController() -> TrackDetailModalViewController {
+        let viewController = TrackDetailModalViewController()
+        
+        viewController.setTrackDetailModalViewModel(to: self.trackDetailModalViewModel)
+        
+        return viewController
+    }
+    
+    private func setupTrackDetailModalViewLayout() {
+        self.trackDetailModalViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.trackDetailModalViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.trackDetailModalViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.trackDetailModalViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.trackDetailModalViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
 }
 
@@ -295,8 +323,8 @@ extension RootViewController: UITableViewDelegate {
         return UITableViewDiffableDataSource<Section, Track>(tableView: tableView) {
             (tableView: UITableView, indexPath: IndexPath, track: Track) in
             let cell = tableView.dequeueReusableCell(withIdentifier: "QueueCell") as! QueueTableViewCell
-            let cellConfiguration = QueueTableViewCell.Configuration(name: track.attributes?.name ?? "",
-                                                                     artistName: track.attributes?.artistName ?? "")
+            let cellConfiguration = QueueTableViewCell.Configuration(trackDetailModalViewModel: self.trackDetailModalViewModel,
+                                                                     track: track)
             cell.configure(withConfiguration: cellConfiguration)
             
             if (self.playerAdapter.state.queue.state.indexOfNowPlayingItem == indexPath.row) {
@@ -386,6 +414,10 @@ class QueueTableViewCell: UITableViewCell {
         
         return view
     }()
+    
+    private weak var trackDetailModalViewModel: TrackDetailModalViewModel!
+    
+    private var track: Track!
     
     private var animationState: AnimationState = AnimationState()
     
@@ -523,7 +555,13 @@ class QueueTableViewCell: UITableViewCell {
     private func scaleUpAnimation() {
         UIView.animate(withDuration: 0.1) {
             self.background.transform = CGAffineTransform.identity
+        } completion: { _ in
+            self.openTrackDetailModalViewController(withTrack: self.track)
         }
+    }
+    
+    private func openTrackDetailModalViewController(withTrack track: Track) {
+        self.trackDetailModalViewModel.open(with: track)
     }
     
     // MARK: Config
@@ -533,8 +571,11 @@ class QueueTableViewCell: UITableViewCell {
     }
     
     public func configure(withConfiguration configuration: Configuration) {
-        self.nameLabel.text = configuration.name
-        self.artistNameLabel.text = configuration.artistName
+        self.trackDetailModalViewModel = configuration.trackDetailModalViewModel
+        self.track = configuration.track
+        
+        self.nameLabel.text = self.track.attributes?.name
+        self.artistNameLabel.text = self.track.attributes?.artistName
     }
     
     struct AnimationState {
@@ -543,8 +584,8 @@ class QueueTableViewCell: UITableViewCell {
     }
     
     struct Configuration {
-        let name: String
-        let artistName: String
+        let trackDetailModalViewModel: TrackDetailModalViewModel
+        let track: Track
     }
     
     enum PlaybackStatus {
