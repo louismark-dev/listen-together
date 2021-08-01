@@ -33,8 +33,19 @@ class TrackDetailModalViewController: UIViewController {
     
     private var trackDetailModalViewModel: TrackDetailModalViewModel!
     
-    private var cardOpenConstraints: [NSLayoutConstraint]!
-    private var cardClosedConstraints: [NSLayoutConstraint]!
+    /// Constraint pins the bottom of the card to the bottom of the TrackDetailModalViewController's view.
+    /// Set to true to open the card.
+    private var cardOpenConstraint: NSLayoutConstraint!
+    
+    /// Constraint pins the top of the card to the bottom of the TrackDetailModalViewController's view.
+    /// Set to true to close the card.
+    private var cardClosedConstraint: NSLayoutConstraint!
+    
+    /// The height constraint of the trackDetailModalViewHostingController.
+    /// This constraint is used to resize the view when the user is dragging up.
+    private var trackDetailModalViewHostingControllerHeightConstraint: NSLayoutConstraint!
+    /// The inital height of the trackDetailModalViewHostingController, prior to the user dragging up
+    private var trackDetailModalViewHostingControllerInitialHeight: CGFloat!
         
     private var closeTapGestureRecognizer: UITapGestureRecognizer!
     
@@ -89,6 +100,8 @@ class TrackDetailModalViewController: UIViewController {
     private func configureTrackDetailModalView() {
         self.trackDetailModalViewHostingController = UIHostingController(rootView: TrackDetailModalView2(trackDetailModalViewModel: self.trackDetailModalViewModel))
         self.trackDetailModalViewHostingController.view.backgroundColor = .clear
+        
+        self.setupPanGestureRecognizer()
     }
     
     private func configureViewHirearchy() {
@@ -109,10 +122,10 @@ class TrackDetailModalViewController: UIViewController {
         self.card.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.card.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         
-        self.cardOpenConstraints = [self.card.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)]
-        self.cardClosedConstraints = [self.card.topAnchor.constraint(equalTo: self.view.bottomAnchor)]
+        self.cardOpenConstraint = self.card.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        self.cardClosedConstraint = self.card.topAnchor.constraint(equalTo: self.view.bottomAnchor)
         
-        NSLayoutConstraint.activate(self.cardClosedConstraints)
+        self.cardClosedConstraint.isActive = true
         self.card.alpha = 0.0
     }
     
@@ -123,7 +136,13 @@ class TrackDetailModalViewController: UIViewController {
         self.trackDetailModalViewHostingController.view.bottomAnchor.constraint(equalTo: self.card.bottomAnchor, constant: -16).isActive = true
         self.trackDetailModalViewHostingController.view.leftAnchor.constraint(equalTo: self.card.leftAnchor, constant: 16).isActive = true
         self.trackDetailModalViewHostingController.view.rightAnchor.constraint(equalTo: self.card.rightAnchor, constant: -16).isActive = true
+        
+        // This constraint is used to resize the view when the user drags the card view up.
+        // It is otherwise inactive.
+        self.trackDetailModalViewHostingControllerHeightConstraint = self.trackDetailModalViewHostingController.view.heightAnchor.constraint(equalToConstant: 0)
     }
+    
+    // MARK: Open & Close
     
     /// Opens TrackDetailModalView.
     /// Enables the close tap gesture recognizer
@@ -131,8 +150,8 @@ class TrackDetailModalViewController: UIViewController {
         self.card.alpha = 1.0
         self.enableCloseTapGestureRecognizer()
         self.animateLayoutChange {
-            NSLayoutConstraint.deactivate(self.cardClosedConstraints)
-            NSLayoutConstraint.activate(self.cardOpenConstraints)
+            self.cardClosedConstraint.isActive = false
+            self.cardOpenConstraint.isActive = true
             
             self.view.layoutIfNeeded()
             
@@ -146,8 +165,8 @@ class TrackDetailModalViewController: UIViewController {
     private func close() {
         self.disableCloseTapGestureRecognizer()
         self.animateLayoutChange {
-            NSLayoutConstraint.deactivate(self.cardOpenConstraints)
-            NSLayoutConstraint.activate(self.cardClosedConstraints)
+            self.cardOpenConstraint.isActive = false
+            self.cardClosedConstraint.isActive = true
             
             self.view.layoutIfNeeded()
             
@@ -155,6 +174,7 @@ class TrackDetailModalViewController: UIViewController {
         } completion: { _ in
             self.card.alpha = 0.0
             self.trackDetailModalViewModel.track = nil
+            self.trackDetailModalViewModel.isOpen = false
         }
     }
     
@@ -183,6 +203,114 @@ class TrackDetailModalViewController: UIViewController {
     public enum ViewStatus {
         case open
         case closed
+    }
+}
+// MARK: Pan Gesture
+extension TrackDetailModalViewController {
+    /// Sets up the pan gesture recognizer for dragging the TrackDetailModalView vertically.
+    private func setupPanGestureRecognizer() {
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.panGestureHandler))
+        self.card.addGestureRecognizer(panGestureRecognizer)
+    }
+    
+    @objc func panGestureHandler(sender: UIPanGestureRecognizer) {
+        switch sender.state {
+        case .began:
+            self.trackDetailModalViewHostingControllerInitialHeight = self.trackDetailModalViewHostingController.view.frame.height
+        case .changed:
+            self.setLayoutForDragTranslation(sender.translation(in: self.view))
+        case .ended:
+            self.setLayoutForEndOfGesture(withTranslation: sender.translation(in: self.view),
+                                          velocity: sender.velocity(in: self.view))
+        case .possible, .cancelled, .failed:
+            return
+        @unknown default:
+            return
+        }
+    }
+    
+    /// Sets the layout when the user drags the card. Will result in a strech animation when the user drags up.
+    /// Will drag the view down when the suer drags down
+    /// - Parameter translation: The UIPanGestureRecognizer's translation
+    private func setLayoutForDragTranslation(_ translation: CGPoint) {
+        let verticalGestureTranslation = translation.y
+        if (verticalGestureTranslation < 0) {
+            // User is dragging up
+            self.setLayoutForDragUp(withDragTranslation: verticalGestureTranslation)
+        } else  {
+            // User is dragging down
+            self.setLayoutForDragDown(dragTranslation: verticalGestureTranslation)
+        }
+    }
+    
+    /// Adjusts the layout when the user drags the card up. This will create a stretching rubber band effect in the card.
+    /// - Parameter translation: The vertical translation in the drag
+    private func setLayoutForDragUp(withDragTranslation translation: CGFloat) {
+        let translation = -1 * translation
+        self.trackDetailModalViewHostingControllerHeightConstraint.constant = self.cardHeightForOverscroll(of: translation,
+                                                                                                           initalHeight: self.trackDetailModalViewHostingControllerInitialHeight)
+        self.trackDetailModalViewHostingControllerHeightConstraint.isActive = true
+    }
+    
+    /// Determines the height for the card when the the user overscrolls (scrolls up) vertically. This creates a rubber band effect when the user drags the card up.
+    /// - Parameter translation: The gesture's vertical translation.
+    /// - Parameter initalHeight: Initial height of the card.
+    private func cardHeightForOverscroll(of translation: CGFloat, initalHeight: CGFloat) -> CGFloat {
+        let value = initalHeight * (1 + log10(abs(translation + initalHeight) / initalHeight))
+        return value
+    }
+    
+    /// Adjusts the layout when the user drags the card down. If the user drags past a certain threshold, this will close the card. Otherwise the card
+    /// will spring back into the open position
+    /// - Parameter translation: The vertical translation in the drag
+    private func setLayoutForDragDown(dragTranslation translation: CGFloat) {
+        self.cardOpenConstraint.constant = translation
+    }
+    
+    /// Sets the layout after user has completed their gesture
+    /// - Parameters:
+    ///   - translation: The translation from the UIPanGestureRecognizer
+    ///   - velocity: The velocity from the UIPanGestureRecognizer
+    private func setLayoutForEndOfGesture(withTranslation translation: CGPoint, velocity: CGPoint) {
+        let minimumDragDistanceToClose: CGFloat = 50
+        if (translation.y < 0) {
+            // DRAG UP
+            // Open
+            self.resetLayoutToOpen()
+        } else if (translation.y >= 0 && translation.y < minimumDragDistanceToClose) {
+            // Dragged down slightly.
+            // Open
+            self.resetLayoutToOpen()
+        } else if (translation.y >= minimumDragDistanceToClose) {
+            // DRAG DOWN
+            if (velocity.y > 0) {
+                // VELOCITY DOWN
+                // Close
+                self.resetLayoutToClosed()
+            } else {
+                // VELOCITY UP
+                // Open
+                self.resetLayoutToOpen()
+            }
+        }
+    }
+    
+    /// Sets the layout of the card back to the open position. This is to be called after the user has concluded their drag gestue.
+    private func resetLayoutToOpen() {
+        self.trackDetailModalViewHostingControllerHeightConstraint.isActive = false
+        self.cardOpenConstraint.constant = 0
+        UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut) {
+            self.card.layoutIfNeeded()
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    /// Sets the layout of the card back to the closed position. This is to be called after the user has concluded their drag gestue.
+    private func resetLayoutToClosed() {
+        self.trackDetailModalViewHostingControllerHeightConstraint.isActive = false
+        self.cardOpenConstraint.constant = 0
+        
+        self.close()
     }
 }
 
