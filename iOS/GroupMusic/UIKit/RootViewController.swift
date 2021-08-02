@@ -136,9 +136,10 @@ class RootViewController: UIViewController {
 extension RootViewController {
     private func generateTrackDetailModalViewController() -> TrackDetailModalViewController {
         let viewController = TrackDetailModalViewController()
-        
-        viewController.setTrackDetailModalViewModel(to: self.trackDetailModalViewModel)
-        
+        viewController.configure(with: TrackDetailModalViewController.Configuration(socketManager: self.socketManager,
+                                                                                    playerAdapter: self.playerAdapter,
+                                                                                    model: self.trackDetailModalViewModel))
+                
         return viewController
     }
     

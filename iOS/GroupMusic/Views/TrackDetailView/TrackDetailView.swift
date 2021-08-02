@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct TrackDetailView: View, AudioPreviewDelegate {
-    @StateObject var audioPreviewPlayer: AudioPreview = AudioPreview()
+    @StateObject var audioPreviewPlayer: AudioPreviewManager = AudioPreviewManager()
     @EnvironmentObject var playerAdapter: PlayerAdapter
     @EnvironmentObject var trackDetailModalViewManager: TrackDetailModalViewManager
     @State var showPreviewConfirmationAlert: Bool = false
     
-    @State var previewPlaybackStatus: AudioPreview.PlaybackStatus = .stopped
+    @State var previewPlaybackStatus: AudioPreviewManager.PlaybackStatus = .stopped
     @State var previewPlaybackPosition: PlaybackPosition = PlaybackPosition()
     @State var shouldResumePlaybackAfterPreviewCompletion: Bool = false
     let track: Track
@@ -250,7 +250,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
     
     // MARK: AudioPreviewDelegate
     
-    func playbackStatusDidChange(to playbackStatus: AudioPreview.PlaybackStatus) {
+    func playbackStatusDidChange(to playbackStatus: AudioPreviewManager.PlaybackStatus) {
         self.previewPlaybackStatus = playbackStatus
         
         if (self.previewPlaybackStatus == .stopped && self.shouldResumePlaybackAfterPreviewCompletion) {
@@ -265,7 +265,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
     // MARK: Subviews
     
     struct PreviewButton: View {
-        @Binding var audioPreviewPlaybackStatus: AudioPreview.PlaybackStatus
+        @Binding var audioPreviewPlaybackStatus: AudioPreviewManager.PlaybackStatus
         @Binding var audioPreviewPlaybackPosition: PlaybackPosition
         
         var body: some View {

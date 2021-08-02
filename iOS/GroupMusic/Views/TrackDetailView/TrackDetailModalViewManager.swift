@@ -10,7 +10,7 @@ import SwiftUI
 class TrackDetailModalViewManager: ObservableObject {
     @Published var isOpen: Bool = false
     @Published var configuration: TrackDetailModalViewConfiguration?
-    var audioPreviewPlayer: AudioPreview = AudioPreview()
+    var audioPreviewPlayer: AudioPreviewManager = AudioPreviewManager()
     
     public func open(withConfiguration configuration: TrackDetailModalViewConfiguration) {
         self.configuration = configuration

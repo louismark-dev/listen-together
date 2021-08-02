@@ -49,6 +49,12 @@ class TrackDetailModalViewController: UIViewController {
         
     private var closeTapGestureRecognizer: UITapGestureRecognizer!
     
+    private var playerAdapter: PlayerAdapter!
+    private var socketManager: GMSockets!
+    
+    private var shouldResumePlaybackAfterPreviewCompletion: Bool = false
+    private let audioPreviewManager = AudioPreviewManager()
+    
     private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
@@ -59,11 +65,26 @@ class TrackDetailModalViewController: UIViewController {
         self.initalizeCloseTapGestureRecognizer()
     }
     
-    // MARK: Data
-    public func setTrackDetailModalViewModel(to model: TrackDetailModalViewModel) {
-        self.trackDetailModalViewModel = model
+    // MARK: Configuration
+    
+    /// Configuration data for this ViewController
+    struct Configuration {
+        let socketManager: GMSockets
+        let playerAdapter: PlayerAdapter
+        let model: TrackDetailModalViewModel
+    }
+    
+    /// Configures the ViewController with the necessary information. Failure to call this function could result in fatal errors.
+    /// - Parameter configuration: The configuration object.
+    public func configure(with configuration: Configuration) {
+        self.playerAdapter = configuration.playerAdapter
+        self.socketManager = configuration.socketManager
+        
+        self.trackDetailModalViewModel = configuration.model
         self.subscribeToTrackDetailModalViewModelPublishers()
     }
+    
+    // MARK: Data
     
     /// Subscribes to relevant TrackDetailViewModel publishers
     private func subscribeToTrackDetailModalViewModelPublishers() {
@@ -98,10 +119,13 @@ class TrackDetailModalViewController: UIViewController {
     }
     
     private func configureTrackDetailModalView() {
-        self.trackDetailModalViewHostingController = UIHostingController(rootView: TrackDetailModalView2(trackDetailModalViewModel: self.trackDetailModalViewModel))
+        self.trackDetailModalViewHostingController = UIHostingController(rootView: TrackDetailModalView2(trackDetailModalViewModel: self.trackDetailModalViewModel,
+                                                                                                         previewManager: self.audioPreviewManager,
+                                                                                                         onPreviewTap: self.previewButtonOnTapHandler))
         self.trackDetailModalViewHostingController.view.backgroundColor = .clear
         
         self.setupPanGestureRecognizer()
+        self.audioPreviewManager.delegate = self
     }
     
     private func configureViewHirearchy() {
@@ -164,6 +188,9 @@ class TrackDetailModalViewController: UIViewController {
     /// Disables close tap gesture recognizer.
     private func close() {
         self.disableCloseTapGestureRecognizer()
+        // Stop any playing track previews
+        self.stopPreview()
+        
         self.animateLayoutChange {
             self.cardOpenConstraint.isActive = false
             self.cardClosedConstraint.isActive = true
@@ -205,6 +232,88 @@ class TrackDetailModalViewController: UIViewController {
         case closed
     }
 }
+// MARK: Audio Preview
+extension TrackDetailModalViewController: AudioPreviewDelegate {
+    /// Handler for the preview button.
+    /// This will start playing the track preview. If there is already a track playing, this will pause playback before playing the preview.
+    /// This will stop playing the track preview if the track preview is already playing.
+    private func previewButtonOnTapHandler() {
+        if (self.audioPreviewManager.playbackStatus == .stopped) {
+            let showPreviewConfirmationAlert = (self.socketManager.state.isCoordinator == true && self.playerAdapter.state.playbackState == .playing)
+            if (showPreviewConfirmationAlert == true) {
+                // Get confirmation before playing preview
+                self.displayPreviewConfirmationAlert()
+            } else {
+                self.playPreview(andPausePlayback: false)
+            }
+        } else {
+            self.stopPreview()
+        }
+    }
+    
+    /// Use this function to display the confirmation when the user starts a track preview while there is already a track playing.
+    /// If the user chooses to continue with the preview, this will pause audio playback and being previewing the new track
+    private func displayPreviewConfirmationAlert() {
+        let alert = UIAlertController(title: "Previewing this song will pause music playback.",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { _ in
+            self.playPreview(andPausePlayback: true)
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    /// Starts the playback preview for the track associated with this ViewController
+    /// - Parameter shouldPausePlayback: Set to true if music playback should be paused before playing the preview
+    private func playPreview(andPausePlayback shouldPausePlayback: Bool) {
+        if let previewURL = self.trackDetailModalViewModel.track?.attributes?.previews.first?.url {
+            self.audioPreviewManager.setAudioStreamURL(audioStreamURL: previewURL)
+        } else {
+            return
+        }
+        
+        if (shouldPausePlayback) {
+            self.playerAdapter.pause {
+                try? self.audioPreviewManager.play()
+            }
+            self.shouldResumePlaybackAfterPreviewCompletion = true
+        } else {
+            try? self.audioPreviewManager.play()
+            self.shouldResumePlaybackAfterPreviewCompletion = false
+        }
+    }
+    
+    /// Stops the playback preview for the track associated with this ViewController
+    private func stopPreview() {
+        try? self.audioPreviewManager.stop()
+        
+        if (self.shouldResumePlaybackAfterPreviewCompletion) {
+            self.playerAdapter.play(completion: nil)
+        }
+        self.shouldResumePlaybackAfterPreviewCompletion = false
+    }
+    
+    // MARK: AudioPreviewDelegate
+    
+    func playbackStatusDidChange(to playbackStatus: AudioPreviewManager.PlaybackStatus) {
+        if (playbackStatus == .stopped && self.shouldResumePlaybackAfterPreviewCompletion) {
+            // Resume playback after end of preview
+            self.resumePlaybackAftePreviewEnd()
+        }
+    }
+    
+    func playbackPositionDidChange(to: PlaybackPosition) {
+        // TODO: Remove once removing SwiftUI implementation of the previews
+    }
+    
+    private func resumePlaybackAftePreviewEnd() {
+        self.playerAdapter.play(completion: nil)
+        self.shouldResumePlaybackAfterPreviewCompletion = false
+    }
+}
+
 // MARK: Pan Gesture
 extension TrackDetailModalViewController {
     /// Sets up the pan gesture recognizer for dragging the TrackDetailModalView vertically.
