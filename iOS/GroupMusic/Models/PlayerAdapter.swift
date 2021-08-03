@@ -78,10 +78,12 @@ class PlayerAdapter: ObservableObject {
     }
     
     func prependToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
+        let tracks = self.addUniqueIdentifiers(to: tracks)
         self.player.prependToQueue(withTracks: tracks, completion: completion)
     }
     
     func appendToQueue(withTracks tracks: [Track], completion: (() -> Void)?) {
+        let tracks = self.addUniqueIdentifiers(to: tracks)
         self.player.appendToQueue(withTracks: tracks, completion: completion)
     }
     
@@ -95,5 +97,17 @@ class PlayerAdapter: ObservableObject {
     
     func nowPlayingIndexDidChange(to index: Int) {
         self.player.nowPlayingIndexDidChange(to: index)
+    }
+    
+    
+    /// Adds unique identifiers to the given tracks. This ensures that all tracks in the queue will have unique identifiers.
+    /// - Parameter tracks: The tracks to be given unique identifiers
+    private func addUniqueIdentifiers(to tracks: [Track]) -> [Track] {
+        let modifiedTracks = tracks.map { (track: Track) -> Track in
+            var modifiedTrack = track
+            modifiedTrack.id = UUID()
+            return modifiedTrack
+        }
+        return modifiedTracks
     }
 }

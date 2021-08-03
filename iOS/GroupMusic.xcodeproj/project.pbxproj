@@ -100,7 +100,7 @@
 		BF5EE21F25A0256C000C23DD /* ResultCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE21E25A0256C000C23DD /* ResultCardView.swift */; };
 		BF5EE22325A028A3000C23DD /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22225A028A3000C23DD /* PreviewView.swift */; };
 		BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22725A02F27000C23DD /* VisualEffectView.swift */; };
-		BF5EE22B25A03353000C23DD /* AudioPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22A25A03353000C23DD /* AudioPreview.swift */; };
+		BF5EE22B25A03353000C23DD /* AudioPreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22A25A03353000C23DD /* AudioPreviewManager.swift */; };
 		BF5EE23025A06AE8000C23DD /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE22F25A06AE7000C23DD /* Preview.swift */; };
 		BF5EE24125A13E06000C23DD /* GMAppleMusicHostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24025A13E06000C23DD /* GMAppleMusicHostController.swift */; };
 		BF5EE24625A14683000C23DD /* GMAppleMusicQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */; };
@@ -234,7 +234,7 @@
 		BF5EE21E25A0256C000C23DD /* ResultCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCardView.swift; sourceTree = "<group>"; };
 		BF5EE22225A028A3000C23DD /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
 		BF5EE22725A02F27000C23DD /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
-		BF5EE22A25A03353000C23DD /* AudioPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPreview.swift; sourceTree = "<group>"; };
+		BF5EE22A25A03353000C23DD /* AudioPreviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPreviewManager.swift; sourceTree = "<group>"; };
 		BF5EE22F25A06AE7000C23DD /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		BF5EE24025A13E06000C23DD /* GMAppleMusicHostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicHostController.swift; sourceTree = "<group>"; };
 		BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMAppleMusicQueue.swift; sourceTree = "<group>"; };
@@ -459,7 +459,7 @@
 		BF266BFE259026BA00029A2D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				BF5EE22A25A03353000C23DD /* AudioPreview.swift */,
+				BF5EE22A25A03353000C23DD /* AudioPreviewManager.swift */,
 				BFA285C52595B56A00D8B4D6 /* AVPlayer+Extension.swift */,
 				BF5EE24025A13E06000C23DD /* GMAppleMusicHostController.swift */,
 				BF5EE24525A14683000C23DD /* GMAppleMusicQueue.swift */,
@@ -783,7 +783,7 @@
 				258CF393269E96A100D736D0 /* Image+Extensions.swift in Sources */,
 				BF8BEE68259B1B9100B9DCD3 /* Curator.swift in Sources */,
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
-				BF5EE22B25A03353000C23DD /* AudioPreview.swift in Sources */,
+				BF5EE22B25A03353000C23DD /* AudioPreviewManager.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
 				25D3207825F7EC3D00DD4970 /* ImageLoader.swift in Sources */,
 				25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */,

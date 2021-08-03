@@ -18,7 +18,7 @@ class RootViewController: UIViewController {
     let playbackControlsSpacing = PlaybackControlsSpacing(top: 40, bottom: 40, left: 24, right: 24)
     
     var trackDetailModalViewController: TrackDetailModalViewController!
-    var trackDetailModalViewModel: TrackDetailModalViewModel = TrackDetailModalViewModel()
+    var trackDetailModalViewModel: TrackDetailModalViewModel!
     
     var queueTableView: UITableView!
     var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
@@ -39,6 +39,8 @@ class RootViewController: UIViewController {
     // MARK: Views Setup
     
     override func viewDidLoad() {
+        self.initializeTrackDetailModalViewModel()
+        
         self.initalizeViews()
         self.configureViewHirearchy()
         self.configureLayout()
@@ -46,6 +48,10 @@ class RootViewController: UIViewController {
         self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
         self.subscribeToPublishers()
+    }
+    
+    private func initializeTrackDetailModalViewModel() {
+        self.trackDetailModalViewModel = TrackDetailModalViewModel(withPlayerAdapter: self.playerAdapter)
     }
     
     private func initalizeViews() {
@@ -136,9 +142,10 @@ class RootViewController: UIViewController {
 extension RootViewController {
     private func generateTrackDetailModalViewController() -> TrackDetailModalViewController {
         let viewController = TrackDetailModalViewController()
-        
-        viewController.setTrackDetailModalViewModel(to: self.trackDetailModalViewModel)
-        
+        viewController.configure(with: TrackDetailModalViewController.Configuration(socketManager: self.socketManager,
+                                                                                    playerAdapter: self.playerAdapter,
+                                                                                    model: self.trackDetailModalViewModel))
+                
         return viewController
     }
     

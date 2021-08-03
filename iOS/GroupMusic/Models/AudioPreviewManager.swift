@@ -7,11 +7,12 @@
 
 import AVFoundation
 
-class AudioPreview: ObservableObject {
+class AudioPreviewManager: ObservableObject {
     private var audioPlayer: AVPlayer?
     private var audioStreamURL: URL?
     private var timer: Timer?
-    @Published var ready: Bool = false // Indicates if ready to play
+    /// True when ready for playback
+    @Published var ready: Bool = false
     @Published var playbackStatus: PlaybackStatus = .stopped
     @Published var playbackPosition: PlaybackPosition = PlaybackPosition()
     
@@ -74,6 +75,6 @@ class AudioPreview: ObservableObject {
 }
 
 protocol AudioPreviewDelegate {
-    func playbackStatusDidChange(to: AudioPreview.PlaybackStatus)
+    func playbackStatusDidChange(to: AudioPreviewManager.PlaybackStatus)
     func playbackPositionDidChange(to: PlaybackPosition)
 }

@@ -20,5 +20,9 @@ extension Image {
         let pause_fill = Image(systemName: "pause.fill")
         let backward_fill = Image(systemName: "backward.fill")
         let forward_fill = Image(systemName: "forward.fill")
+        let text_insert = Image(systemName: "text.insert")
+        let text_append = Image(systemName: "text.append")
+        let xmark = Image(systemName: "xmark")
+        let _repeat = Image(systemName: "repeat")
     }
 }
