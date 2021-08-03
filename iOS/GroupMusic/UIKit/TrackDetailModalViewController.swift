@@ -363,6 +363,7 @@ extension TrackDetailModalViewController {
         } else {
             self.emitPrependToQueueEvent(withTracks: [track])
         }
+        self.close()
     }
     
     private func playNextAction() {
@@ -374,6 +375,7 @@ extension TrackDetailModalViewController {
         } else {
             self.emitPrependToQueueEvent(withTracks: [track])
         }
+        self.close()
     }
     
     private func playLastAction() {
@@ -385,6 +387,7 @@ extension TrackDetailModalViewController {
         } else {
             self.emitAppendToQueueEvent(withTracks: [track])
         }
+        self.close()
     }
     
     private func removeAction() {
@@ -400,6 +403,7 @@ extension TrackDetailModalViewController {
         } else {
             self.emitRemoveEvent(at: index)
         }
+        self.close()
     }
     
     private func emitPrependToQueueEvent(withTracks tracks: [Track]) {
