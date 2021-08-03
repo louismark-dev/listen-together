@@ -228,8 +228,13 @@ class TrackDetailModalViewController: UIViewController {
         (self.view as! InteractionlessView).disableInteraction = true
     }
     
-    @objc func closeTapHandler() {
-        self.trackDetailModalViewModel.isOpen = false
+    @objc func closeTapHandler(_ sender: UITapGestureRecognizer) {
+        let location = sender.location(in: self.trackDetailModalViewHostingController.view)
+        /// Is true when the touch was inside the modal view
+        let touchInsideCard = self.trackDetailModalViewHostingController.view.point(inside: location, with: nil)
+        if (touchInsideCard == false) {
+            self.trackDetailModalViewModel.isOpen = false
+        }
     }
     
     public enum ViewStatus {
