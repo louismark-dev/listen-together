@@ -119,9 +119,14 @@ class TrackDetailModalViewController: UIViewController {
     }
     
     private func configureTrackDetailModalView() {
+        let actions = TrackDetailModalView2.Actions(playAgain: self.playAgainAction,
+                                                    playNext: self.playNextAction,
+                                                    playLast: self.playLastAction,
+                                                    removeAction: self.removeAction,
+                                                    previewTap: self.previewTapActions)
         self.trackDetailModalViewHostingController = UIHostingController(rootView: TrackDetailModalView2(trackDetailModalViewModel: self.trackDetailModalViewModel,
                                                                                                          previewManager: self.audioPreviewManager,
-                                                                                                         onPreviewTap: self.previewButtonOnTapHandler))
+                                                                                                         actions: actions))
         self.trackDetailModalViewHostingController.view.backgroundColor = .clear
         
         self.setupPanGestureRecognizer()
@@ -230,87 +235,6 @@ class TrackDetailModalViewController: UIViewController {
     public enum ViewStatus {
         case open
         case closed
-    }
-}
-// MARK: Audio Preview
-extension TrackDetailModalViewController: AudioPreviewDelegate {
-    /// Handler for the preview button.
-    /// This will start playing the track preview. If there is already a track playing, this will pause playback before playing the preview.
-    /// This will stop playing the track preview if the track preview is already playing.
-    private func previewButtonOnTapHandler() {
-        if (self.audioPreviewManager.playbackStatus == .stopped) {
-            let showPreviewConfirmationAlert = (self.socketManager.state.isCoordinator == true && self.playerAdapter.state.playbackState == .playing)
-            if (showPreviewConfirmationAlert == true) {
-                // Get confirmation before playing preview
-                self.displayPreviewConfirmationAlert()
-            } else {
-                self.playPreview(andPausePlayback: false)
-            }
-        } else {
-            self.stopPreview()
-        }
-    }
-    
-    /// Use this function to display the confirmation when the user starts a track preview while there is already a track playing.
-    /// If the user chooses to continue with the preview, this will pause audio playback and being previewing the new track
-    private func displayPreviewConfirmationAlert() {
-        let alert = UIAlertController(title: "Previewing this song will pause music playback.",
-                                      message: nil,
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { _ in
-            self.playPreview(andPausePlayback: true)
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    /// Starts the playback preview for the track associated with this ViewController
-    /// - Parameter shouldPausePlayback: Set to true if music playback should be paused before playing the preview
-    private func playPreview(andPausePlayback shouldPausePlayback: Bool) {
-        if let previewURL = self.trackDetailModalViewModel.track?.attributes?.previews.first?.url {
-            self.audioPreviewManager.setAudioStreamURL(audioStreamURL: previewURL)
-        } else {
-            return
-        }
-        
-        if (shouldPausePlayback) {
-            self.playerAdapter.pause {
-                try? self.audioPreviewManager.play()
-            }
-            self.shouldResumePlaybackAfterPreviewCompletion = true
-        } else {
-            try? self.audioPreviewManager.play()
-            self.shouldResumePlaybackAfterPreviewCompletion = false
-        }
-    }
-    
-    /// Stops the playback preview for the track associated with this ViewController
-    private func stopPreview() {
-        try? self.audioPreviewManager.stop()
-        
-        if (self.shouldResumePlaybackAfterPreviewCompletion) {
-            self.playerAdapter.play(completion: nil)
-        }
-        self.shouldResumePlaybackAfterPreviewCompletion = false
-    }
-    
-    // MARK: AudioPreviewDelegate
-    
-    func playbackStatusDidChange(to playbackStatus: AudioPreviewManager.PlaybackStatus) {
-        if (playbackStatus == .stopped && self.shouldResumePlaybackAfterPreviewCompletion) {
-            // Resume playback after end of preview
-            self.resumePlaybackAftePreviewEnd()
-        }
-    }
-    
-    func playbackPositionDidChange(to: PlaybackPosition) {
-        // TODO: Remove once removing SwiftUI implementation of the previews
-    }
-    
-    private func resumePlaybackAftePreviewEnd() {
-        self.playerAdapter.play(completion: nil)
-        self.shouldResumePlaybackAfterPreviewCompletion = false
     }
 }
 
@@ -423,6 +347,164 @@ extension TrackDetailModalViewController {
     }
 }
 
+// MARK: Queue Operations
+extension TrackDetailModalViewController {
+    private func playAgainAction() {
+        guard let track = self.trackDetailModalViewModel.track else { return }
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.prependToQueue(withTracks: [track]) {
+                self.emitPrependToQueueEvent(withTracks: [track])
+            }
+        } else {
+            self.emitPrependToQueueEvent(withTracks: [track])
+        }
+    }
+    
+    private func playNextAction() {
+        guard let track = self.trackDetailModalViewModel.track else { return }
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.prependToQueue(withTracks: [track]) {
+                self.emitPrependToQueueEvent(withTracks: [track])
+            }
+        } else {
+            self.emitPrependToQueueEvent(withTracks: [track])
+        }
+    }
+    
+    private func playLastAction() {
+        guard let track = self.trackDetailModalViewModel.track else { return }
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.appendToQueue(withTracks: [track]) {
+                self.emitAppendToQueueEvent(withTracks: [track])
+            }
+        } else {
+            self.emitAppendToQueueEvent(withTracks: [track])
+        }
+    }
+    
+    private func removeAction() {
+        guard let track = self.trackDetailModalViewModel.track,
+              let index = self.playerAdapter.state.queue.indexFor(track: track)
+        else {
+            return
+        }
+        if (self.socketManager.state.isCoordinator == true) {
+            self.playerAdapter.remove(atIndex: index) {
+                self.emitRemoveEvent(at: index)
+            }
+        } else {
+            self.emitRemoveEvent(at: index)
+        }
+    }
+    
+    private func emitPrependToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitPrependToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func emitAppendToQueueEvent(withTracks tracks: [Track]) {
+        do {
+            try self.socketManager.emitAppendToQueueEvent(withTracks: tracks)
+        } catch {
+            print("Emit failed \(error.localizedDescription)")
+        }
+    }
+    
+    private func emitRemoveEvent(at index: Int) {
+        do {
+            try self.socketManager.emitRemoveEvent(atIndex: index)
+        } catch {
+            print("Could not emit removeEvent")
+        }
+    }
+}
+
+// MARK: Audio Preview
+extension TrackDetailModalViewController: AudioPreviewDelegate {
+    /// Handler for the preview button.
+    /// This will start playing the track preview. If there is already a track playing, this will pause playback before playing the preview.
+    /// This will stop playing the track preview if the track preview is already playing.
+    private func previewTapActions() {
+        if (self.audioPreviewManager.playbackStatus == .stopped) {
+            let showPreviewConfirmationAlert = (self.socketManager.state.isCoordinator == true && self.playerAdapter.state.playbackState == .playing)
+            if (showPreviewConfirmationAlert == true) {
+                // Get confirmation before playing preview
+                self.displayPreviewConfirmationAlert()
+            } else {
+                self.playPreview(andPausePlayback: false)
+            }
+        } else {
+            self.stopPreview()
+        }
+    }
+    
+    /// Use this function to display the confirmation when the user starts a track preview while there is already a track playing.
+    /// If the user chooses to continue with the preview, this will pause audio playback and being previewing the new track
+    private func displayPreviewConfirmationAlert() {
+        let alert = UIAlertController(title: "Previewing this song will pause music playback.",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { _ in
+            self.playPreview(andPausePlayback: true)
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    /// Starts the playback preview for the track associated with this ViewController
+    /// - Parameter shouldPausePlayback: Set to true if music playback should be paused before playing the preview
+    private func playPreview(andPausePlayback shouldPausePlayback: Bool) {
+        if let previewURL = self.trackDetailModalViewModel.track?.attributes?.previews.first?.url {
+            self.audioPreviewManager.setAudioStreamURL(audioStreamURL: previewURL)
+        } else {
+            return
+        }
+        
+        if (shouldPausePlayback) {
+            self.playerAdapter.pause {
+                try? self.audioPreviewManager.play()
+            }
+            self.shouldResumePlaybackAfterPreviewCompletion = true
+        } else {
+            try? self.audioPreviewManager.play()
+            self.shouldResumePlaybackAfterPreviewCompletion = false
+        }
+    }
+    
+    /// Stops the playback preview for the track associated with this ViewController
+    private func stopPreview() {
+        try? self.audioPreviewManager.stop()
+        
+        if (self.shouldResumePlaybackAfterPreviewCompletion) {
+            self.playerAdapter.play(completion: nil)
+        }
+        self.shouldResumePlaybackAfterPreviewCompletion = false
+    }
+    
+    // MARK: AudioPreviewDelegate
+    
+    func playbackStatusDidChange(to playbackStatus: AudioPreviewManager.PlaybackStatus) {
+        if (playbackStatus == .stopped && self.shouldResumePlaybackAfterPreviewCompletion) {
+            // Resume playback after end of preview
+            self.resumePlaybackAftePreviewEnd()
+        }
+    }
+    
+    func playbackPositionDidChange(to: PlaybackPosition) {
+        // TODO: Remove once removing SwiftUI implementation of the previews
+    }
+    
+    private func resumePlaybackAftePreviewEnd() {
+        self.playerAdapter.play(completion: nil)
+        self.shouldResumePlaybackAfterPreviewCompletion = false
+    }
+}
+
+// MARK: InteractionlessView
 /// A UIView with all user interaction disabled. Interaction will still propagate to the subviews.
 class InteractionlessView: UIView {
     /// When set to true, user interaction will be disabled for the view

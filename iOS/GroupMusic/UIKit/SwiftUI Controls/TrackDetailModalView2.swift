@@ -11,8 +11,9 @@ struct TrackDetailModalView2: View {
     @ObservedObject var trackDetailModalViewModel: TrackDetailModalViewModel
     @ObservedObject var previewManager: AudioPreviewManager
     @State var queueActionButtonLayout: ButtonLayout?
+    let actions: Actions
     
-    let onPreviewTap: () -> ()
+    // MARK: Body
     
     var body: some View {
         VStack(spacing: 16) {
@@ -25,7 +26,7 @@ struct TrackDetailModalView2: View {
                     self.labels(withTrackName: self.trackDetailModalViewModel.track?.attributes?.name,
                                 artistName: self.trackDetailModalViewModel.track?.attributes?.artistName,
                                 nowPlaying: self.trackDetailModalViewModel.trackPlaybackStatus == .nowPlaying)
-                    self.audioPreviewButton(withAudioPreviewManager: self.previewManager, onTapAction: self.onPreviewTap)
+                    self.audioPreviewButton(withAudioPreviewManager: self.previewManager, onTapAction: self.actions.previewTap)
                         .frame(maxHeight: 44)
                 }
             }
@@ -36,6 +37,8 @@ struct TrackDetailModalView2: View {
         }
         
     }
+    
+    // MARK: Labels
     
     @ViewBuilder private func labels(withTrackName trackName: String?, artistName: String?, nowPlaying: Bool) -> some View {
         VStack {
@@ -64,6 +67,8 @@ struct TrackDetailModalView2: View {
             .font(.system(.subheadline, design: .rounded))
         }
     }
+    
+    // MARK: Audio Preview
     
     @ViewBuilder private func audioPreviewButton(withAudioPreviewManager previewManager: AudioPreviewManager, onTapAction: @escaping () -> Void) -> some View {
         Button(action: onTapAction) {
@@ -102,6 +107,8 @@ struct TrackDetailModalView2: View {
                 .rotationEffect(Angle(degrees: 270.0))
         }
     }
+    
+    // MARK: Queue Button Appearance
 
     @ViewBuilder private func queueActionButtons(withLayout layout: ButtonLayout?) -> some View {
         if let layout = layout {
@@ -149,27 +156,27 @@ struct TrackDetailModalView2: View {
     }
     
     private func generateButtonLayoutForPlayedTrack() -> TrackDetailModalView2.ButtonLayout {
-        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playAgain, action: {})
+        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playAgain, action: self.actions.playAgain)
         let buttonLayout = TrackDetailModalView2.ButtonLayout(leading: leadingConfiguration, trailing: nil)
         return buttonLayout
     }
     
     private func generateButtonLayoutForNowPlayingTrack() -> TrackDetailModalView2.ButtonLayout {
-        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playAgain, action: {})
+        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playAgain, action: self.actions.playAgain)
         let buttonLayout = TrackDetailModalView2.ButtonLayout(leading: leadingConfiguration, trailing: nil)
         return buttonLayout
     }
     
     private func generateButtonLayoutForInQueueTrack() -> TrackDetailModalView2.ButtonLayout {
-        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playNext, action: {})
-        let trailingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .remove, action: {})
+        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playNext, action: self.actions.playNext)
+        let trailingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .remove, action: self.actions.removeAction)
         let buttonLayout = TrackDetailModalView2.ButtonLayout(leading: leadingConfiguration, trailing: trailingConfiguration)
         return buttonLayout
     }
     
     private func generateButtonLayoutForNotInQueueTrack() -> TrackDetailModalView2.ButtonLayout {
-        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playNext, action: {})
-        let trailingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playLast, action: {})
+        let leadingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playNext, action: self.actions.playNext)
+        let trailingConfiguration = TrackDetailModalView2.ButtonConfiguration(appearance: .playLast, action: self.actions.playLast)
         let buttonLayout = TrackDetailModalView2.ButtonLayout(leading: leadingConfiguration, trailing: trailingConfiguration)
         return buttonLayout
     }
@@ -209,6 +216,15 @@ struct TrackDetailModalView2: View {
                 return ButtonAppearance(label: Text("Remove"), icon: Image.ui.xmark, forgroundColor: .white.opacity(0.9), backgroundColor: Color(UIColor.ui.amaranth))
             }
         }
+    }
+    
+    // MARK: Queue Button Actions
+    struct Actions {
+        let playAgain: () -> Void
+        let playNext: () -> Void
+        let playLast: () -> Void
+        let removeAction: () -> Void
+        let previewTap: () -> Void
     }
 }
 

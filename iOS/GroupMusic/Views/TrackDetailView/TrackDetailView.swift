@@ -227,7 +227,7 @@ struct TrackDetailView: View, AudioPreviewDelegate {
     
     private func removeFromQueue() {
         self.trackDetailModalViewManager.close()
-        let index =  self.playerAdapter.state.queue.indexFor(track: self.track)
+        let index = self.playerAdapter.state.queue.indexFor(track: self.track)
         guard let index = index else { return }
         if (self.socketManager.state.isCoordinator == true) {
             // IS COORDINATOR
