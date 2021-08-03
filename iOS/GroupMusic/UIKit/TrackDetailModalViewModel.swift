@@ -16,8 +16,12 @@ class TrackDetailModalViewModel: ObservableObject {
     /// Set to true to open the TrackDetailModalView
     @Published var isOpen: Bool = false
     
+    private var cancellables: Set<AnyCancellable> = []
+    
     init(withPlayerAdapter playerAdapter: PlayerAdapter) {
         self.playerAdapter = playerAdapter
+        
+        self.subscribeToQueueStatePublisher()
     }
     
     public func open(with track: Track?) {
@@ -25,6 +29,18 @@ class TrackDetailModalViewModel: ObservableObject {
         self.isOpen = true
         
         self.trackPlaybackStatus = self.generateTrackPlaybackStatus()
+    }
+    
+    private func subscribeToQueueStatePublisher() {
+        self.playerAdapter.$state
+            .receive(on: RunLoop.main)
+            .removeDuplicates(by: { previousState, nextState in
+                (previousState.queue.state.indexOfNowPlayingItem == nextState.queue.state.indexOfNowPlayingItem)
+            })
+            .sink { _ in
+                self.trackPlaybackStatus = self.generateTrackPlaybackStatus()
+            }
+            .store(in: &cancellables)
     }
     
     private func generateTrackPlaybackStatus() -> PlaybackStatus {

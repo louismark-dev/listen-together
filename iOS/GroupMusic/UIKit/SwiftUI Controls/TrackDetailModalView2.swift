@@ -10,6 +10,7 @@ import SwiftUI
 struct TrackDetailModalView2: View {
     @ObservedObject var trackDetailModalViewModel: TrackDetailModalViewModel
     @ObservedObject var previewManager: AudioPreviewManager
+    @State var queueActionButtonLayout: ButtonLayout?
     
     let onPreviewTap: () -> ()
     
@@ -22,32 +23,46 @@ struct TrackDetailModalView2: View {
                     .clipShape(RoundedRectangle(cornerRadius: 20.0, style: .continuous))
                 VStack(alignment: .leading) {
                     self.labels(withTrackName: self.trackDetailModalViewModel.track?.attributes?.name,
-                                artistName: self.trackDetailModalViewModel.track?.attributes?.artistName)
+                                artistName: self.trackDetailModalViewModel.track?.attributes?.artistName,
+                                nowPlaying: self.trackDetailModalViewModel.trackPlaybackStatus == .nowPlaying)
                     self.audioPreviewButton(withAudioPreviewManager: self.previewManager, onTapAction: self.onPreviewTap)
                         .frame(maxHeight: 44)
                 }
             }
-            self.queueActionButtons(withLayout: self.queueActionButtonLayout())
+            self.queueActionButtons(withLayout: self.queueActionButtonLayout)
+        }
+        .onReceive(self.trackDetailModalViewModel.$trackPlaybackStatus) { (status: TrackDetailModalViewModel.PlaybackStatus) in
+            self.setQueueActionButtonLayout(forPlaybackStatus: status)
         }
         
     }
     
-    @ViewBuilder private func labels(withTrackName trackName: String?, artistName: String?) -> some View {
+    @ViewBuilder private func labels(withTrackName trackName: String?, artistName: String?, nowPlaying: Bool) -> some View {
         VStack {
+            if (nowPlaying == true) {
+                HStack {
+                    Text("Now Playing")
+                        .fontWeight(.semibold)
+                        .opacity(0.6)
+                    Spacer()
+                }
+                .font(.system(.subheadline, design: .rounded))
+            }
             HStack {
                 Text(trackName ?? "")
                     .fontWeight(.semibold)
                     .opacity(0.8)
                 Spacer()
             }
+            .font(.system(.headline, design: .rounded))
             HStack {
                 Text(artistName ?? "")
                     .fontWeight(.semibold)
                     .opacity(0.6)
                 Spacer()
             }
+            .font(.system(.subheadline, design: .rounded))
         }
-        .font(.system(.headline, design: .rounded))
     }
     
     @ViewBuilder private func audioPreviewButton(withAudioPreviewManager previewManager: AudioPreviewManager, onTapAction: @escaping () -> Void) -> some View {
@@ -88,18 +103,22 @@ struct TrackDetailModalView2: View {
         }
     }
 
-    @ViewBuilder private func queueActionButtons(withLayout layout: ButtonLayout) -> some View {
-        HStack {
-            Button(action: layout.leading.action) {
-                self.queueActionButtonBackground(withConfiguration: layout.leading.appearance.configuration())
-            }
-            .frame(maxWidth: .infinity)
-            if let trailing = layout.trailing {
-                Button(action: trailing.action) {
-                    self.queueActionButtonBackground(withConfiguration: trailing.appearance.configuration())
+    @ViewBuilder private func queueActionButtons(withLayout layout: ButtonLayout?) -> some View {
+        if let layout = layout {
+            HStack {
+                Button(action: layout.leading.action) {
+                    self.queueActionButtonBackground(withConfiguration: layout.leading.appearance.configuration())
                 }
                 .frame(maxWidth: .infinity)
+                if let trailing = layout.trailing {
+                    Button(action: trailing.action) {
+                        self.queueActionButtonBackground(withConfiguration: trailing.appearance.configuration())
+                    }
+                    .frame(maxWidth: .infinity)
+                }
             }
+        } else {
+            EmptyView()
         }
     }
     
@@ -116,16 +135,16 @@ struct TrackDetailModalView2: View {
                         .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .circular)))
     }
     
-    private func queueActionButtonLayout() -> ButtonLayout {
-        switch self.trackDetailModalViewModel.trackPlaybackStatus {
+    private func setQueueActionButtonLayout(forPlaybackStatus playbackStatus: TrackDetailModalViewModel.PlaybackStatus) {
+        switch playbackStatus {
         case .played:
-            return generateButtonLayoutForPlayedTrack()
+            self.queueActionButtonLayout = generateButtonLayoutForPlayedTrack()
         case .nowPlaying:
-            return generateButtonLayoutForNowPlayingTrack()
+            self.queueActionButtonLayout = generateButtonLayoutForNowPlayingTrack()
         case .inQueue:
-            return generateButtonLayoutForInQueueTrack()
+            self.queueActionButtonLayout = generateButtonLayoutForInQueueTrack()
         case .notInQueue:
-            return generateButtonLayoutForNotInQueueTrack()
+            self.queueActionButtonLayout = generateButtonLayoutForNotInQueueTrack()
         }
     }
     
