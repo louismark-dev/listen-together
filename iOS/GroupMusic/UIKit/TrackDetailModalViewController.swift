@@ -74,7 +74,7 @@ class TrackDetailModalViewController: UIViewController {
         let model: TrackDetailModalViewModel
     }
     
-    /// Configures the ViewController with the necessary information. Failure to call this function could result in fatal errors.
+    /// Configures the ViewController with the necessary information. Failure to call this function may result in fatal errors.
     /// - Parameter configuration: The configuration object.
     public func configure(with configuration: Configuration) {
         self.playerAdapter = configuration.playerAdapter
