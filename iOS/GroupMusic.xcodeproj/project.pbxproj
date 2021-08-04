@@ -398,13 +398,12 @@
 		258CF386269DE87C00D736D0 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				25B366DE26BA296F0051D4B7 /* TrackDetailsModal */,
 				25B366D826BA19FD0051D4B7 /* PlaybackControls */,
 				258CF38F269E921500D736D0 /* SwiftUI Controls */,
 				258CF387269DE89200D736D0 /* RootViewController.swift */,
 				258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */,
 				258CF389269DE8EF00D736D0 /* BackgroundBlurViewController.swift */,
-				25D3B3F226AE1E3F00D7D7A9 /* TrackDetailModalViewController.swift */,
-				2504D52A26AE414E00CEF66F /* TrackDetailModalViewModel.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -413,8 +412,6 @@
 			isa = PBXGroup;
 			children = (
 				258CF390269E923900D736D0 /* BottomBarView2.swift */,
-				251B452C26A20E6C006853FD /* PlaybackControlsView.swift */,
-				2569485B26AE2FE600128333 /* TrackDetailModalView2.swift */,
 			);
 			path = "SwiftUI Controls";
 			sourceTree = "<group>";
@@ -434,8 +431,19 @@
 			isa = PBXGroup;
 			children = (
 				25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */,
+				251B452C26A20E6C006853FD /* PlaybackControlsView.swift */,
 			);
 			path = PlaybackControls;
+			sourceTree = "<group>";
+		};
+		25B366DE26BA296F0051D4B7 /* TrackDetailsModal */ = {
+			isa = PBXGroup;
+			children = (
+				25D3B3F226AE1E3F00D7D7A9 /* TrackDetailModalViewController.swift */,
+				2504D52A26AE414E00CEF66F /* TrackDetailModalViewModel.swift */,
+				2569485B26AE2FE600128333 /* TrackDetailModalView2.swift */,
+			);
+			path = TrackDetailsModal;
 			sourceTree = "<group>";
 		};
 		25CBDA8225C8911C00EB552C /* Apple Music Browser */ = {
