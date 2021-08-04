@@ -72,6 +72,7 @@
 		25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */; };
 		25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */; };
 		25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */; };
+		25B366DA26BA1A110051D4B7 /* PlaybackControlsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */; };
 		25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CBDA8525C8915700EB552C /* SongResultsView.swift */; };
 		25CFFCEB25FDC85500133C1C /* TrackDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */; };
 		25D0B104264A3FB500D43DE1 /* PlaybackProgressView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D0B103264A3FB500D43DE1 /* PlaybackProgressView2.swift */; };
@@ -204,6 +205,7 @@
 		25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalView.swift; sourceTree = "<group>"; };
 		25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalViewManager.swift; sourceTree = "<group>"; };
+		25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControlsViewController.swift; sourceTree = "<group>"; };
 		25CBDA8525C8915700EB552C /* SongResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResultsView.swift; sourceTree = "<group>"; };
 		25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailView.swift; sourceTree = "<group>"; };
 		25D0B103264A3FB500D43DE1 /* PlaybackProgressView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView2.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 		258CF386269DE87C00D736D0 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				25B366D826BA19FD0051D4B7 /* PlaybackControls */,
 				258CF38F269E921500D736D0 /* SwiftUI Controls */,
 				258CF387269DE89200D736D0 /* RootViewController.swift */,
 				258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */,
@@ -425,6 +428,14 @@
 				25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */,
 			);
 			path = TrackDetailView;
+			sourceTree = "<group>";
+		};
+		25B366D826BA19FD0051D4B7 /* PlaybackControls */ = {
+			isa = PBXGroup;
+			children = (
+				25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */,
+			);
+			path = PlaybackControls;
 			sourceTree = "<group>";
 		};
 		25CBDA8225C8911C00EB552C /* Apple Music Browser */ = {
@@ -768,6 +779,7 @@
 				25D3207925F7EC3D00DD4970 /* EnvironmentValues+ImageCache.swift in Sources */,
 				259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */,
 				BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */,
+				25B366DA26BA1A110051D4B7 /* PlaybackControlsViewController.swift in Sources */,
 				2569485C26AE2FE600128333 /* TrackDetailModalView2.swift in Sources */,
 				258CF38A269DE8EF00D736D0 /* BackgroundBlurViewController.swift in Sources */,
 				25DB5CA725D064D0008033BB /* TrackCellView.swift in Sources */,

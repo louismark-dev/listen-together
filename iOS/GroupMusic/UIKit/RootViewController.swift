@@ -14,7 +14,7 @@ class RootViewController: UIViewController {
     
     var bottomBarHostingController: UIHostingController<BottomBarView2>!
     
-    var playbackControlsHostingController: UIHostingController<PlaybackControlsView>!
+    var playbackControlsViewController: PlaybackControlsViewController!
     let playbackControlsSpacing = PlaybackControlsSpacing(top: 40, bottom: 40, left: 24, right: 24)
     
     var trackDetailModalViewController: TrackDetailModalViewController!
@@ -55,7 +55,7 @@ class RootViewController: UIViewController {
     }
     
     private func initalizeViews() {
-        self.playbackControlsHostingController = self.generatePlaybackControlsHostingController()
+        self.playbackControlsViewController = self.generatePlaybackControlsViewController()
         self.bottomBarHostingController = self.generateBottomBar()
         self.trackDetailModalViewController = self.generateTrackDetailModalViewController()
         self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
@@ -68,8 +68,8 @@ class RootViewController: UIViewController {
         self.addChild(self.backgroundBlurViewController)
         self.view.addSubview(self.backgroundBlurViewController.view)
         
-        self.addChild(self.playbackControlsHostingController)
-        self.view.addSubview(self.playbackControlsHostingController.view)
+        self.addChild(self.playbackControlsViewController)
+        self.view.addSubview(self.playbackControlsViewController.view)
         
         self.addChild(self.bottomBarHostingController)
         self.view.addSubview(self.bottomBarHostingController.view)
@@ -161,105 +161,19 @@ extension RootViewController {
 
 // MARK: Playback Controls
 extension RootViewController {
-    private func generatePlaybackControlsHostingController() -> UIHostingController<PlaybackControlsView> {
-        let backwardAction = {
-            let emitPreviousEvent: () -> () = {
-                do {
-                    try self.socketManager.emitPreviousEvent()
-                } catch {
-                    print("Could not emit PreviousEvent event")
-                }
-            }
-            
-            if (self.socketManager.state.isCoordinator == true) {
-                // IS COORDINATOR
-                self.playerAdapter.skipToPreviousItem {
-                    emitPreviousEvent()
-                }
-            } else {
-                // NOT COORDINATOR
-                emitPreviousEvent()
-            }
-        }
-        
-        let forwardsAction = {
-            let emitForwardsEvent: () -> () = {
-                do {
-                    try self.socketManager.emitForwardEvent()
-                } catch {
-                    print("Could not emit ForwardEvent event")
-                }
-            }
-            
-            if (self.socketManager.state.isCoordinator == true) {
-                // IS COORDINATOR
-                self.playerAdapter.skipToNextItem {
-                    emitForwardsEvent()
-                }
-            } else {
-                // NOT COORDINATOR
-                emitForwardsEvent()
-            }
-        }
-        
-        let togglePlaybackAction = {
-            let emitPlayEvent: () -> () = {
-                do {
-                    try self.socketManager.emitPlayEvent()
-                } catch {
-                    print("Could not emit PlayEvent event")
-                }
-            }
-            
-            let emitPauseEvent: () -> () = {
-                do {
-                    try self.socketManager.emitPauseEvent()
-                } catch {
-                    print("Could not emit PauseEvent event")
-                }
-            }
-            
-            if (self.socketManager.state.isCoordinator == true) {
-                // IS COORDINATOR
-                if (self.playerAdapter.state.playbackState !=  .playing) {
-                    // NOT PLAYING
-                    self.playerAdapter.play {
-                        emitPlayEvent()
-                    }
-                } else {
-                    // PLAYING
-                    self.playerAdapter.pause {
-                        emitPauseEvent()
-                    }
-                }
-            } else {
-                // NOT COORDINATOR
-                if (self.playerAdapter.state.playbackState != .playing) {
-                    // NOT PLAYING
-                    emitPlayEvent()
-                } else {
-                    emitPauseEvent()
-                }
-            }
-        }
-        
-        let playbackControlsConfiguration = PlaybackControlsView.Configuration(backwardAction: backwardAction,
-                                                                               playAction: togglePlaybackAction,
-                                                                               forwardAction: forwardsAction,
-                                                                               opacity: 0.8,
-                                                                               playerAdapter: self.playerAdapter)
-        
-        return UIHostingController(rootView: PlaybackControlsView(withConfiguration: playbackControlsConfiguration))
+    private func generatePlaybackControlsViewController() -> PlaybackControlsViewController {
+        let viewController = PlaybackControlsViewController()
+        viewController.configure(withSocketManager: self.socketManager,
+                                 playerAdapter: self.playerAdapter)
+        return viewController
     }
-    
+        
     private func setupPlaybackControlsLayout() {
-        self.playbackControlsHostingController.view.backgroundColor = .clear
+        self.playbackControlsViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
-        self.playbackControlsHostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.playbackControlsHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: self.playbackControlsSpacing.left).isActive = true
-        self.playbackControlsHostingController.view.bottomAnchor.constraint(equalTo: self.bottomBarHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
-        self.playbackControlsHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -1 * self.playbackControlsSpacing.right).isActive = true
+        self.playbackControlsViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: self.playbackControlsSpacing.left).isActive = true
+        self.playbackControlsViewController.view.bottomAnchor.constraint(equalTo: self.bottomBarHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
+        self.playbackControlsViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -1 * self.playbackControlsSpacing.right).isActive = true
     }
     
     struct PlaybackControlsSpacing {
@@ -348,7 +262,7 @@ extension RootViewController: UITableViewDelegate {
         self.queueTableView.translatesAutoresizingMaskIntoConstraints = false
         
         self.queueTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        self.queueTableView.bottomAnchor.constraint(equalTo: self.playbackControlsHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.top).isActive = true
+        self.queueTableView.bottomAnchor.constraint(equalTo: self.playbackControlsViewController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.top).isActive = true
         self.queueTableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.queueTableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }

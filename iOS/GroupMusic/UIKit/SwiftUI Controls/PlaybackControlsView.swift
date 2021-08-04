@@ -10,23 +10,21 @@ import SwiftUI
 struct PlaybackControlsView: View {
     
     private let backwardAction: () -> Void
-    private let playAction: () -> Void
+    private let togglePlaybackAction: () -> Void
     private let forwardAction: () -> Void
-    private let opacity: Double
     private let playerAdapter: PlayerAdapter
     
     @State private var isPlaying: Bool = false
     
     init(withConfiguration configuration: Configuration) {
-        self.backwardAction = configuration.backwardAction
-        self.playAction = configuration.playAction
-        self.forwardAction = configuration.forwardAction
-        self.opacity = configuration.opacity
+        self.backwardAction = configuration.actions.backwardAction
+        self.togglePlaybackAction = configuration.actions.togglePlaybackAction
+        self.forwardAction = configuration.actions.forwardAction
         self.playerAdapter = configuration.playerAdapter
     }
     
     var playPauseButton: some View {
-        Button(action: self.playAction, label: {
+        Button(action: self.togglePlaybackAction, label: {
             Group {
                 (self.isPlaying == true) ? Image.ui.pause_fill : Image.ui.play_fill
             }
@@ -56,19 +54,22 @@ struct PlaybackControlsView: View {
             Spacer()
             self.forwardButton
         }
-        .foregroundColor(.white.opacity(self.opacity))
+        .foregroundColor(.white.opacity(0.8))
         .font(.largeTitle)
         .onReceive(self.playerAdapter.$state) { (state: GMAppleMusicHostController.State) in
             self.isPlaying = state.playbackState == .playing
         }
     }
     
-    struct Configuration {
+    struct Actions {
         let backwardAction: () -> Void
-        let playAction: () -> Void
+        let togglePlaybackAction: () -> Void
         let forwardAction: () -> Void
-        let opacity: Double
+    }
+    
+    struct Configuration {
         let playerAdapter: PlayerAdapter
+        let actions: Actions
     }
 }
 //
