@@ -12,7 +12,7 @@ import Combine
 class RootViewController: UIViewController {
     var backgroundBlurViewController: BackgroundBlurViewController!
     
-    var bottomBarHostingController: UIHostingController<BottomBarView2>!
+    var bottomBarViewController: BottomBarViewController!
     
     var playbackControlsViewController: PlaybackControlsViewController!
     let playbackControlsSpacing = PlaybackControlsSpacing(top: 40, bottom: 40, left: 24, right: 24)
@@ -51,7 +51,7 @@ class RootViewController: UIViewController {
     
     private func initalizeViews() {
         self.playbackControlsViewController = self.generatePlaybackControlsViewController()
-        self.bottomBarHostingController = self.generateBottomBar()
+        self.bottomBarViewController = self.generateBottomBarViewController()
         self.trackDetailModalViewController = self.generateTrackDetailModalViewController()
         self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
         self.queueTableViewController = self.generateQueueTableViewController()
@@ -65,8 +65,8 @@ class RootViewController: UIViewController {
         self.addChild(self.queueTableViewController)
         self.view.addSubview(self.queueTableViewController.view)
 
-        self.addChild(self.bottomBarHostingController)
-        self.view.addSubview(self.bottomBarHostingController.view)
+        self.addChild(self.bottomBarViewController)
+        self.view.addSubview(self.bottomBarViewController.view)
 
         self.addChild(self.playbackControlsViewController)
         self.view.addSubview(self.playbackControlsViewController.view)
@@ -123,7 +123,7 @@ extension RootViewController {
     private func setupPlaybackControlsLayout() {
         self.playbackControlsViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
-        self.playbackControlsViewController.view.bottomAnchor.constraint(equalTo: self.bottomBarHostingController.view.topAnchor,
+        self.playbackControlsViewController.view.bottomAnchor.constraint(equalTo: self.bottomBarViewController.view.topAnchor,
                                                                          constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
         self.playbackControlsViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor,
                                                                        constant: self.playbackControlsSpacing.left).isActive = true
@@ -141,22 +141,17 @@ extension RootViewController {
 
 // MARK: Bottom Bar
 extension RootViewController {
-    private func generateBottomBar() -> UIHostingController<BottomBarView2>{
-        let sessionSettingsAction = {
-            self.present(SessionSettingsViewController(), animated: true)
-        }
-        
-        return UIHostingController(rootView: BottomBarView2(sessionSettingsAction: sessionSettingsAction))
+    private func generateBottomBarViewController() -> BottomBarViewController {
+        let viewController = BottomBarViewController()
+        return viewController
     }
     
     private func setupBottomBarLayout() {
-        self.bottomBarHostingController.view.backgroundColor = .clear
-        
-        self.bottomBarHostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        self.bottomBarHostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        self.bottomBarHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor,
+        self.bottomBarViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.bottomBarViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.bottomBarViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor,
                                                                    constant: self.horizontalPadding).isActive = true
-        self.bottomBarHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor,
+        self.bottomBarViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor,
                                                                     constant: -1 * self.horizontalPadding).isActive = true
     }
 }

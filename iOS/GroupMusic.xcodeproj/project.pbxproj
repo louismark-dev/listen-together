@@ -87,6 +87,7 @@
 		25DB5CA725D064D0008033BB /* TrackCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB5CA625D064D0008033BB /* TrackCellView.swift */; };
 		25E9D3982656F7BC0075E52D /* PlaybackProgressMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E9D3972656F7BC0075E52D /* PlaybackProgressMonitor.swift */; };
 		25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F8896625CF96FF00267617 /* ArtworkImageView.swift */; };
+		25FA5D0926BA3C52005757E6 /* BottomBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FA5D0826BA3C52005757E6 /* BottomBarViewController.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -222,6 +223,7 @@
 		25DB5CA625D064D0008033BB /* TrackCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackCellView.swift; sourceTree = "<group>"; };
 		25E9D3972656F7BC0075E52D /* PlaybackProgressMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressMonitor.swift; sourceTree = "<group>"; };
 		25F8896625CF96FF00267617 /* ArtworkImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkImageView.swift; sourceTree = "<group>"; };
+		25FA5D0826BA3C52005757E6 /* BottomBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarViewController.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -402,23 +404,15 @@
 		258CF386269DE87C00D736D0 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				25FA5D0726BA3C47005757E6 /* BottomBar */,
 				25B366DE26BA296F0051D4B7 /* TrackDetailsModal */,
 				25B366D826BA19FD0051D4B7 /* PlaybackControls */,
 				25B366DF26BA29FC0051D4B7 /* QueueTableView */,
-				258CF38F269E921500D736D0 /* SwiftUI Controls */,
 				258CF387269DE89200D736D0 /* RootViewController.swift */,
 				258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */,
 				258CF389269DE8EF00D736D0 /* BackgroundBlurViewController.swift */,
 			);
 			path = UIKit;
-			sourceTree = "<group>";
-		};
-		258CF38F269E921500D736D0 /* SwiftUI Controls */ = {
-			isa = PBXGroup;
-			children = (
-				258CF390269E923900D736D0 /* BottomBarView2.swift */,
-			);
-			path = "SwiftUI Controls";
 			sourceTree = "<group>";
 		};
 		25B2B51725FEA96500C47023 /* TrackDetailView */ = {
@@ -487,6 +481,15 @@
 				25D3207625F7EC3D00DD4970 /* AsyncImage.swift */,
 			);
 			path = AsyncImage;
+			sourceTree = "<group>";
+		};
+		25FA5D0726BA3C47005757E6 /* BottomBar */ = {
+			isa = PBXGroup;
+			children = (
+				25FA5D0826BA3C52005757E6 /* BottomBarViewController.swift */,
+				258CF390269E923900D736D0 /* BottomBarView2.swift */,
+			);
+			path = BottomBar;
 			sourceTree = "<group>";
 		};
 		BF266BFE259026BA00029A2D /* Models */ = {
@@ -788,6 +791,7 @@
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
 				25DB5CA425D06466008033BB /* MediaDetailView.swift in Sources */,
 				BF8BEE64259B1B9100B9DCD3 /* EditorialNotes.swift in Sources */,
+				25FA5D0926BA3C52005757E6 /* BottomBarViewController.swift in Sources */,
 				BF8BEE6B259B1B9100B9DCD3 /* Artwork.swift in Sources */,
 				25A2E80125D67598003501E1 /* BackgroundBlurView.swift in Sources */,
 				25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */,
