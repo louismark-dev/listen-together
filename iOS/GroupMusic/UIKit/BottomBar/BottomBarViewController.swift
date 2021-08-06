@@ -42,6 +42,8 @@ class BottomBarViewController: UIViewController {
         return UIHostingController(rootView: BottomBarView2(withConfiguration: configuration))
     }
     
+    // MARK: Actions
+    
     private func sessionSettingsAction() {
         self.present(SessionSettingsViewController(), animated: true)
     }

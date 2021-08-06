@@ -20,6 +20,8 @@ class RootViewController: UIViewController {
     var trackDetailModalViewController: TrackDetailModalViewController!
     var trackDetailModalViewModel: TrackDetailModalViewModel!
     
+    var controlsOverlayView: UIView!
+    
     var queueTableViewController: QueueTableViewController!
     
     /// // Horizontal padding between the edges of the screen and the contents of this view controller
@@ -43,6 +45,7 @@ class RootViewController: UIViewController {
         
         self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
+        self.subscribeToQueueTableViewControllerScrollPublisher()
     }
     
     private func initializeTrackDetailModalViewModel() {
@@ -55,6 +58,7 @@ class RootViewController: UIViewController {
         self.trackDetailModalViewController = self.generateTrackDetailModalViewController()
         self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
         self.queueTableViewController = self.generateQueueTableViewController()
+        self.controlsOverlayView = self.generateControlsOverlayView()
     }
     
     /// Adds all views to the view hirearchy
@@ -64,12 +68,14 @@ class RootViewController: UIViewController {
         
         self.addChild(self.queueTableViewController)
         self.view.addSubview(self.queueTableViewController.view)
+        
+        self.view.addSubview(self.controlsOverlayView)
 
         self.addChild(self.bottomBarViewController)
-        self.view.addSubview(self.bottomBarViewController.view)
+        self.controlsOverlayView.addSubview(self.bottomBarViewController.view)
 
         self.addChild(self.playbackControlsViewController)
-        self.view.addSubview(self.playbackControlsViewController.view)
+        self.controlsOverlayView.addSubview(self.playbackControlsViewController.view)
 
         self.addChild(self.trackDetailModalViewController)
         self.view.addSubview(self.trackDetailModalViewController.view)
@@ -81,13 +87,48 @@ class RootViewController: UIViewController {
         self.setupQueueTableViewLayout()
         self.setupBackgroundBlurViewControllerLayout()
         self.setupTrackDetailModalViewLayout()
+        self.setupControlsOverlayViewLayout()
     }
     
     // MARK: Data
     
+    private func subscribeToQueueTableViewControllerScrollPublisher() {
+        //TODO: Complete implementation
+        self.queueTableViewController.$scrollEvents
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { (event: QueueTableViewScrollEvent?) in
+                print(event)
+            })
+            .store(in: &cancellables)
+    }
+    
     private func setupNotificationMonitor() {
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
         self.notificationMonitor.startListeningForNotifications()
+    }
+}
+
+// MARK: Controls Overlay View
+extension RootViewController {
+    private func generateControlsOverlayView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = UIColor.ui.russianViolet
+        return view
+    }
+    
+    private func setupControlsOverlayViewLayout() {
+        self.controlsOverlayView.translatesAutoresizingMaskIntoConstraints = false
+        self.controlsOverlayView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.controlsOverlayView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.controlsOverlayView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    }
+    
+    private func addOverlay() {
+        self.controlsOverlayView.alpha = 1.0
+    }
+    
+    private func removeOverlay() {
+        self.controlsOverlayView.alpha = 0.0
     }
 }
 
@@ -106,8 +147,7 @@ extension RootViewController {
         self.queueTableViewController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         self.queueTableViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.queueTableViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        self.queueTableViewController.view.bottomAnchor.constraint(equalTo: self.playbackControlsViewController.view.topAnchor,
-                                                                   constant: -1 * self.playbackControlsSpacing.top).isActive = true
+        self.queueTableViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     }
 }
 
@@ -125,9 +165,10 @@ extension RootViewController {
         
         self.playbackControlsViewController.view.bottomAnchor.constraint(equalTo: self.bottomBarViewController.view.topAnchor,
                                                                          constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
-        self.playbackControlsViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor,
+        self.playbackControlsViewController.view.topAnchor.constraint(equalTo: self.controlsOverlayView.topAnchor).isActive = true
+        self.playbackControlsViewController.view.leftAnchor.constraint(equalTo: self.controlsOverlayView.leftAnchor,
                                                                        constant: self.playbackControlsSpacing.left).isActive = true
-        self.playbackControlsViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor,
+        self.playbackControlsViewController.view.rightAnchor.constraint(equalTo: self.controlsOverlayView.rightAnchor,
                                                                         constant: -1 * self.playbackControlsSpacing.right).isActive = true
     }
     
@@ -148,10 +189,10 @@ extension RootViewController {
     
     private func setupBottomBarLayout() {
         self.bottomBarViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        self.bottomBarViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        self.bottomBarViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor,
+        self.bottomBarViewController.view.bottomAnchor.constraint(equalTo: self.controlsOverlayView.bottomAnchor).isActive = true
+        self.bottomBarViewController.view.leftAnchor.constraint(equalTo: self.controlsOverlayView.leftAnchor,
                                                                    constant: self.horizontalPadding).isActive = true
-        self.bottomBarViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor,
+        self.bottomBarViewController.view.rightAnchor.constraint(equalTo: self.controlsOverlayView.rightAnchor,
                                                                     constant: -1 * self.horizontalPadding).isActive = true
     }
 }

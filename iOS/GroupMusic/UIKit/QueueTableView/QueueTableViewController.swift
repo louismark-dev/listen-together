@@ -9,11 +9,14 @@ import UIKit
 import Combine
 
 class QueueTableViewController: UIViewController {
-    var queueTableView: UITableView!
-    var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
+    fileprivate var queueTableView: UITableView!
+    private var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
     
-    var playerAdapter: PlayerAdapter!
-    var trackDetailModalViewModel: TrackDetailModalViewModel!
+    private var playerAdapter: PlayerAdapter!
+    private var trackDetailModalViewModel: TrackDetailModalViewModel!
+    
+    private var scrollMonitor: QueueTableViewScrollMonitor!
+    @Published var scrollEvents: QueueTableViewScrollEvent?
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -33,6 +36,7 @@ class QueueTableViewController: UIViewController {
         self.setupLayout()
         
         self.subscribeToPublishers()
+        self.setupScrollMonitor()
     }
     
     private func initalizeViews() {
@@ -57,6 +61,8 @@ class QueueTableViewController: UIViewController {
     /// The dataSource must be generated using generateDataSource(forTableView: )
     private func generateQueueTableView() -> UITableView {
         let tableView = UITableView()
+        
+        tableView.delegate = self
                 
         tableView.backgroundColor = .clear
         tableView.allowsSelection = false
@@ -139,4 +145,124 @@ class QueueTableViewController: UIViewController {
     enum Section: CaseIterable {
         case main
     }
+}
+
+extension QueueTableViewController: UITableViewDelegate {
+    private func setupScrollMonitor() {
+        self.scrollMonitor = QueueTableViewScrollMonitor(withViewController: self)
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.scrollMonitor.userWillBeginDragging(scrollView)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        self.scrollMonitor.userWillEndDragging(withVelocity: velocity)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        self.scrollMonitor.didScroll(scrollView)
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        self.scrollMonitor.scrollViewDidEndScrollingAnimation()
+    }
+}
+
+class QueueTableViewScrollMonitor {
+    /// The ViewController that contains the scrollEvents Publisher.
+    private let queueTableViewController: QueueTableViewController
+    /// Is true when the user's finger is dragging the content
+    private var userIsDragging = false
+    /// The offset of the scrollview when the user started dragging
+    private var initialContentOffset: CGPoint?
+    /// The cumulative offset since the user started dragging
+    private var cumulativeContentOffset: CGFloat?
+    /// The last offset reported by the scrollView
+    private var lastContentOffset: CGFloat?
+    /// The direction the content is scrolling
+    private var scrollDirection: QueueTableViewScrollDirection = .none
+    
+    /// Initializes
+    /// - Parameter queueTableViewController: The ViewController that contains the scrollEvents Publisher.
+    init(withViewController queueTableViewController: QueueTableViewController) {
+        self.queueTableViewController = queueTableViewController
+    }
+    
+    func userWillBeginDragging(_ scrollView: UIScrollView) {
+        self.userIsDragging = true
+        self.initialContentOffset = scrollView.contentOffset
+    }
+    
+    func userWillEndDragging(withVelocity velocity: CGPoint) {
+        self.userIsDragging = false
+        
+        self.emit(.userDidEndDrag(withVelocity: velocity))
+    }
+    
+    func didScroll(_ scrollView: UIScrollView) {
+        let previousScrollDirection = self.scrollDirection
+        
+        self.setCumulativeScrollOffset(of: scrollView)
+        
+        if (self.userIsDragging) {
+            if let cumulativeContentOffset = self.cumulativeContentOffset {
+                self.emit(.userDidDrag(withCumulativeOffset: cumulativeContentOffset))
+            }
+        }
+        
+        if (self.userIsDragging) {
+            self.setScrollDirection(of: scrollView)
+            
+            if (previousScrollDirection != self.scrollDirection) {
+                self.emit(.userDidDrag(inDirection: self.scrollDirection))
+            }
+        }
+    }
+    
+    private func setScrollDirection(of scrollView: UIScrollView) {
+        let currentOffset = scrollView.contentOffset.y
+        guard let lastOffset = self.lastContentOffset else {
+            self.lastContentOffset = currentOffset
+            self.scrollDirection = .none
+            return
+        }
+        
+        if (lastOffset < currentOffset) {
+            self.scrollDirection = .down
+        } else {
+            self.scrollDirection = .up
+        }
+        self.lastContentOffset = currentOffset
+    }
+    
+    private func setCumulativeScrollOffset(of scrollView: UIScrollView) {
+        guard let offsetAtStartOfScroll = self.initialContentOffset else { return }
+        self.cumulativeContentOffset = scrollView.contentOffset.y - offsetAtStartOfScroll.y
+    }
+    
+    func scrollViewDidEndScrollingAnimation() {
+        // Reset everything to inital values
+        self.userIsDragging = false
+        self.initialContentOffset = nil
+        self.cumulativeContentOffset = nil
+        self.lastContentOffset = nil
+        self.scrollDirection = .none
+    }
+    
+    private func emit(_ event : QueueTableViewScrollEvent) {
+        self.queueTableViewController.scrollEvents = event
+    }
+}
+
+enum QueueTableViewScrollEvent {
+    case userDidEndDrag(withVelocity: CGPoint)
+    case userDidDrag(withCumulativeOffset: CGFloat)
+    case userDidDrag(inDirection: QueueTableViewScrollDirection)
+}
+
+enum QueueTableViewScrollDirection {
+    case up
+    case down
+    case none
 }
