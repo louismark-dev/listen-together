@@ -196,7 +196,8 @@ extension RootViewController {
         
         self.playbackControlsViewController.view.bottomAnchor.constraint(equalTo: self.bottomBarViewController.view.topAnchor,
                                                                          constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
-        self.playbackControlsViewController.view.topAnchor.constraint(equalTo: self.controlsOverlayView.topAnchor).isActive = true
+        self.playbackControlsViewController.view.topAnchor.constraint(equalTo: self.controlsOverlayView.topAnchor,
+                                                                      constant: self.playbackControlsSpacing.top).isActive = true
         self.playbackControlsViewController.view.leftAnchor.constraint(equalTo: self.controlsOverlayView.leftAnchor,
                                                                        constant: self.playbackControlsSpacing.left).isActive = true
         self.playbackControlsViewController.view.rightAnchor.constraint(equalTo: self.controlsOverlayView.rightAnchor,
