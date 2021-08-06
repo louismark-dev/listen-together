@@ -197,7 +197,7 @@ class QueueTableViewScrollMonitor {
     func userWillEndDragging(withVelocity velocity: CGPoint) {
         self.userIsDragging = false
         
-        self.emit(.userDidEndDrag(withVelocity: velocity))
+        self.emit(.userDidEndDragwithVelocity(velocity))
     }
     
     func didScroll(_ scrollView: UIScrollView) {
@@ -207,7 +207,7 @@ class QueueTableViewScrollMonitor {
         
         if (self.userIsDragging) {
             if let cumulativeContentOffset = self.cumulativeContentOffset {
-                self.emit(.userDidDrag(withCumulativeOffset: cumulativeContentOffset))
+                self.emit(.userDidDragWithCumulativeOffset(cumulativeContentOffset))
             }
         }
         
@@ -215,7 +215,7 @@ class QueueTableViewScrollMonitor {
             self.setScrollDirection(of: scrollView)
             
             if (previousScrollDirection != self.scrollDirection) {
-                self.emit(.userDidDrag(inDirection: self.scrollDirection))
+                self.emit(.userDidDragInDirection(self.scrollDirection))
             }
         }
     }
@@ -256,9 +256,9 @@ class QueueTableViewScrollMonitor {
 }
 
 enum QueueTableViewScrollEvent {
-    case userDidEndDrag(withVelocity: CGPoint)
-    case userDidDrag(withCumulativeOffset: CGFloat)
-    case userDidDrag(inDirection: QueueTableViewScrollDirection)
+    case userDidEndDragwithVelocity(_: CGPoint)
+    case userDidDragWithCumulativeOffset(_: CGFloat)
+    case userDidDragInDirection(_: QueueTableViewScrollDirection)
 }
 
 enum QueueTableViewScrollDirection {

@@ -97,7 +97,7 @@ class RootViewController: UIViewController {
         self.queueTableViewController.$scrollEvents
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { (event: QueueTableViewScrollEvent?) in
-                print(event)
+                self.handleQueueTableViewScrollEvent(event)
             })
             .store(in: &cancellables)
     }
@@ -121,6 +121,36 @@ extension RootViewController {
         self.controlsOverlayView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         self.controlsOverlayView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.controlsOverlayView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    }
+    
+    private func handleQueueTableViewScrollEvent(_ event: QueueTableViewScrollEvent?) {
+        guard let event = event else { return }
+        switch event {
+        case .userDidEndDragwithVelocity(let velocity):
+            self.userDidEndDrag(withVelocity: velocity)
+        case .userDidDragWithCumulativeOffset(let cumulativeOffset):
+            self.userDidDrag(withCumulativeOffset: cumulativeOffset)
+        case .userDidDragInDirection(let direction):
+            self.userDidDrag(inDirection: direction)
+        }
+    }
+    
+    private func userDidEndDrag(withVelocity velocity: CGPoint) {
+        if (velocity.y > 1) {
+            self.removeOverlay()
+        }
+    }
+    
+    private func userDidDrag(withCumulativeOffset cumulativeOffset: CGFloat) {
+        if (cumulativeOffset > 50) {
+            self.removeOverlay()
+        }
+    }
+    
+    private func userDidDrag(inDirection direction: QueueTableViewScrollDirection) {
+        if (direction == .up) {
+            self.addOverlay()
+        }
     }
     
     private func addOverlay() {
