@@ -98,6 +98,7 @@ class RootViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { (event: QueueTableViewScrollEvent?) in
                 self.handleQueueTableViewScrollEvent(event)
+                print("DRAG \(event)")
             })
             .store(in: &cancellables)
     }
@@ -142,7 +143,7 @@ extension RootViewController {
     }
     
     private func userDidDrag(withCumulativeOffset cumulativeOffset: CGFloat) {
-        if (cumulativeOffset > 50) {
+        if (cumulativeOffset > 100) {
             self.removeOverlay()
         }
     }

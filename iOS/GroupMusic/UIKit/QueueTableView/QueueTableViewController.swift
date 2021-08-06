@@ -174,9 +174,9 @@ class QueueTableViewScrollMonitor {
     private let queueTableViewController: QueueTableViewController
     /// Is true when the user's finger is dragging the content
     private var userIsDragging = false
-    /// The offset of the scrollview when the user started dragging
+    /// The offset of the scrollview when the user started dragging OR since the user changed drag direction
     private var initialContentOffset: CGPoint?
-    /// The cumulative offset since the user started dragging
+    /// The cumulative offset since the user started dragging OR since the user changed drag direction
     private var cumulativeContentOffset: CGFloat?
     /// The last offset reported by the scrollView
     private var lastContentOffset: CGFloat?
@@ -216,6 +216,7 @@ class QueueTableViewScrollMonitor {
             
             if (previousScrollDirection != self.scrollDirection) {
                 self.emit(.userDidDragInDirection(self.scrollDirection))
+                self.initialContentOffset = scrollView.contentOffset
             }
         }
     }
