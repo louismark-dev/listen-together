@@ -69,6 +69,10 @@
 		25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441DF25C9FC7100193129 /* ResultTypeView.swift */; };
 		25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E325C9FD6900193129 /* ResultCarouselView.swift */; };
 		25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E625C9FDF800193129 /* MediaCardView.swift */; };
+		25AC33B226BE4BB20070429C /* CompactUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B126BE4BB20070429C /* CompactUIViewController.swift */; };
+		25AC33B426BE4CFE0070429C /* InteractionlessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B326BE4CFE0070429C /* InteractionlessView.swift */; };
+		25AC33B626BE4D860070429C /* CompactUIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B526BE4D860070429C /* CompactUIViewModel.swift */; };
+		25AC33B826BE4EE30070429C /* CompactUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B726BE4EE30070429C /* CompactUIView.swift */; };
 		25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */; };
 		25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */; };
 		25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */; };
@@ -205,6 +209,10 @@
 		25A441DF25C9FC7100193129 /* ResultTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTypeView.swift; sourceTree = "<group>"; };
 		25A441E325C9FD6900193129 /* ResultCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCarouselView.swift; sourceTree = "<group>"; };
 		25A441E625C9FDF800193129 /* MediaCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCardView.swift; sourceTree = "<group>"; };
+		25AC33B126BE4BB20070429C /* CompactUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactUIViewController.swift; sourceTree = "<group>"; };
+		25AC33B326BE4CFE0070429C /* InteractionlessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionlessView.swift; sourceTree = "<group>"; };
+		25AC33B526BE4D860070429C /* CompactUIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactUIViewModel.swift; sourceTree = "<group>"; };
+		25AC33B726BE4EE30070429C /* CompactUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactUIView.swift; sourceTree = "<group>"; };
 		25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalView.swift; sourceTree = "<group>"; };
 		25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalViewManager.swift; sourceTree = "<group>"; };
@@ -404,6 +412,7 @@
 		258CF386269DE87C00D736D0 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				25AC33B026BE4BA40070429C /* CompactUI */,
 				25FA5D0726BA3C47005757E6 /* BottomBar */,
 				25B366DE26BA296F0051D4B7 /* TrackDetailsModal */,
 				25B366D826BA19FD0051D4B7 /* PlaybackControls */,
@@ -411,8 +420,19 @@
 				258CF387269DE89200D736D0 /* RootViewController.swift */,
 				258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */,
 				258CF389269DE8EF00D736D0 /* BackgroundBlurViewController.swift */,
+				25AC33B326BE4CFE0070429C /* InteractionlessView.swift */,
 			);
 			path = UIKit;
+			sourceTree = "<group>";
+		};
+		25AC33B026BE4BA40070429C /* CompactUI */ = {
+			isa = PBXGroup;
+			children = (
+				25AC33B126BE4BB20070429C /* CompactUIViewController.swift */,
+				25AC33B526BE4D860070429C /* CompactUIViewModel.swift */,
+				25AC33B726BE4EE30070429C /* CompactUIView.swift */,
+			);
+			path = CompactUI;
 			sourceTree = "<group>";
 		};
 		25B2B51725FEA96500C47023 /* TrackDetailView */ = {
@@ -761,6 +781,7 @@
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
 				BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */,
 				258CF388269DE89200D736D0 /* RootViewController.swift in Sources */,
+				25AC33B626BE4D860070429C /* CompactUIViewModel.swift in Sources */,
 				BF8BEE60259B1B9100B9DCD3 /* Artist.swift in Sources */,
 				251B452D26A20E6C006853FD /* PlaybackControlsView.swift in Sources */,
 				250E821025B932EB001990E9 /* RootView.swift in Sources */,
@@ -796,6 +817,7 @@
 				25A2E80125D67598003501E1 /* BackgroundBlurView.swift in Sources */,
 				25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */,
 				2577BCED25B9321100F65B8F /* QueueView.swift in Sources */,
+				25AC33B826BE4EE30070429C /* CompactUIView.swift in Sources */,
 				2504D52B26AE414E00CEF66F /* TrackDetailModalViewModel.swift in Sources */,
 				BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */,
 				25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */,
@@ -823,9 +845,11 @@
 				258CF393269E96A100D736D0 /* Image+Extensions.swift in Sources */,
 				BF8BEE68259B1B9100B9DCD3 /* Curator.swift in Sources */,
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
+				25AC33B226BE4BB20070429C /* CompactUIViewController.swift in Sources */,
 				BF5EE22B25A03353000C23DD /* AudioPreviewManager.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
 				25D3207825F7EC3D00DD4970 /* ImageLoader.swift in Sources */,
+				25AC33B426BE4CFE0070429C /* InteractionlessView.swift in Sources */,
 				25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */,
 				BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */,
 				25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */,

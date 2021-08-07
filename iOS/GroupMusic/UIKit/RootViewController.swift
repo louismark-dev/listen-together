@@ -20,6 +20,8 @@ class RootViewController: UIViewController {
     var trackDetailModalViewController: TrackDetailModalViewController!
     var trackDetailModalViewModel: TrackDetailModalViewModel!
     
+    private var compactUIViewController: CompactUIViewController!
+    
     var controlsOverlayView: UIView!
     
     var queueTableViewController: QueueTableViewController!
@@ -56,6 +58,7 @@ class RootViewController: UIViewController {
         self.playbackControlsViewController = self.generatePlaybackControlsViewController()
         self.bottomBarViewController = self.generateBottomBarViewController()
         self.trackDetailModalViewController = self.generateTrackDetailModalViewController()
+        self.compactUIViewController = self.generateCompactUIViewController()
         self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
         self.queueTableViewController = self.generateQueueTableViewController()
         self.controlsOverlayView = self.generateControlsOverlayView()
@@ -79,6 +82,9 @@ class RootViewController: UIViewController {
 
         self.addChild(self.trackDetailModalViewController)
         self.view.addSubview(self.trackDetailModalViewController.view)
+        
+        self.addChild(self.compactUIViewController)
+        self.view.addSubview(self.compactUIViewController.view)
     }
     
     private func configureLayout() {
@@ -87,6 +93,7 @@ class RootViewController: UIViewController {
         self.setupQueueTableViewLayout()
         self.setupBackgroundBlurViewControllerLayout()
         self.setupTrackDetailModalViewLayout()
+        self.setupCompactUIViewLayout()
         self.setupControlsOverlayViewLayout()
     }
     
@@ -263,5 +270,22 @@ extension RootViewController {
         self.trackDetailModalViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         self.trackDetailModalViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.trackDetailModalViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    }
+}
+
+// MARK: CompactUI
+extension RootViewController {
+    private func generateCompactUIViewController() -> CompactUIViewController {
+        let viewController = CompactUIViewController()
+        return viewController
+    }
+    
+    private func setupCompactUIViewLayout() {
+        self.compactUIViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.compactUIViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.compactUIViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.compactUIViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.compactUIViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
 }
