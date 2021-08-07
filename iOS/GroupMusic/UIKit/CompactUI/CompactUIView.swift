@@ -8,29 +8,44 @@
 import SwiftUI
 
 struct CompactUIView: View {
+    @ObservedObject var compactUIViewModel: CompactUIViewModel
+    
     var body: some View {
-        HStack {
-            self.icon()
-            self.labels()
+        if let layoutData = compactUIViewModel.layoutData {
+            HStack {
+                self.icon(layoutData.leftIcon)
+                self.labels(heading: layoutData.heading,
+                            subheading: layoutData.subheading)
+            }
+            .padding(EdgeInsets(top: 12, leading: 15, bottom: 12, trailing: 15))
+            .background(self.background())
+        } else {
+            EmptyView()
         }
-        .padding(EdgeInsets(top: 12, leading: 15, bottom: 12, trailing: 15))
-        .background(self.background())
     }
     
-    @ViewBuilder private func icon() -> some View {
-        Image(systemName: "arrow.uturn.backward.circle.fill")
-            .foregroundColor(Color.blue)
-            .imageScale(.large)
+    @ViewBuilder private func icon(_ iconImage: Image?) -> some View {
+        if let iconImage = iconImage {
+            iconImage
+                .foregroundColor(Color.blue)
+                .imageScale(.large)
+        } else {
+            EmptyView()
+        }
     }
     
-    @ViewBuilder private func labels() -> some View {
+    @ViewBuilder private func labels(heading: Text, subheading: Text?) -> some View {
         VStack {
-            Text("Return to Now Playing")
+            heading
                 .fontWeight(.semibold)
                 .opacity(0.8)
-            Text("Blueberry Faygo")
-                .fontWeight(.semibold)
-                .opacity(0.6)
+            if let subheading = subheading {
+                subheading
+                    .fontWeight(.semibold)
+                    .opacity(0.6)
+            } else {
+                EmptyView()
+            }
         }
         .font(.system(.footnote, design: .rounded))
         .foregroundColor(.black)
@@ -39,11 +54,5 @@ struct CompactUIView: View {
     @ViewBuilder private func background() -> some View {
         VisualEffectView(effect: UIBlurEffect(style: .systemThickMaterialLight))
             .clipShape(RoundedRectangle(cornerRadius: 100, style: .continuous))
-    }
-}
-
-struct CompactUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        CompactUIView()
     }
 }

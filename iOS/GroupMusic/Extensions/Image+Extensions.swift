@@ -24,5 +24,6 @@ extension Image {
         let text_append = Image(systemName: "text.append")
         let xmark = Image(systemName: "xmark")
         let _repeat = Image(systemName: "repeat")
+        let arrow_uturn_backward_circle_fill = Image(systemName: "arrow.uturn.backward.circle.fill")
     }
 }

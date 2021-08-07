@@ -32,6 +32,14 @@ class CompactUIViewController: UIViewController {
         self.subscribeToPublishers()
     }
     
+    struct Configuration {
+        let compactUIViewModel: CompactUIViewModel
+    }
+    
+    func configure(with configuration: Configuration) {
+        self.compactUIViewModel = configuration.compactUIViewModel
+    }
+    
     private func initalizeViews() {
         self.setInteractionlessBackground()
         self.configureCompactUIView()
@@ -42,7 +50,7 @@ class CompactUIViewController: UIViewController {
     }
     
     private func configureCompactUIView() {
-        self.compactUIHostingController = UIHostingController(rootView: CompactUIView())
+        self.compactUIHostingController = UIHostingController(rootView: CompactUIView(compactUIViewModel: self.compactUIViewModel))
         self.compactUIHostingController.view.backgroundColor = .clear
     }
     
@@ -59,14 +67,17 @@ class CompactUIViewController: UIViewController {
     private func configureCompactUIViewLayout() {
         self.compactUIHostingController.view.translatesAutoresizingMaskIntoConstraints = false
         
-        self.compactUIHostingController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         self.compactUIHostingController.view.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+        self.cardClosedConstraint = self.compactUIHostingController.view.bottomAnchor.constraint(equalTo: self.view.topAnchor)
+        self.cardOpenConstraint = self.compactUIHostingController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor)
+        self.cardOpenConstraint.isActive = false
     }
     
     // MARK: Data
     
     private func subscribeToPublishers() {
-//        self.subscribeToIsOpenPublisher()
+        self.subscribeToIsOpenPublisher()
     }
     
     /// Subscribes to TrackDetailViewModel's isOpen publisher.
@@ -77,11 +88,39 @@ class CompactUIViewController: UIViewController {
             .removeDuplicates()
             .sink { (isOpen: Bool) in
                 if (isOpen == true) {
-//                    self.open()
+                    print("COMPACT OPEN")
+                    self.open()
                 } else {
-//                    self.close()
+                    print("COMPACT CLOSE")
+                    self.close()
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    // MARK: Open & Close
+    
+    private func open() {
+        self.cardClosedConstraint.isActive = false
+        self.cardOpenConstraint.isActive = true
+        self.animateLayoutChange {
+            self.compactUIHostingController.view.alpha = 1.0
+            
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    private func close() {
+        self.cardOpenConstraint.isActive = false
+        self.cardClosedConstraint.isActive = true
+        self.animateLayoutChange {
+            self.compactUIHostingController.view.alpha = 0.0
+            
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animateLayoutChange(_ layoutChange: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {        
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 5, options: .curveEaseInOut, animations: layoutChange)
     }
 }

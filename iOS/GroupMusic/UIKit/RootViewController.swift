@@ -21,6 +21,7 @@ class RootViewController: UIViewController {
     var trackDetailModalViewModel: TrackDetailModalViewModel!
     
     private var compactUIViewController: CompactUIViewController!
+    private var compactUIViewModel: CompactUIViewModel!
     
     var controlsOverlayView: UIView!
     
@@ -40,6 +41,7 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         self.initializeTrackDetailModalViewModel()
+        self.initializeCompactUIViewModel()
         
         self.initalizeViews()
         self.configureViewHirearchy()
@@ -48,10 +50,6 @@ class RootViewController: UIViewController {
         self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
         self.subscribeToQueueTableViewControllerScrollPublisher()
-    }
-    
-    private func initializeTrackDetailModalViewModel() {
-        self.trackDetailModalViewModel = TrackDetailModalViewModel(withPlayerAdapter: self.playerAdapter)
     }
     
     private func initalizeViews() {
@@ -140,6 +138,10 @@ extension RootViewController {
             self.userDidDrag(withCumulativeOffset: cumulativeOffset)
         case .userDidDragInDirection(let direction):
             self.userDidDrag(inDirection: direction)
+        case .didDisplayNowPlayingCell:
+            self.didDisplayNowPlayingCell()
+        case .didEndDisplayingNowPlayingCell:
+            self.didEndDisplayingNowPlayingCell()
         }
     }
     
@@ -254,6 +256,10 @@ extension RootViewController {
 
 // MARK: Track Details Modal
 extension RootViewController {
+    private func initializeTrackDetailModalViewModel() {
+        self.trackDetailModalViewModel = TrackDetailModalViewModel(withPlayerAdapter: self.playerAdapter)
+    }
+    
     private func generateTrackDetailModalViewController() -> TrackDetailModalViewController {
         let viewController = TrackDetailModalViewController()
         viewController.configure(with: TrackDetailModalViewController.Configuration(socketManager: self.socketManager,
@@ -275,8 +281,14 @@ extension RootViewController {
 
 // MARK: CompactUI
 extension RootViewController {
+    private func initializeCompactUIViewModel() {
+        self.compactUIViewModel = CompactUIViewModel()
+    }
+    
     private func generateCompactUIViewController() -> CompactUIViewController {
         let viewController = CompactUIViewController()
+        let configuration = CompactUIViewController.Configuration(compactUIViewModel: self.compactUIViewModel)
+        viewController.configure(with: configuration)
         return viewController
     }
     
@@ -287,5 +299,13 @@ extension RootViewController {
         self.compactUIViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         self.compactUIViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.compactUIViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    }
+    
+    private func didDisplayNowPlayingCell() {
+        self.compactUIViewModel.isOpen = false
+    }
+    
+    private func didEndDisplayingNowPlayingCell() {
+        self.compactUIViewModel.isOpen = true
     }
 }

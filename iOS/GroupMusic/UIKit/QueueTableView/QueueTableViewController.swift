@@ -15,6 +15,7 @@ class QueueTableViewController: UIViewController {
     private var playerAdapter: PlayerAdapter!
     private var trackDetailModalViewModel: TrackDetailModalViewModel!
     
+    private var indexOfNowPlaying: Int?
     private var scrollMonitor: QueueTableViewScrollMonitor!
     @Published var scrollEvents: QueueTableViewScrollEvent?
     
@@ -116,6 +117,8 @@ class QueueTableViewController: UIViewController {
                 (previousState.queue.state.indexOfNowPlayingItem == currentState.queue.state.indexOfNowPlayingItem)
             })
             .sink { state in
+                self.indexOfNowPlaying = state.queue.state.indexOfNowPlayingItem
+                
                 for i in 0..<self.playerAdapter.state.queue.state.queue.count {
                     // Only visible cells will be provided by cellForRow(at: ).
                     // Layout updates for non-visible cells must be done when dequeing reusable cells.
@@ -166,6 +169,18 @@ extension QueueTableViewController: UITableViewDelegate {
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         self.scrollMonitor.scrollViewDidEndScrollingAnimation()
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if (indexPath.row == self.indexOfNowPlaying) {
+            self.scrollMonitor.didDisplayNowPlayingCell()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if (indexPath.row == self.indexOfNowPlaying) {
+            self.scrollMonitor.didEndDisplayingNowPlayingCell()
+        }
     }
 }
 
@@ -251,6 +266,14 @@ class QueueTableViewScrollMonitor {
         self.scrollDirection = .none
     }
     
+    func didDisplayNowPlayingCell() {
+        self.emit(.didDisplayNowPlayingCell)
+    }
+    
+    func didEndDisplayingNowPlayingCell() {
+        self.emit(.didEndDisplayingNowPlayingCell)
+    }
+    
     private func emit(_ event : QueueTableViewScrollEvent) {
         self.queueTableViewController.scrollEvents = event
     }
@@ -260,6 +283,8 @@ enum QueueTableViewScrollEvent {
     case userDidEndDragwithVelocity(_: CGPoint)
     case userDidDragWithCumulativeOffset(_: CGFloat)
     case userDidDragInDirection(_: QueueTableViewScrollDirection)
+    case didDisplayNowPlayingCell
+    case didEndDisplayingNowPlayingCell
 }
 
 enum QueueTableViewScrollDirection {
