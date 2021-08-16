@@ -287,7 +287,8 @@ extension RootViewController {
     
     private func generateCompactUIViewController() -> CompactUIViewController {
         let viewController = CompactUIViewController()
-        let configuration = CompactUIViewController.Configuration(compactUIViewModel: self.compactUIViewModel)
+        let configuration = CompactUIViewController.Configuration(compactUIViewModel: self.compactUIViewModel,
+                                                                  playerAdapter: self.playerAdapter)
         viewController.configure(with: configuration)
         return viewController
     }

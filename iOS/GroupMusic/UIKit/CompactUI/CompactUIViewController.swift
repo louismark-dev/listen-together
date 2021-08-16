@@ -20,6 +20,8 @@ class CompactUIViewController: UIViewController {
     /// Constraint pins the CompactUI card ABOVE the top of screen. Activate this constraint to slide the card out of view.
     private var cardClosedConstraint: NSLayoutConstraint!
     
+    var playerAdapter: PlayerAdapter!
+    
     private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
@@ -34,10 +36,12 @@ class CompactUIViewController: UIViewController {
     
     struct Configuration {
         let compactUIViewModel: CompactUIViewModel
+        let playerAdapter: PlayerAdapter
     }
     
     func configure(with configuration: Configuration) {
         self.compactUIViewModel = configuration.compactUIViewModel
+        self.playerAdapter = configuration.playerAdapter
     }
     
     private func initalizeViews() {
@@ -78,6 +82,7 @@ class CompactUIViewController: UIViewController {
     
     private func subscribeToPublishers() {
         self.subscribeToIsOpenPublisher()
+        self.subscribeToNowPlayingPublisher()
     }
     
     /// Subscribes to TrackDetailViewModel's isOpen publisher.
@@ -88,12 +93,19 @@ class CompactUIViewController: UIViewController {
             .removeDuplicates()
             .sink { (isOpen: Bool) in
                 if (isOpen == true) {
-                    print("COMPACT OPEN")
                     self.open()
                 } else {
-                    print("COMPACT CLOSE")
                     self.close()
                 }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func subscribeToNowPlayingPublisher() {
+        self.playerAdapter.$state
+            .receive(on: RunLoop.main)
+            .sink { (state: GMAppleMusicHostController.State) in
+                self.setlayoutData(for: state.queue.state.nowPlayingItem)
             }
             .store(in: &cancellables)
     }
@@ -118,6 +130,16 @@ class CompactUIViewController: UIViewController {
             
             self.view.layoutIfNeeded()
         }
+    }
+    
+    private func setlayoutData(for track: Track?) {
+        let heading = Text("Return to Now Playing")
+        let subheading = Text("\(track?.attributes?.name ?? "") - \(track?.attributes?.artistName ?? "")")
+        let leftIcon = Image.ui.arrow_uturn_backward_circle_fill
+        
+        self.compactUIViewModel.layoutData = CompactUIViewModel.LayoutData(heading: heading,
+                                                                           subheading: subheading,
+                                                                           leftIcon: leftIcon)
     }
     
     private func animateLayoutChange(_ layoutChange: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {        

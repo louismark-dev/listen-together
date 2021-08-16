@@ -18,6 +18,11 @@ class CompactUIViewModel: ObservableObject {
                                      leftIcon: Image.ui.arrow_uturn_backward_circle_fill)
     }
     
+    func open(with layoutData: LayoutData) {
+        self.isOpen = true
+        self.layoutData = layoutData
+    }
+    
     struct LayoutData {
         let heading: Text
         let subheading: Text?
