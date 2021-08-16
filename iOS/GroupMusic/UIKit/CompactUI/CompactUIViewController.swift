@@ -80,6 +80,8 @@ class CompactUIViewController: UIViewController {
         self.compactUIHostingController.view.translatesAutoresizingMaskIntoConstraints = false
         
         self.compactUIHostingController.view.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        self.compactUIHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 16).isActive = true
+        self.compactUIHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -16).isActive = true
         
         self.cardClosedConstraint = self.compactUIHostingController.view.bottomAnchor.constraint(equalTo: self.view.topAnchor)
         self.cardOpenConstraint = self.compactUIHostingController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor)
@@ -145,9 +147,11 @@ class CompactUIViewController: UIViewController {
         let subheading = Text("\(track?.attributes?.name ?? "") - \(track?.attributes?.artistName ?? "")")
         let leftIcon = Image.ui.arrow_uturn_backward_circle_fill
         
-        self.compactUIViewModel.layoutData = CompactUIViewModel.LayoutData(heading: heading,
-                                                                           subheading: subheading,
-                                                                           leftIcon: leftIcon)
+        withAnimation {
+            self.compactUIViewModel.layoutData = CompactUIViewModel.LayoutData(heading: heading,
+                                                                               subheading: subheading,
+                                                                               leftIcon: leftIcon)
+        }
     }
     
     private func animateLayoutChange(_ layoutChange: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {        

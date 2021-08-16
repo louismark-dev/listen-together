@@ -43,10 +43,12 @@ struct CompactUIView: View {
             heading
                 .fontWeight(.semibold)
                 .opacity(0.8)
+                .lineLimit(1)
             if let subheading = subheading {
                 subheading
                     .fontWeight(.semibold)
                     .opacity(0.6)
+                    .lineLimit(1)
             } else {
                 EmptyView()
             }
