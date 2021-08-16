@@ -148,6 +148,14 @@ class QueueTableViewController: UIViewController {
     enum Section: CaseIterable {
         case main
     }
+    
+    func scrollToNowPlayingCell() {
+        let nowPlayingIndex = self.playerAdapter.state.queue.state.indexOfNowPlayingItem
+        
+        self.queueTableView.scrollToRow(at: IndexPath(row: nowPlayingIndex, section: 0),
+                                        at: .top,
+                                        animated: true)
+    }
 }
 
 extension QueueTableViewController: UITableViewDelegate {
@@ -183,6 +191,8 @@ extension QueueTableViewController: UITableViewDelegate {
         }
     }
 }
+
+// MARK: ScollViewMonitor
 
 class QueueTableViewScrollMonitor {
     /// The ViewController that contains the scrollEvents Publisher.

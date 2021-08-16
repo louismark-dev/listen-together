@@ -22,6 +22,8 @@ class CompactUIViewController: UIViewController {
     
     var playerAdapter: PlayerAdapter!
     
+    var delgate: CompactUIViewDelegate?
+    
     private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
@@ -54,8 +56,14 @@ class CompactUIViewController: UIViewController {
     }
     
     private func configureCompactUIView() {
-        self.compactUIHostingController = UIHostingController(rootView: CompactUIView(compactUIViewModel: self.compactUIViewModel))
+        self.compactUIHostingController = UIHostingController(rootView: CompactUIView(compactUIViewModel: self.compactUIViewModel,
+                                                                                      onTap: self.onTapHander))
         self.compactUIHostingController.view.backgroundColor = .clear
+    }
+    
+    private func onTapHander() {
+        self.delgate?.scrollToNowPlayingItem()
+        self.close()
     }
     
     private func configureViewHirearchy() {
@@ -145,4 +153,9 @@ class CompactUIViewController: UIViewController {
     private func animateLayoutChange(_ layoutChange: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {        
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 5, options: .curveEaseInOut, animations: layoutChange)
     }
+}
+
+// MARK: Delegate
+protocol CompactUIViewDelegate {
+    func scrollToNowPlayingItem()
 }

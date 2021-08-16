@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CompactUIView: View {
     @ObservedObject var compactUIViewModel: CompactUIViewModel
+    var onTap: () -> Void
     
     var body: some View {
         if let layoutData = compactUIViewModel.layoutData {
@@ -19,6 +20,9 @@ struct CompactUIView: View {
             }
             .padding(EdgeInsets(top: 12, leading: 15, bottom: 12, trailing: 15))
             .background(self.background())
+            .onTapGesture {
+                self.onTap()
+            }
         } else {
             EmptyView()
         }

@@ -280,7 +280,8 @@ extension RootViewController {
 }
 
 // MARK: CompactUI
-extension RootViewController {
+extension RootViewController: CompactUIViewDelegate {
+    
     private func initializeCompactUIViewModel() {
         self.compactUIViewModel = CompactUIViewModel()
     }
@@ -290,6 +291,7 @@ extension RootViewController {
         let configuration = CompactUIViewController.Configuration(compactUIViewModel: self.compactUIViewModel,
                                                                   playerAdapter: self.playerAdapter)
         viewController.configure(with: configuration)
+        viewController.delgate = self
         return viewController
     }
     
@@ -308,5 +310,10 @@ extension RootViewController {
     
     private func didEndDisplayingNowPlayingCell() {
         self.compactUIViewModel.isOpen = true
+    }
+    
+    // MARK: CompactUIViewDelegate
+    func scrollToNowPlayingItem() {
+        self.queueTableViewController.scrollToNowPlayingCell()
     }
 }
