@@ -24,6 +24,9 @@ class RootViewController: UIViewController {
     private var compactUIViewModel: CompactUIViewModel!
     
     var controlsOverlayView: UIView!
+    /// When true, the controlsOverlayView will be drawn over the QueueTableView. Scrolling the QueueTableView will trigger the controls
+    /// overlay view to hide, which will allow the user to see more content in the queue.
+    var shouldOverlayControls: Bool = true
     
     var queueTableViewController: QueueTableViewController!
     
@@ -164,10 +167,12 @@ extension RootViewController {
     }
     
     private func addOverlay() {
+        if (self.shouldOverlayControls == false) { return }
         self.controlsOverlayView.alpha = 1.0
     }
     
     private func removeOverlay() {
+        if (self.shouldOverlayControls == false) { return }
         self.controlsOverlayView.alpha = 0.0
     }
 }
@@ -187,7 +192,9 @@ extension RootViewController {
         self.queueTableViewController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         self.queueTableViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.queueTableViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        self.queueTableViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        
+        let queueTableViewBottomAnchor = self.shouldOverlayControls ? self.view.bottomAnchor : self.controlsOverlayView.topAnchor
+        self.queueTableViewController.view.bottomAnchor.constraint(equalTo: queueTableViewBottomAnchor).isActive = true
     }
 }
 
