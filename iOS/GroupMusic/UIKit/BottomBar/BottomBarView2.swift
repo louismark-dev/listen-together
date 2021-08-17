@@ -8,8 +8,19 @@
 import SwiftUI
 
 struct BottomBarView2: View {
+    var actions: Actions
     
-    let sessionSettingsAction: () -> ()
+    struct Actions {
+        let sessionSettingsAction: () -> Void
+    }
+        
+    struct Configuration {
+        let actions: Actions
+    }
+    
+    init(withConfiguration configuration: Configuration) {
+        self.actions = configuration.actions
+    }
     
     var body: some View {
         HStack {
@@ -54,7 +65,7 @@ struct BottomBarView2: View {
     }
     
     var sessionSettingsButton: some View {
-        Button(action: self.sessionSettingsAction) {
+        Button(action: self.actions.sessionSettingsAction) {
             ZStack {
                 Circle()
                     .foregroundColor(Color(UIColor.ui.bluetiful))
@@ -65,14 +76,14 @@ struct BottomBarView2: View {
     }
 }
 
-struct BottomButtonView_Previews: PreviewProvider {
-    static var previews: some View {
-        ZStack {
-            Color("RussianViolet")
-                .ignoresSafeArea(.all, edges: .all)
-            BottomBarView2(sessionSettingsAction: {})
-                .padding(.horizontal)
-            
-        }
-    }
-}
+//struct BottomButtonView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ZStack {
+//            Color("RussianViolet")
+//                .ignoresSafeArea(.all, edges: .all)
+//            BottomBarView2(sessionSettingsAction: {})
+//                .padding(.horizontal)
+//            
+//        }
+//    }
+//}

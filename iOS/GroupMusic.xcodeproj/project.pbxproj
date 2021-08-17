@@ -69,9 +69,16 @@
 		25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441DF25C9FC7100193129 /* ResultTypeView.swift */; };
 		25A441E425C9FD6900193129 /* ResultCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E325C9FD6900193129 /* ResultCarouselView.swift */; };
 		25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A441E625C9FDF800193129 /* MediaCardView.swift */; };
+		25AC33B226BE4BB20070429C /* CompactUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B126BE4BB20070429C /* CompactUIViewController.swift */; };
+		25AC33B426BE4CFE0070429C /* InteractionlessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B326BE4CFE0070429C /* InteractionlessView.swift */; };
+		25AC33B626BE4D860070429C /* CompactUIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B526BE4D860070429C /* CompactUIViewModel.swift */; };
+		25AC33B826BE4EE30070429C /* CompactUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AC33B726BE4EE30070429C /* CompactUIView.swift */; };
 		25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */; };
 		25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */; };
 		25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */; };
+		25B366DA26BA1A110051D4B7 /* PlaybackControlsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */; };
+		25B366E126BA2A1E0051D4B7 /* QueueTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B366E026BA2A1E0051D4B7 /* QueueTableViewController.swift */; };
+		25B366E326BA2C160051D4B7 /* QueueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B366E226BA2C160051D4B7 /* QueueTableViewCell.swift */; };
 		25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CBDA8525C8915700EB552C /* SongResultsView.swift */; };
 		25CFFCEB25FDC85500133C1C /* TrackDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */; };
 		25D0B104264A3FB500D43DE1 /* PlaybackProgressView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D0B103264A3FB500D43DE1 /* PlaybackProgressView2.swift */; };
@@ -84,6 +91,7 @@
 		25DB5CA725D064D0008033BB /* TrackCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB5CA625D064D0008033BB /* TrackCellView.swift */; };
 		25E9D3982656F7BC0075E52D /* PlaybackProgressMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E9D3972656F7BC0075E52D /* PlaybackProgressMonitor.swift */; };
 		25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F8896625CF96FF00267617 /* ArtworkImageView.swift */; };
+		25FA5D0926BA3C52005757E6 /* BottomBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FA5D0826BA3C52005757E6 /* BottomBarViewController.swift */; };
 		BF013B6D25B3E1D700C438D5 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */; };
 		BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */; };
 		BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF266BFB259026B300029A2D /* GMQueuePlayer.swift */; };
@@ -201,9 +209,16 @@
 		25A441DF25C9FC7100193129 /* ResultTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTypeView.swift; sourceTree = "<group>"; };
 		25A441E325C9FD6900193129 /* ResultCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCarouselView.swift; sourceTree = "<group>"; };
 		25A441E625C9FDF800193129 /* MediaCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCardView.swift; sourceTree = "<group>"; };
+		25AC33B126BE4BB20070429C /* CompactUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactUIViewController.swift; sourceTree = "<group>"; };
+		25AC33B326BE4CFE0070429C /* InteractionlessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionlessView.swift; sourceTree = "<group>"; };
+		25AC33B526BE4D860070429C /* CompactUIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactUIViewModel.swift; sourceTree = "<group>"; };
+		25AC33B726BE4EE30070429C /* CompactUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactUIView.swift; sourceTree = "<group>"; };
 		25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		25B2B51125FE9E2600C47023 /* TrackDetailModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalView.swift; sourceTree = "<group>"; };
 		25B2B51425FEA01B00C47023 /* TrackDetailModalViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalViewManager.swift; sourceTree = "<group>"; };
+		25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControlsViewController.swift; sourceTree = "<group>"; };
+		25B366E026BA2A1E0051D4B7 /* QueueTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueTableViewController.swift; sourceTree = "<group>"; };
+		25B366E226BA2C160051D4B7 /* QueueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueTableViewCell.swift; sourceTree = "<group>"; };
 		25CBDA8525C8915700EB552C /* SongResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResultsView.swift; sourceTree = "<group>"; };
 		25CFFCEA25FDC85500133C1C /* TrackDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailView.swift; sourceTree = "<group>"; };
 		25D0B103264A3FB500D43DE1 /* PlaybackProgressView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressView2.swift; sourceTree = "<group>"; };
@@ -216,6 +231,7 @@
 		25DB5CA625D064D0008033BB /* TrackCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackCellView.swift; sourceTree = "<group>"; };
 		25E9D3972656F7BC0075E52D /* PlaybackProgressMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackProgressMonitor.swift; sourceTree = "<group>"; };
 		25F8896625CF96FF00267617 /* ArtworkImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkImageView.swift; sourceTree = "<group>"; };
+		25FA5D0826BA3C52005757E6 /* BottomBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarViewController.swift; sourceTree = "<group>"; };
 		BF013B6B25B3E1D700C438D5 /* PlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		BF013B6C25B3E1D700C438D5 /* PlayerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAdapter.swift; sourceTree = "<group>"; };
 		BF266BFB259026B300029A2D /* GMQueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMQueuePlayer.swift; sourceTree = "<group>"; };
@@ -396,24 +412,27 @@
 		258CF386269DE87C00D736D0 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				258CF38F269E921500D736D0 /* SwiftUI Controls */,
+				25AC33B026BE4BA40070429C /* CompactUI */,
+				25FA5D0726BA3C47005757E6 /* BottomBar */,
+				25B366DE26BA296F0051D4B7 /* TrackDetailsModal */,
+				25B366D826BA19FD0051D4B7 /* PlaybackControls */,
+				25B366DF26BA29FC0051D4B7 /* QueueTableView */,
 				258CF387269DE89200D736D0 /* RootViewController.swift */,
 				258CF394269E99A300D736D0 /* SessionSettingsViewController.swift */,
 				258CF389269DE8EF00D736D0 /* BackgroundBlurViewController.swift */,
-				25D3B3F226AE1E3F00D7D7A9 /* TrackDetailModalViewController.swift */,
-				2504D52A26AE414E00CEF66F /* TrackDetailModalViewModel.swift */,
+				25AC33B326BE4CFE0070429C /* InteractionlessView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
 		};
-		258CF38F269E921500D736D0 /* SwiftUI Controls */ = {
+		25AC33B026BE4BA40070429C /* CompactUI */ = {
 			isa = PBXGroup;
 			children = (
-				258CF390269E923900D736D0 /* BottomBarView2.swift */,
-				251B452C26A20E6C006853FD /* PlaybackControlsView.swift */,
-				2569485B26AE2FE600128333 /* TrackDetailModalView2.swift */,
+				25AC33B126BE4BB20070429C /* CompactUIViewController.swift */,
+				25AC33B526BE4D860070429C /* CompactUIViewModel.swift */,
+				25AC33B726BE4EE30070429C /* CompactUIView.swift */,
 			);
-			path = "SwiftUI Controls";
+			path = CompactUI;
 			sourceTree = "<group>";
 		};
 		25B2B51725FEA96500C47023 /* TrackDetailView */ = {
@@ -425,6 +444,34 @@
 				25B2B50D25FE9A6700C47023 /* BottomSheetView.swift */,
 			);
 			path = TrackDetailView;
+			sourceTree = "<group>";
+		};
+		25B366D826BA19FD0051D4B7 /* PlaybackControls */ = {
+			isa = PBXGroup;
+			children = (
+				25B366D926BA1A110051D4B7 /* PlaybackControlsViewController.swift */,
+				251B452C26A20E6C006853FD /* PlaybackControlsView.swift */,
+			);
+			path = PlaybackControls;
+			sourceTree = "<group>";
+		};
+		25B366DE26BA296F0051D4B7 /* TrackDetailsModal */ = {
+			isa = PBXGroup;
+			children = (
+				25D3B3F226AE1E3F00D7D7A9 /* TrackDetailModalViewController.swift */,
+				2504D52A26AE414E00CEF66F /* TrackDetailModalViewModel.swift */,
+				2569485B26AE2FE600128333 /* TrackDetailModalView2.swift */,
+			);
+			path = TrackDetailsModal;
+			sourceTree = "<group>";
+		};
+		25B366DF26BA29FC0051D4B7 /* QueueTableView */ = {
+			isa = PBXGroup;
+			children = (
+				25B366E026BA2A1E0051D4B7 /* QueueTableViewController.swift */,
+				25B366E226BA2C160051D4B7 /* QueueTableViewCell.swift */,
+			);
+			path = QueueTableView;
 			sourceTree = "<group>";
 		};
 		25CBDA8225C8911C00EB552C /* Apple Music Browser */ = {
@@ -454,6 +501,15 @@
 				25D3207625F7EC3D00DD4970 /* AsyncImage.swift */,
 			);
 			path = AsyncImage;
+			sourceTree = "<group>";
+		};
+		25FA5D0726BA3C47005757E6 /* BottomBar */ = {
+			isa = PBXGroup;
+			children = (
+				25FA5D0826BA3C52005757E6 /* BottomBarViewController.swift */,
+				258CF390269E923900D736D0 /* BottomBarView2.swift */,
+			);
+			path = BottomBar;
 			sourceTree = "<group>";
 		};
 		BF266BFE259026BA00029A2D /* Models */ = {
@@ -725,6 +781,7 @@
 				BF5EE22825A02F27000C23DD /* VisualEffectView.swift in Sources */,
 				BF8BEE4E259B1B3600B9DCD3 /* CiderUrlBuilder.swift in Sources */,
 				258CF388269DE89200D736D0 /* RootViewController.swift in Sources */,
+				25AC33B626BE4D860070429C /* CompactUIViewModel.swift in Sources */,
 				BF8BEE60259B1B9100B9DCD3 /* Artist.swift in Sources */,
 				251B452D26A20E6C006853FD /* PlaybackControlsView.swift in Sources */,
 				250E821025B932EB001990E9 /* RootView.swift in Sources */,
@@ -742,6 +799,7 @@
 				BF8BEE81259B1C1B00B9DCD3 /* Include.swift in Sources */,
 				25CBDA8625C8915700EB552C /* SongResultsView.swift in Sources */,
 				251B1236267549B4006EAC40 /* MediaDetailView2.swift in Sources */,
+				25B366E326BA2C160051D4B7 /* QueueTableViewCell.swift in Sources */,
 				253C3D48267717DE008A2E45 /* MediaDetailViewGradient.swift in Sources */,
 				25D0B104264A3FB500D43DE1 /* PlaybackProgressView2.swift in Sources */,
 				BF8BEE6A259B1B9100B9DCD3 /* Playlist.swift in Sources */,
@@ -754,10 +812,12 @@
 				BF8BEE74259B1BC500B9DCD3 /* ResponseRoot.swift in Sources */,
 				25DB5CA425D06466008033BB /* MediaDetailView.swift in Sources */,
 				BF8BEE64259B1B9100B9DCD3 /* EditorialNotes.swift in Sources */,
+				25FA5D0926BA3C52005757E6 /* BottomBarViewController.swift in Sources */,
 				BF8BEE6B259B1B9100B9DCD3 /* Artwork.swift in Sources */,
 				25A2E80125D67598003501E1 /* BackgroundBlurView.swift in Sources */,
 				25A441E025C9FC7100193129 /* ResultTypeView.swift in Sources */,
 				2577BCED25B9321100F65B8F /* QueueView.swift in Sources */,
+				25AC33B826BE4EE30070429C /* CompactUIView.swift in Sources */,
 				2504D52B26AE414E00CEF66F /* TrackDetailModalViewModel.swift in Sources */,
 				BF013B6E25B3E1D700C438D5 /* PlayerAdapter.swift in Sources */,
 				25A441E725C9FDF800193129 /* MediaCardView.swift in Sources */,
@@ -768,6 +828,7 @@
 				25D3207925F7EC3D00DD4970 /* EnvironmentValues+ImageCache.swift in Sources */,
 				259CC4AB25BEBF52004E4F5D /* PlaybackTimer.swift in Sources */,
 				BFA285C62595B56A00D8B4D6 /* AVPlayer+Extension.swift in Sources */,
+				25B366DA26BA1A110051D4B7 /* PlaybackControlsViewController.swift in Sources */,
 				2569485C26AE2FE600128333 /* TrackDetailModalView2.swift in Sources */,
 				258CF38A269DE8EF00D736D0 /* BackgroundBlurViewController.swift in Sources */,
 				25DB5CA725D064D0008033BB /* TrackCellView.swift in Sources */,
@@ -779,13 +840,16 @@
 				BF5D5DDE25915B1F00EF6C37 /* GMSockets.swift in Sources */,
 				BF5EE22325A028A3000C23DD /* PreviewView.swift in Sources */,
 				251B123A26754BC4006EAC40 /* Color+Extensions.swift in Sources */,
+				25B366E126BA2A1E0051D4B7 /* QueueTableViewController.swift in Sources */,
 				25CFFCEB25FDC85500133C1C /* TrackDetailView.swift in Sources */,
 				258CF393269E96A100D736D0 /* Image+Extensions.swift in Sources */,
 				BF8BEE68259B1B9100B9DCD3 /* Curator.swift in Sources */,
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
+				25AC33B226BE4BB20070429C /* CompactUIViewController.swift in Sources */,
 				BF5EE22B25A03353000C23DD /* AudioPreviewManager.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
 				25D3207825F7EC3D00DD4970 /* ImageLoader.swift in Sources */,
+				25AC33B426BE4CFE0070429C /* InteractionlessView.swift in Sources */,
 				25B2B51525FEA01B00C47023 /* TrackDetailModalViewManager.swift in Sources */,
 				BF5EE24925A14E0D000C23DD /* AppleMusicQueueView.swift in Sources */,
 				25F8896725CF96FF00267617 /* ArtworkImageView.swift in Sources */,

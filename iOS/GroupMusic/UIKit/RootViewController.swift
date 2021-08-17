@@ -12,22 +12,26 @@ import Combine
 class RootViewController: UIViewController {
     var backgroundBlurViewController: BackgroundBlurViewController!
     
-    var bottomBarHostingController: UIHostingController<BottomBarView2>!
+    var bottomBarViewController: BottomBarViewController!
     
-    var playbackControlsHostingController: UIHostingController<PlaybackControlsView>!
+    var playbackControlsViewController: PlaybackControlsViewController!
     let playbackControlsSpacing = PlaybackControlsSpacing(top: 40, bottom: 40, left: 24, right: 24)
     
     var trackDetailModalViewController: TrackDetailModalViewController!
     var trackDetailModalViewModel: TrackDetailModalViewModel!
     
-    var queueTableView: UITableView!
-    var queueTableViewDiffableDataSource: UITableViewDiffableDataSource<Section, Track>!
+    private var compactUIViewController: CompactUIViewController!
+    private var compactUIViewModel: CompactUIViewModel!
     
-    var horizontalPadding: CGFloat {
-        // Horizontal padding between the edges of the screen and the contents of this view controller
-        // Note that the PlaybackControlsView will set padding independently
-        return 8
-    }
+    var controlsOverlayView: UIView!
+    /// When true, the controlsOverlayView will be drawn over the QueueTableView. Scrolling the QueueTableView will trigger the controls
+    /// overlay view to hide, which will allow the user to see more content in the queue.
+    var shouldOverlayControls: Bool = false
+    
+    var queueTableViewController: QueueTableViewController!
+    
+    /// // Horizontal padding between the edges of the screen and the contents of this view controller
+    var horizontalPadding: CGFloat = 8
     
     let playerAdapter = PlayerAdapter()
     let socketManager: GMSockets = GMSockets.sharedInstance
@@ -40,6 +44,7 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         self.initializeTrackDetailModalViewModel()
+        self.initializeCompactUIViewModel()
         
         self.initalizeViews()
         self.configureViewHirearchy()
@@ -47,219 +52,172 @@ class RootViewController: UIViewController {
         
         self.setupNotificationMonitor()
         self.appleMusicManager = GMAppleMusic(storefront: .canada)
-        self.subscribeToPublishers()
-    }
-    
-    private func initializeTrackDetailModalViewModel() {
-        self.trackDetailModalViewModel = TrackDetailModalViewModel(withPlayerAdapter: self.playerAdapter)
+        self.subscribeToQueueTableViewControllerScrollPublisher()
     }
     
     private func initalizeViews() {
-        self.playbackControlsHostingController = self.generatePlaybackControlsHostingController()
-        self.bottomBarHostingController = self.generateBottomBar()
+        self.playbackControlsViewController = self.generatePlaybackControlsViewController()
+        self.bottomBarViewController = self.generateBottomBarViewController()
         self.trackDetailModalViewController = self.generateTrackDetailModalViewController()
+        self.compactUIViewController = self.generateCompactUIViewController()
         self.backgroundBlurViewController = self.generateBackgroundBlurViewController()
-        self.queueTableView = self.generateQueueTableView()
-        self.queueTableViewDiffableDataSource = self.generateDataSource(forTableView: self.queueTableView)
+        self.queueTableViewController = self.generateQueueTableViewController()
+        self.controlsOverlayView = self.generateControlsOverlayView()
     }
     
-    /// Adds all views to the virw hirearchy
+    /// Adds all views to the view hirearchy
     private func configureViewHirearchy() {
         self.addChild(self.backgroundBlurViewController)
         self.view.addSubview(self.backgroundBlurViewController.view)
         
-        self.addChild(self.playbackControlsHostingController)
-        self.view.addSubview(self.playbackControlsHostingController.view)
+        self.addChild(self.queueTableViewController)
+        self.view.addSubview(self.queueTableViewController.view)
         
-        self.addChild(self.bottomBarHostingController)
-        self.view.addSubview(self.bottomBarHostingController.view)
-        
-        self.view.addSubview(self.queueTableView)
-        
+        self.view.addSubview(self.controlsOverlayView)
+
+        self.addChild(self.bottomBarViewController)
+        self.controlsOverlayView.addSubview(self.bottomBarViewController.view)
+
+        self.addChild(self.playbackControlsViewController)
+        self.controlsOverlayView.addSubview(self.playbackControlsViewController.view)
+
         self.addChild(self.trackDetailModalViewController)
         self.view.addSubview(self.trackDetailModalViewController.view)
+        
+        self.addChild(self.compactUIViewController)
+        self.view.addSubview(self.compactUIViewController.view)
     }
     
     private func configureLayout() {
-        self.setupPlaybackControlsLayout()
         self.setupBottomBarLayout()
-        self.setupTrackDetailModalViewLayout()
-        self.setupBackgroundBlurViewControllerLayout()
+        self.setupPlaybackControlsLayout()
         self.setupQueueTableViewLayout()
+        self.setupBackgroundBlurViewControllerLayout()
+        self.setupTrackDetailModalViewLayout()
+        self.setupCompactUIViewLayout()
+        self.setupControlsOverlayViewLayout()
     }
     
     // MARK: Data
+    
+    private func subscribeToQueueTableViewControllerScrollPublisher() {
+        //TODO: Complete implementation
+        self.queueTableViewController.$scrollEvents
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { (event: QueueTableViewScrollEvent?) in
+                self.handleQueueTableViewScrollEvent(event)
+                print("DRAG \(event)")
+            })
+            .store(in: &cancellables)
+    }
     
     private func setupNotificationMonitor() {
         self.notificationMonitor = NotificationMonitor(playerAdapter: self.playerAdapter)
         self.notificationMonitor.startListeningForNotifications()
     }
-    
-    private func subscribeToPublishers() {
-        self.subscribeToQueuePublisher()
-        self.subscibeToIndexOfNowPlayingItemPublisher()
+}
+
+// MARK: Controls Overlay View
+extension RootViewController {
+    private func generateControlsOverlayView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = UIColor.ui.russianViolet
+        return view
     }
     
-    private func subscribeToQueuePublisher() {
-        self.playerAdapter.$state
-            .receive(on: RunLoop.main)
-            .removeDuplicates(by: { previousState, currentState in
-                (previousState.queue.state.queue == currentState.queue.state.queue)
-            })
-            .sink { state in
-                self.applyNewQueueTableViewSnapshot(withTracks: state.queue.state.queue)
-            }
-            .store(in: &cancellables)
+    private func setupControlsOverlayViewLayout() {
+        self.controlsOverlayView.translatesAutoresizingMaskIntoConstraints = false
+        self.controlsOverlayView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.controlsOverlayView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.controlsOverlayView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
     
-    private func subscibeToIndexOfNowPlayingItemPublisher() {
-        self.playerAdapter.$state
-            .receive(on: RunLoop.main)
-            .removeDuplicates(by: { previousState, currentState in
-                (previousState.queue.state.indexOfNowPlayingItem == currentState.queue.state.indexOfNowPlayingItem)
-            })
-            .sink { state in
-                for i in 0..<self.playerAdapter.state.queue.state.queue.count {
-                    // Only visible cells will be provided by cellForRow(at: ).
-                    // Layout updates for non-visible cells must be done when dequeing reusable cells.
-                    guard let cell = self.queueTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? QueueTableViewCell else {
-                        continue // There was no visible cell at this row... continue to next loop
-                    }
-                    self.queueTableView.beginUpdates()
-                    if (state.queue.state.indexOfNowPlayingItem == i) {
-                        cell.updateLayout(forPlaybackStatus: .playing)
-                    } else {
-                        cell.updateLayout(forPlaybackStatus: .notPlaying)
-                    }
-                    self.queueTableView.endUpdates()
-                }
-            }
-            .store(in: &cancellables)
+    private func handleQueueTableViewScrollEvent(_ event: QueueTableViewScrollEvent?) {
+        guard let event = event else { return }
+        switch event {
+        case .userDidEndDragwithVelocity(let velocity):
+            self.userDidEndDrag(withVelocity: velocity)
+        case .userDidDragWithCumulativeOffset(let cumulativeOffset):
+            self.userDidDrag(withCumulativeOffset: cumulativeOffset)
+        case .userDidDragInDirection(let direction):
+            self.userDidDrag(inDirection: direction)
+        case .didDisplayNowPlayingCell:
+            self.didDisplayNowPlayingCell()
+        case .didEndDisplayingNowPlayingCell:
+            self.didEndDisplayingNowPlayingCell()
+        }
+    }
+    
+    private func userDidEndDrag(withVelocity velocity: CGPoint) {
+        if (velocity.y > 1) {
+            self.removeOverlay()
+        }
+    }
+    
+    private func userDidDrag(withCumulativeOffset cumulativeOffset: CGFloat) {
+        if (cumulativeOffset > 100) {
+            self.removeOverlay()
+        }
+    }
+    
+    private func userDidDrag(inDirection direction: QueueTableViewScrollDirection) {
+        if (direction == .up) {
+            self.addOverlay()
+        }
+    }
+    
+    private func addOverlay() {
+        if (self.shouldOverlayControls == false) { return }
+        self.controlsOverlayView.alpha = 1.0
+    }
+    
+    private func removeOverlay() {
+        if (self.shouldOverlayControls == false) { return }
+        self.controlsOverlayView.alpha = 0.0
     }
 }
 
-// MARK: Track Details Modal
+// MARK: QueueTableView
 extension RootViewController {
-    private func generateTrackDetailModalViewController() -> TrackDetailModalViewController {
-        let viewController = TrackDetailModalViewController()
-        viewController.configure(with: TrackDetailModalViewController.Configuration(socketManager: self.socketManager,
-                                                                                    playerAdapter: self.playerAdapter,
-                                                                                    model: self.trackDetailModalViewModel))
-                
+    private func generateQueueTableViewController() -> QueueTableViewController {
+        let viewController = QueueTableViewController()
+        let configuration = QueueTableViewController.Configuration(playerAdapter: self.playerAdapter,
+                                                                   trackDetailModalViewModel: self.trackDetailModalViewModel)
+        viewController.configure(with: configuration)
         return viewController
     }
     
-    private func setupTrackDetailModalViewLayout() {
-        self.trackDetailModalViewController.view.translatesAutoresizingMaskIntoConstraints = false
+    private func setupQueueTableViewLayout() {
+        self.queueTableViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.queueTableViewController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        self.queueTableViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.queueTableViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         
-        self.trackDetailModalViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        self.trackDetailModalViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        self.trackDetailModalViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.trackDetailModalViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        let queueTableViewBottomAnchor = self.shouldOverlayControls ? self.view.bottomAnchor : self.controlsOverlayView.topAnchor
+        self.queueTableViewController.view.bottomAnchor.constraint(equalTo: queueTableViewBottomAnchor).isActive = true
     }
 }
 
 // MARK: Playback Controls
 extension RootViewController {
-    private func generatePlaybackControlsHostingController() -> UIHostingController<PlaybackControlsView> {
-        let backwardAction = {
-            let emitPreviousEvent: () -> () = {
-                do {
-                    try self.socketManager.emitPreviousEvent()
-                } catch {
-                    print("Could not emit PreviousEvent event")
-                }
-            }
-            
-            if (self.socketManager.state.isCoordinator == true) {
-                // IS COORDINATOR
-                self.playerAdapter.skipToPreviousItem {
-                    emitPreviousEvent()
-                }
-            } else {
-                // NOT COORDINATOR
-                emitPreviousEvent()
-            }
-        }
-        
-        let forwardsAction = {
-            let emitForwardsEvent: () -> () = {
-                do {
-                    try self.socketManager.emitForwardEvent()
-                } catch {
-                    print("Could not emit ForwardEvent event")
-                }
-            }
-            
-            if (self.socketManager.state.isCoordinator == true) {
-                // IS COORDINATOR
-                self.playerAdapter.skipToNextItem {
-                    emitForwardsEvent()
-                }
-            } else {
-                // NOT COORDINATOR
-                emitForwardsEvent()
-            }
-        }
-        
-        let togglePlaybackAction = {
-            let emitPlayEvent: () -> () = {
-                do {
-                    try self.socketManager.emitPlayEvent()
-                } catch {
-                    print("Could not emit PlayEvent event")
-                }
-            }
-            
-            let emitPauseEvent: () -> () = {
-                do {
-                    try self.socketManager.emitPauseEvent()
-                } catch {
-                    print("Could not emit PauseEvent event")
-                }
-            }
-            
-            if (self.socketManager.state.isCoordinator == true) {
-                // IS COORDINATOR
-                if (self.playerAdapter.state.playbackState !=  .playing) {
-                    // NOT PLAYING
-                    self.playerAdapter.play {
-                        emitPlayEvent()
-                    }
-                } else {
-                    // PLAYING
-                    self.playerAdapter.pause {
-                        emitPauseEvent()
-                    }
-                }
-            } else {
-                // NOT COORDINATOR
-                if (self.playerAdapter.state.playbackState != .playing) {
-                    // NOT PLAYING
-                    emitPlayEvent()
-                } else {
-                    emitPauseEvent()
-                }
-            }
-        }
-        
-        let playbackControlsConfiguration = PlaybackControlsView.Configuration(backwardAction: backwardAction,
-                                                                               playAction: togglePlaybackAction,
-                                                                               forwardAction: forwardsAction,
-                                                                               opacity: 0.8,
-                                                                               playerAdapter: self.playerAdapter)
-        
-        return UIHostingController(rootView: PlaybackControlsView(withConfiguration: playbackControlsConfiguration))
+    private func generatePlaybackControlsViewController() -> PlaybackControlsViewController {
+        let viewController = PlaybackControlsViewController()
+        viewController.configure(withSocketManager: self.socketManager,
+                                 playerAdapter: self.playerAdapter)
+        return viewController
     }
     
     private func setupPlaybackControlsLayout() {
-        self.playbackControlsHostingController.view.backgroundColor = .clear
+        self.playbackControlsViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
-        self.playbackControlsHostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.playbackControlsHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: self.playbackControlsSpacing.left).isActive = true
-        self.playbackControlsHostingController.view.bottomAnchor.constraint(equalTo: self.bottomBarHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
-        self.playbackControlsHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -1 * self.playbackControlsSpacing.right).isActive = true
+        self.playbackControlsViewController.view.bottomAnchor.constraint(equalTo: self.bottomBarViewController.view.topAnchor,
+                                                                         constant: -1 * self.playbackControlsSpacing.bottom).isActive = true
+        self.playbackControlsViewController.view.topAnchor.constraint(equalTo: self.controlsOverlayView.topAnchor,
+                                                                      constant: self.playbackControlsSpacing.top).isActive = true
+        self.playbackControlsViewController.view.leftAnchor.constraint(equalTo: self.controlsOverlayView.leftAnchor,
+                                                                       constant: self.playbackControlsSpacing.left).isActive = true
+        self.playbackControlsViewController.view.rightAnchor.constraint(equalTo: self.controlsOverlayView.rightAnchor,
+                                                                        constant: -1 * self.playbackControlsSpacing.right).isActive = true
     }
     
     struct PlaybackControlsSpacing {
@@ -272,22 +230,18 @@ extension RootViewController {
 
 // MARK: Bottom Bar
 extension RootViewController {
-    private func generateBottomBar() -> UIHostingController<BottomBarView2>{
-        let sessionSettingsAction = {
-            self.present(SessionSettingsViewController(), animated: true)
-        }
-        
-        return UIHostingController(rootView: BottomBarView2(sessionSettingsAction: sessionSettingsAction))
+    private func generateBottomBarViewController() -> BottomBarViewController {
+        let viewController = BottomBarViewController()
+        return viewController
     }
     
     private func setupBottomBarLayout() {
-        self.bottomBarHostingController.view.backgroundColor = .clear
-        
-        self.bottomBarHostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.bottomBarHostingController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: self.horizontalPadding).isActive = true
-        self.bottomBarHostingController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -1 * self.horizontalPadding).isActive = true
-        self.bottomBarHostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.bottomBarViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.bottomBarViewController.view.bottomAnchor.constraint(equalTo: self.controlsOverlayView.bottomAnchor).isActive = true
+        self.bottomBarViewController.view.leftAnchor.constraint(equalTo: self.controlsOverlayView.leftAnchor,
+                                                                   constant: self.horizontalPadding).isActive = true
+        self.bottomBarViewController.view.rightAnchor.constraint(equalTo: self.controlsOverlayView.rightAnchor,
+                                                                    constant: -1 * self.horizontalPadding).isActive = true
     }
 }
 
@@ -307,296 +261,66 @@ extension RootViewController {
     }
 }
 
-// MARK: QueueTableView
-extension RootViewController: UITableViewDelegate {
-    /// Generates the queue UITableView.
-    /// Note: The configured UITableView does not have a dataSource.
-    /// The dataSource must be generated using generateDataSource(forTableView: )
-    private func generateQueueTableView() -> UITableView {
-        let tableView = UITableView()
-        
-        tableView.delegate = self
-        
-        tableView.backgroundColor = .clear
-        tableView.allowsSelection = false
-        tableView.separatorStyle = .none
-        tableView.register(QueueTableViewCell.self, forCellReuseIdentifier: "QueueCell")
-        tableView.estimatedRowHeight = 100
-        
-        return tableView
+// MARK: Track Details Modal
+extension RootViewController {
+    private func initializeTrackDetailModalViewModel() {
+        self.trackDetailModalViewModel = TrackDetailModalViewModel(withPlayerAdapter: self.playerAdapter)
     }
     
-    private func generateDataSource(forTableView tableView: UITableView) -> UITableViewDiffableDataSource<Section, Track> {
-        return UITableViewDiffableDataSource<Section, Track>(tableView: tableView) {
-            (tableView: UITableView, indexPath: IndexPath, track: Track) in
-            let cell = tableView.dequeueReusableCell(withIdentifier: "QueueCell") as! QueueTableViewCell
-            let cellConfiguration = QueueTableViewCell.Configuration(trackDetailModalViewModel: self.trackDetailModalViewModel,
-                                                                     track: track)
-            cell.configure(withConfiguration: cellConfiguration)
-            
-            if (self.playerAdapter.state.queue.state.indexOfNowPlayingItem == indexPath.row) {
-                cell.updateLayout(forPlaybackStatus: .playing)
-            } else {
-                cell.updateLayout(forPlaybackStatus: .notPlaying)
-            }
-            
-            return cell
-        }
+    private func generateTrackDetailModalViewController() -> TrackDetailModalViewController {
+        let viewController = TrackDetailModalViewController()
+        viewController.configure(with: TrackDetailModalViewController.Configuration(socketManager: self.socketManager,
+                                                                                    playerAdapter: self.playerAdapter,
+                                                                                    model: self.trackDetailModalViewModel))
+                
+        return viewController
     }
     
-    private func setupQueueTableViewLayout() {
-        self.queueTableView.translatesAutoresizingMaskIntoConstraints = false
+    private func setupTrackDetailModalViewLayout() {
+        self.trackDetailModalViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
-        self.queueTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        self.queueTableView.bottomAnchor.constraint(equalTo: self.playbackControlsHostingController.view.topAnchor, constant: -1 * self.playbackControlsSpacing.top).isActive = true
-        self.queueTableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.queueTableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-    }
-    
-    private func applyNewQueueTableViewSnapshot(withTracks tracks: [Track]) {
-        var queueTableViewSnapshot = NSDiffableDataSourceSnapshot<Section, Track>()
-        queueTableViewSnapshot.appendSections(Section.allCases)
-        queueTableViewSnapshot.appendItems(tracks)
-        
-        self.queueTableViewDiffableDataSource.apply(queueTableViewSnapshot)
-    }
-    
-    enum Section: CaseIterable {
-        case main
+        self.trackDetailModalViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.trackDetailModalViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.trackDetailModalViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.trackDetailModalViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
 }
 
-// MARK: QueueTableViewCell
-class QueueTableViewCell: UITableViewCell {
+// MARK: CompactUI
+extension RootViewController: CompactUIViewDelegate {
     
-    private var nowPlayingLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Now Playing"
-        label.numberOfLines = 1
-        label.font = UIFont(name: "Arial Rounded MT Bold", size: 16)
-        label.alpha = 0.7
-        label.textColor = UIColor.ui.lavenderWeb
-        label.textAlignment = .left
-        return label
-    }()
+    private func initializeCompactUIViewModel() {
+        self.compactUIViewModel = CompactUIViewModel()
+    }
     
-    private var nameLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 1
-        label.font = UIFont(name: "Arial Rounded MT Bold", size: 18) // This should be 22 when expanded
-        label.alpha = 0.9
-        label.textColor = UIColor.white
-        label.textAlignment = .left
+    private func generateCompactUIViewController() -> CompactUIViewController {
+        let viewController = CompactUIViewController()
+        let configuration = CompactUIViewController.Configuration(compactUIViewModel: self.compactUIViewModel,
+                                                                  playerAdapter: self.playerAdapter)
+        viewController.configure(with: configuration)
+        viewController.delgate = self
+        return viewController
+    }
+    
+    private func setupCompactUIViewLayout() {
+        self.compactUIViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
-        return label
-    }()
-    
-    private var artistNameLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 1
-        label.font = UIFont(name: "Arial Rounded MT Bold", size: 16)
-        label.alpha = 0.7
-        label.textColor = UIColor.white
-        label.textAlignment = .left
-        
-        return label
-    }()
-    
-    private var artworkImageView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .orange
-        view.layer.cornerRadius = 11
-        view.layer.cornerCurve = .continuous
-        view.layer.masksToBounds = true
-        
-        return view
-    }()
-    
-    private var background: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 25
-        view.layer.cornerCurve = .continuous
-        view.layer.masksToBounds = true
-        view.backgroundColor = UIColor.ui.blackChocolate.withAlphaComponent(0.55)
-        
-        return view
-    }()
-    
-    private weak var trackDetailModalViewModel: TrackDetailModalViewModel!
-    
-    private var track: Track!
-    
-    private var animationState: AnimationState = AnimationState()
-    
-    private var labelsStackView: UIStackView!
-    private var artworkAndLabelStackView: UIStackView!
-    
-    private var backgroundCompactHeightConstraint: NSLayoutConstraint!
-    private var backgroundExpandedHeightConstraint: NSLayoutConstraint!
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .clear
-        
-        self.initalizeViews()
-        self.configureViewHirearchy()
-        self.configureLayout()
+        self.compactUIViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.compactUIViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.compactUIViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.compactUIViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
     
-    // MARK: View Setup
-    
-    private func initalizeViews() {
-        self.labelsStackView = self.createLabelStackView(withSubviews: [self.nameLabel, self.artistNameLabel])
-        self.artworkAndLabelStackView = self.createArtworkAndLabelStackView(withSubviews: [self.artworkImageView, self.labelsStackView])
+    private func didDisplayNowPlayingCell() {
+        self.compactUIViewModel.isOpen = false
     }
     
-    private func configureViewHirearchy() {
-        self.contentView.addSubview(self.background)
-        self.background.addSubview(self.artworkAndLabelStackView)
+    private func didEndDisplayingNowPlayingCell() {
+        self.compactUIViewModel.isOpen = true
     }
     
-    private func configureLayout() {
-        self.setupBackgroundLayout(withSpacing: 20.0)
-        self.setupArtworkImageViewLayout()
-        self.setupArtworkAndLabelStackViewLayout(withPadding: 16.0)
-    }
-    
-    private func createLabelStackView(withSubviews subviews: [UIView]) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: subviews)
-        stackView.axis = .vertical
-        stackView.alignment = .leading
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 2
-        
-        return stackView
-    }
-    
-    private func createArtworkAndLabelStackView(withSubviews subviews: [UIView]) -> UIStackView {
-        let stackview = UIStackView(arrangedSubviews: subviews)
-        stackview.axis = .horizontal
-        stackview.alignment = .fill
-        stackview.distribution = .fill
-        stackview.spacing = 10
-        
-        return stackview
-    }
-    
-    /// Adds the background to the UITableViewCell, with autolayout constraints
-    /// - Parameter spacing: The space between each background in the UITableView
-    private func setupBackgroundLayout(withSpacing spacing: CGFloat) {
-        let halfSpacing = spacing / 2
-        
-        self.background.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.background.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: halfSpacing).isActive = true
-        self.background.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -1 * halfSpacing).isActive = true
-        self.background.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: halfSpacing).isActive = true
-        self.background.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -1 * halfSpacing).isActive = true
-        
-        self.backgroundExpandedHeightConstraint = self.background.heightAnchor.constraint(equalToConstant: 120)
-        self.backgroundCompactHeightConstraint = self.background.heightAnchor.constraint(equalToConstant: 80)
-        self.backgroundCompactHeightConstraint.isActive = true
-    }
-    
-    private func setupArtworkImageViewLayout() {
-        self.artworkImageView.translatesAutoresizingMaskIntoConstraints = false
-        self.artworkImageView.widthAnchor.constraint(equalTo: self.artworkImageView.heightAnchor).isActive = true
-    }
-    
-    /// Configures and lays out the arworkAndLabel UIStackView
-    /// - Parameters:
-    ///   - padding: The space between the edge of the background, and the contents of the cell (artworkAndLabelStackView)
-    ///   - spacing: The space between each background in the UITableView.
-    private func setupArtworkAndLabelStackViewLayout(withPadding padding: CGFloat) {
-        self.artworkAndLabelStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.artworkAndLabelStackView.topAnchor.constraint(equalTo: self.background.topAnchor, constant: padding).isActive = true
-        self.artworkAndLabelStackView.bottomAnchor.constraint(equalTo: self.background.bottomAnchor, constant: -1 * padding).isActive = true
-        self.artworkAndLabelStackView.leftAnchor.constraint(equalTo: self.background.leftAnchor, constant: padding).isActive = true
-        self.artworkAndLabelStackView.rightAnchor.constraint(equalTo: self.background.rightAnchor, constant: -1 * padding).isActive = true
-    }
-    
-    public func updateLayout(forPlaybackStatus playbackStatus: PlaybackStatus) {
-        if (playbackStatus == .playing) {
-            self.labelsStackView.insertArrangedSubview(self.nowPlayingLabel, at: 0)
-            
-            self.backgroundCompactHeightConstraint.isActive = false
-            self.backgroundExpandedHeightConstraint.isActive = true
-        } else if (playbackStatus == .notPlaying) {
-            self.labelsStackView.removeArrangedSubview(self.nowPlayingLabel)
-            self.nowPlayingLabel.removeFromSuperview()
-            
-            self.backgroundExpandedHeightConstraint.isActive = false
-            self.backgroundCompactHeightConstraint.isActive = true
-        }
-    }
-    
-    // MARK: Gesture Recognizers
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.scaleDownAnimation()
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if (self.animationState.scaleDownAnimationInProgress) {
-            self.animationState.shouldScaleUpUponScaleDownAnimationCompletion = true
-        } else {
-            self.scaleUpAnimation()
-        }
-    }
-    
-    private func scaleDownAnimation() {
-        self.animationState.scaleDownAnimationInProgress = true
-        UIView.animate(withDuration: 0.1) {
-            self.background.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
-        } completion: { _ in
-            self.animationState.scaleDownAnimationInProgress = false
-            
-            if (self.animationState.shouldScaleUpUponScaleDownAnimationCompletion == true) {
-                self.scaleUpAnimation()
-                self.animationState.shouldScaleUpUponScaleDownAnimationCompletion = false
-            }
-        }
-    }
-    
-    private func scaleUpAnimation() {
-        UIView.animate(withDuration: 0.1) {
-            self.background.transform = CGAffineTransform.identity
-        } completion: { _ in
-            self.openTrackDetailModalViewController(withTrack: self.track)
-        }
-    }
-    
-    private func openTrackDetailModalViewController(withTrack track: Track) {
-        self.trackDetailModalViewModel.open(with: track)
-    }
-    
-    // MARK: Config
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configure(withConfiguration configuration: Configuration) {
-        self.trackDetailModalViewModel = configuration.trackDetailModalViewModel
-        self.track = configuration.track
-        
-        self.nameLabel.text = self.track.attributes?.name
-        self.artistNameLabel.text = self.track.attributes?.artistName
-    }
-    
-    struct AnimationState {
-        var scaleDownAnimationInProgress: Bool = false
-        var shouldScaleUpUponScaleDownAnimationCompletion: Bool = false
-    }
-    
-    struct Configuration {
-        let trackDetailModalViewModel: TrackDetailModalViewModel
-        let track: Track
-    }
-    
-    enum PlaybackStatus {
-        case playing
-        case notPlaying
+    // MARK: CompactUIViewDelegate
+    func scrollToNowPlayingItem() {
+        self.queueTableViewController.scrollToNowPlayingCell()
     }
 }
