@@ -26,7 +26,7 @@ class RootViewController: UIViewController {
     var controlsOverlayView: UIView!
     /// When true, the controlsOverlayView will be drawn over the QueueTableView. Scrolling the QueueTableView will trigger the controls
     /// overlay view to hide, which will allow the user to see more content in the queue.
-    var shouldOverlayControls: Bool = true
+    var shouldOverlayControls: Bool = false
     
     var queueTableViewController: QueueTableViewController!
     
