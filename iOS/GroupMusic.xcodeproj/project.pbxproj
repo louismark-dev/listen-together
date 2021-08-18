@@ -48,6 +48,8 @@
 		2550D0AF25BFC34D0030E17E /* sample-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0AE25BFC34D0030E17E /* sample-1.mp3 */; };
 		2550D0BB25BFCEE50030E17E /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0BA25BFCEE50030E17E /* background.mp3 */; };
 		2550D0BE25BFD1100030E17E /* 15-sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2550D0BD25BFD1100030E17E /* 15-sec.mp3 */; };
+		2556CB2F26CC7866009A7E7A /* ImageLoader2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2556CB2E26CC7866009A7E7A /* ImageLoader2.swift */; };
+		2556CB3126CC78F4009A7E7A /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2556CB3026CC78F4009A7E7A /* AsyncImageView.swift */; };
 		2569485C26AE2FE600128333 /* TrackDetailModalView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2569485B26AE2FE600128333 /* TrackDetailModalView2.swift */; };
 		2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE825B9321000F65B8F /* QueueCellBackground.swift */; };
 		2577BCED25B9321100F65B8F /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2577BCE925B9321000F65B8F /* QueueView.swift */; };
@@ -188,6 +190,8 @@
 		2550D0AE25BFC34D0030E17E /* sample-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sample-1.mp3"; sourceTree = "<group>"; };
 		2550D0BA25BFCEE50030E17E /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
 		2550D0BD25BFD1100030E17E /* 15-sec.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "15-sec.mp3"; sourceTree = "<group>"; };
+		2556CB2E26CC7866009A7E7A /* ImageLoader2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader2.swift; sourceTree = "<group>"; };
+		2556CB3026CC78F4009A7E7A /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
 		2569485B26AE2FE600128333 /* TrackDetailModalView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailModalView2.swift; sourceTree = "<group>"; };
 		2577BCE825B9321000F65B8F /* QueueCellBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueCellBackground.swift; sourceTree = "<group>"; };
 		2577BCE925B9321000F65B8F /* QueueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
@@ -360,6 +364,15 @@
 			path = BackgroundBlur;
 			sourceTree = "<group>";
 		};
+		2556CB2D26CC784A009A7E7A /* ImageLoader */ = {
+			isa = PBXGroup;
+			children = (
+				2556CB2E26CC7866009A7E7A /* ImageLoader2.swift */,
+				2556CB3026CC78F4009A7E7A /* AsyncImageView.swift */,
+			);
+			path = ImageLoader;
+			sourceTree = "<group>";
+		};
 		2577BCE625B931B800F65B8F /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -412,6 +425,7 @@
 		258CF386269DE87C00D736D0 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				2556CB2D26CC784A009A7E7A /* ImageLoader */,
 				25AC33B026BE4BA40070429C /* CompactUI */,
 				25FA5D0726BA3C47005757E6 /* BottomBar */,
 				25B366DE26BA296F0051D4B7 /* TrackDetailsModal */,
@@ -845,6 +859,7 @@
 				258CF393269E96A100D736D0 /* Image+Extensions.swift in Sources */,
 				BF8BEE68259B1B9100B9DCD3 /* Curator.swift in Sources */,
 				BFA285C22595B53F00D8B4D6 /* SessionView.swift in Sources */,
+				2556CB2F26CC7866009A7E7A /* ImageLoader2.swift in Sources */,
 				25AC33B226BE4BB20070429C /* CompactUIViewController.swift in Sources */,
 				BF5EE22B25A03353000C23DD /* AudioPreviewManager.swift in Sources */,
 				BF266BFC259026B300029A2D /* GMQueuePlayer.swift in Sources */,
@@ -860,6 +875,7 @@
 				25272FB825D994F200E690BE /* BannerController.swift in Sources */,
 				BF8BEE66259B1B9100B9DCD3 /* Genre.swift in Sources */,
 				2577BCEC25B9321100F65B8F /* QueueCellBackground.swift in Sources */,
+				2556CB3126CC78F4009A7E7A /* AsyncImageView.swift in Sources */,
 				25B2B50E25FE9A6700C47023 /* BottomSheetView.swift in Sources */,
 				25D3B3F326AE1E3F00D7D7A9 /* TrackDetailModalViewController.swift in Sources */,
 				25B2B51225FE9E2600C47023 /* TrackDetailModalView.swift in Sources */,

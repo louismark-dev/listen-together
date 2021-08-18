@@ -18,10 +18,7 @@ struct TrackDetailModalView2: View {
     var body: some View {
         VStack(spacing: 16) {
             HStack {
-                Rectangle()
-                    .foregroundColor(.green)
-                    .aspectRatio(contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 20.0, style: .continuous))
+                self.artwork(withArtworkAttributes: self.trackDetailModalViewModel.track?.attributes?.artwork)
                 VStack(alignment: .leading) {
                     self.labels(withTrackName: self.trackDetailModalViewModel.track?.attributes?.name,
                                 artistName: self.trackDetailModalViewModel.track?.attributes?.artistName,
@@ -38,6 +35,18 @@ struct TrackDetailModalView2: View {
         
     }
     
+    // MARK: Artwork
+    @ViewBuilder private func artwork(withArtworkAttributes artwork: Artwork?) -> some View {
+        if let artwork = artwork {
+            AsyncImageView(url: artwork.urlForMaxWidth(),
+                           placeholder: {
+                            Color.clear
+                           })
+                .aspectRatio(contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 20.0, style: .continuous))
+        }
+    }
+        
     // MARK: Labels
     
     @ViewBuilder private func labels(withTrackName trackName: String?, artistName: String?, nowPlaying: Bool) -> some View {
