@@ -1,5 +1,5 @@
 # Listen Together
-Listen Together allows friends to share control of thier music playback. An Apple Music account is required.
+Listen Together lets users share control of their music playback with friends.
 
 Please note that this project remains a work in progress.
 
